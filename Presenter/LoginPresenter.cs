@@ -15,6 +15,8 @@ namespace Airport_Airplane_management_system.Presenter
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
             _view.LoginClicked += OnLoginClicked;
+            _view.ForgotPasswordClicked += Forgetpasswordpage;
+            _view.SignUpClicked += showsignup;
         }
 
         private void OnLoginClicked(object sender, EventArgs e)
@@ -44,6 +46,14 @@ namespace Airport_Airplane_management_system.Presenter
                 _view.ShowAdminPanel();
             else
                 _view.ShowUserPanel();
+        }
+        private void Forgetpasswordpage(object sender, EventArgs e)
+        {
+            _view.ShowForgetpasswordpage();
+        }
+        private void showsignup(object sender, EventArgs e)
+        {
+            _view.ShowSignUpPage();
         }
     }
 }

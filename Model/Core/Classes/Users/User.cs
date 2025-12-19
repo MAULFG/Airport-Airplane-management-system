@@ -18,7 +18,7 @@ namespace Airport_Airplane_management_system.Model.Core.Classes.Users
 
         public string FullName => $"{FName} {LName}";
 
-        public User(int userID, string fname, string lname, string email, string username, string password, string phone)
+        public User(int userID, string fname, string lname, string email, string username, string password)
         {
             UserID = userID;
             FName = fname ?? throw new ArgumentNullException(nameof(fname));

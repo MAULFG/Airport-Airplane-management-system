@@ -55,6 +55,11 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
         {
             MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+        public void Returnlogin()
+        {
+           var main = (Main1)this.ParentForm;
+           main.ShowLogin();
+        }
 
         public void ClearFields()
         {
@@ -68,7 +73,16 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             newPasswordTB.BorderColor = Color.DarkGray;
             confirmPasswordTB.BorderColor = Color.DarkGray;
         }
-
+        public void HighlightFields2(bool newpassError, bool confirmpassError)
+        {
+            newPasswordTB.BorderColor = newpassError ? Color.Red : Color.DarkGray;
+            confirmPasswordTB.BorderColor = confirmpassError ? Color.Red : Color.DarkGray;
+        }
+        public void HighlightFields1(bool usernameError, bool emailError)
+        {
+            usernameTB.BorderColor = usernameError ? Color.Red : Color.DarkGray;
+            emailTB.BorderColor = emailError ? Color.Red : Color.DarkGray;
+        }
         public event EventHandler ResetClicked;
         public event EventHandler ReturnToLoginClicked;
 
@@ -94,6 +108,11 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
                 tb.BorderColor = Color.DarkGray;
                 tb.BorderThickness = 2;
             }
+        }
+
+        private void ForgetUserControl_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -41,8 +41,8 @@ namespace Airport_Airplane_management_system.Model.Repositories
                     lname: reader.GetString("lastname"),
                     email: reader.GetString("email"),
                     username: reader.GetString("username"),
-                    password: reader.GetString("password"),
-                    phone: reader["phone"] == DBNull.Value ? null : reader.GetString("phone")
+                    password: reader.GetString("password")
+               
                 ));
             }
 
@@ -67,8 +67,7 @@ namespace Airport_Airplane_management_system.Model.Repositories
                     lname: reader.GetString("lastname"),
                     email: reader.GetString("email"),
                     username: reader.GetString("username"),
-                    password: reader.GetString("password"),
-                    phone: reader["phone"] == DBNull.Value ? null : reader.GetString("phone")
+                    password: reader.GetString("password")
                 );
             }
 
@@ -93,8 +92,7 @@ namespace Airport_Airplane_management_system.Model.Repositories
                     lname: reader.GetString("lastname"),
                     email: reader.GetString("email"),
                     username: reader.GetString("username"),
-                    password: reader.GetString("password"),
-                    phone: reader["phone"] == DBNull.Value ? null : reader.GetString("phone")
+                    password: reader.GetString("password")
                 );
             }
 
@@ -109,8 +107,8 @@ namespace Airport_Airplane_management_system.Model.Repositories
             conn.Open();
 
             const string sql = @"INSERT INTO user 
-                                (firstname, lastname, email, username, password, phone)
-                                VALUES (@fname, @lname, @email, @username, @password, @phone);";
+                                (firstname, lastname, email, username, password)
+                                VALUES (@fname, @lname, @email, @username, @password);";
 
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@fname", user.FName);
@@ -121,6 +119,29 @@ namespace Airport_Airplane_management_system.Model.Repositories
         
 
             cmd.ExecuteNonQuery();
+        }
+        public bool UsernameExists(string username)
+        {
+            using var conn = new MySqlConnection(connStr);
+            conn.Open();
+
+            const string sql = "SELECT COUNT(*) FROM user WHERE username = @username";
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@username", username);
+
+            return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+        }
+
+        public bool EmailExists(string email)
+        {
+            using var conn = new MySqlConnection(connStr);
+            conn.Open();
+
+            const string sql = "SELECT COUNT(*) FROM user WHERE email = @email";
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@email", email);
+
+            return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
         }
 
         public void UpdatePassword(int userId, string newPassword)

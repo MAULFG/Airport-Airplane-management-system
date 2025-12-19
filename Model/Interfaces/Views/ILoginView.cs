@@ -15,6 +15,10 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
 
         void ShowAdminPanel();
         void ShowUserPanel();
+        public void ShowForgetpasswordpage();
+        public void ShowSignUpPage();
+        
+
 
         event EventHandler LoginClicked;
         event EventHandler SignUpClicked;

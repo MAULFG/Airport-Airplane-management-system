@@ -21,27 +21,36 @@ public class ForgetPasswordPresenter
 
     private void OnResetClicked(object sender, EventArgs e)
     {
+        bool usernameEmpty = string.IsNullOrWhiteSpace(_view.Username);
+        bool emailEmpty = string.IsNullOrWhiteSpace(_view.Email);
+        bool newpassEmpty = string.IsNullOrWhiteSpace(_view.NewPassword);
+        bool confirmpassEmpty = string.IsNullOrWhiteSpace(_view.ConfirmPassword);
+
         // Basic validation
         if (string.IsNullOrWhiteSpace(_view.Username))
         {
+            _view.HighlightFields1(usernameEmpty,emailEmpty);
             _view.ShowError("Username is required.");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(_view.Email))
         {
+            _view.HighlightFields1(usernameEmpty, emailEmpty);
             _view.ShowError("Email is required.");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(_view.NewPassword))
         {
+            _view.HighlightFields2(newpassEmpty, confirmpassEmpty);
             _view.ShowError("New password is required.");
             return;
         }
 
         if (_view.NewPassword != _view.ConfirmPassword)
         {
+            _view.HighlightFields2(true, true);
             _view.ShowError("Passwords do not match.");
             return;
         }
@@ -50,6 +59,7 @@ public class ForgetPasswordPresenter
         var user = _userService.GetUserByUsername(_view.Username);
         if (user == null || !user.Email.Equals(_view.Email, StringComparison.OrdinalIgnoreCase))
         {
+            _view.HighlightFields1(true, true);
             _view.ShowError("Invalid username or email.");
             return;
         }
@@ -62,8 +72,8 @@ public class ForgetPasswordPresenter
 
     private void OnReturnToLoginClicked(object sender, EventArgs e)
     {
-        // Could navigate to Login page
         _view.ClearFields();
+        _view.Returnlogin();
     }
 }
 

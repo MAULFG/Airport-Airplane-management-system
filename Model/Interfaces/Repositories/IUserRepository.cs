@@ -11,7 +11,10 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
         User GetUserByUsername(string username);
         void AddUser(User user);
         void UpdatePassword(int userId, string newPassword);
-        bool RemoveUser(int userId);                                                  
+        bool RemoveUser(int userId);      
+        
+        bool UsernameExists(string name);
+        bool EmailExists(string name);
 
     }
 

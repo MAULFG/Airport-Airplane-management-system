@@ -20,20 +20,59 @@ namespace Airport_Airplane_management_system.View
         }
         public void ShowUser()
         {
-            
-
+            loginPage1.Hide();
+            forgetUserControl1.Hide();
+            signupusercontrol1.Hide();
         }
         public void ShowAdmin()
         {
-           
+            loginPage1.Hide();
+            forgetUserControl1.Hide();
+            signupusercontrol1.Hide();
+        }
+        public void ShowForget()
+        {
+            loginPage1.Hide();
+            forgetUserControl1.Show();
+            signupusercontrol1.Hide();
+        }
+        public void ShowSignUp()
+        {
+            loginPage1.Hide();
+            forgetUserControl1.Hide();
+            signupusercontrol1.Show();
+
 
         }
-        private void Main1_Load(object sender, EventArgs e)
+        public void ShowLogin()
+        {
+            loginPage1.Show();
+            forgetUserControl1.Hide();
+            signupusercontrol1.Hide();
+        }
+        public void Main1_Load(object sender, EventArgs e)
+        {
+            loginPage1.Show();
+            forgetUserControl1.Hide();
+            signupusercontrol1.Hide();
+        }
+
+        private void loginPage1_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void loginPage1_Load(object sender, EventArgs e)
+        private void forgetUserControl1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void signupusercontrol1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void signupusercontrol1_Load_1(object sender, EventArgs e)
         {
 
         }

@@ -88,7 +88,16 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             var main = (Main1)this.ParentForm;
             main.ShowUser();
         }
-
+        public void ShowForgetpasswordpage()
+        {
+            var main = (Main1)this.ParentForm;
+            main.ShowForget();
+        }
+        public void ShowSignUpPage()
+        {
+            var main = (Main1)this.ParentForm;
+            main.ShowSignUp();
+        }
         // Events
         public event EventHandler LoginClicked;
         public event EventHandler SignUpClicked;
