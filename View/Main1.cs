@@ -23,25 +23,28 @@ namespace Airport_Airplane_management_system.View
             loginPage1.Hide();
             forgetUserControl1.Hide();
             signupusercontrol1.Hide();
+            userDashboard1.Show();
         }
         public void ShowAdmin()
         {
             loginPage1.Hide();
             forgetUserControl1.Hide();
             signupusercontrol1.Hide();
+            userDashboard1.Hide();
         }
         public void ShowForget()
         {
             loginPage1.Hide();
             forgetUserControl1.Show();
             signupusercontrol1.Hide();
+            userDashboard1.Hide();
         }
         public void ShowSignUp()
         {
             loginPage1.Hide();
             forgetUserControl1.Hide();
             signupusercontrol1.Show();
-
+            userDashboard1.Hide();
 
         }
         public void ShowLogin()
@@ -49,12 +52,14 @@ namespace Airport_Airplane_management_system.View
             loginPage1.Show();
             forgetUserControl1.Hide();
             signupusercontrol1.Hide();
+            userDashboard1.Hide();
         }
         public void Main1_Load(object sender, EventArgs e)
         {
             loginPage1.Show();
             forgetUserControl1.Hide();
             signupusercontrol1.Hide();
+            userDashboard1.Hide();
         }
 
         private void loginPage1_Load(object sender, EventArgs e)
@@ -73,6 +78,11 @@ namespace Airport_Airplane_management_system.View
         }
 
         private void signupusercontrol1_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void userDashboard1_Load(object sender, EventArgs e)
         {
 
         }
