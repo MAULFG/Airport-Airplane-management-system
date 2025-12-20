@@ -14,9 +14,15 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         string Password { get; }
         string ConfirmPassword { get; }
         void ClearFields();
-        void HighlightFields1(bool newpassError, bool confirmpassError);
+       
         void ShowError(string message);
-        
+        void SetErrorBorder(Guna2TextBox tb, bool isError);
+        void SetUsernameError(bool isError);
+        void SetEmailError(bool isError);
+        void SetPasswordError(bool isError);
+        void SetfnameError(bool isError);
+        void SetlnameError(bool isError);
+        void SetPassword2Error(bool isError);
         void Returnlogin();
         event EventHandler SignupClicked;
         event EventHandler ReturnToLoginClicked;

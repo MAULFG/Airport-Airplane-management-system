@@ -2,7 +2,7 @@
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
 
-namespace Airport_Airplane_management_system.Presenter
+namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
 {
     public class LoginPresenter
     {

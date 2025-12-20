@@ -2,7 +2,7 @@
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
-using Airport_Airplane_management_system.Presenter;
+using Airport_Airplane_management_system.Presenter.LoginPagesPresenters;
 using Guna.UI2.WinForms;
 using System;
 using System.Collections.Generic;
@@ -47,11 +47,40 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
                 tb.BorderThickness = 2;
             }
         }
-        private void Signupusercontrol_Load(object sender, EventArgs e)
+        public void Signupusercontrol_Load(object sender, EventArgs e)
         {
 
         }
-       
+        public void SetUsernameError(bool isError)
+        {
+            SetErrorBorder(usernameTB, isError);
+        }
+        public void SetfnameError(bool isError)
+        {
+            SetErrorBorder(fnameTB, isError);
+        }
+        public void SetlnameError(bool isError)
+        {
+            SetErrorBorder(lnameTB, isError);
+        }
+        public void SetEmailError(bool isError)
+        {
+            SetErrorBorder(EmailTB, isError);
+        }
+
+        public void SetPasswordError(bool isError)
+        {
+            SetErrorBorder(PasswordTB, isError);
+        }
+        public void SetPassword2Error(bool isError)
+        {
+            SetErrorBorder(PasswordTB2, isError);
+        }
+        public void SetErrorBorder(Guna2TextBox tb, bool isError)
+        {
+            tb.BorderColor = isError ? Color.Red : SystemColors.ControlDark;
+        }
+
 
         public void ClearFields()
         {
@@ -77,12 +106,8 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
         public string Email => EmailTB.Text;
         public string Password => PasswordTB.Text;
         public string ConfirmPassword => PasswordTB2.Text;
-       
-        public void HighlightFields1(bool newpassError, bool confirmpassError)
-        {
-            PasswordTB.BorderColor = newpassError ? Color.Red : Color.DarkGray;
-            PasswordTB2.BorderColor = confirmpassError ? Color.Red : Color.DarkGray;
-        }
+        
+    
 
         public void ShowError(string message)
         {

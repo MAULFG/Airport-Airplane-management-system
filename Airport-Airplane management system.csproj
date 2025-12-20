@@ -12,6 +12,8 @@
   <ItemGroup>
     <Folder Include="Common\Helpers\" />
     <Folder Include="Common\Constants\" />
+    <Folder Include="Presenter\AdminPagesPresenters\" />
+    <Folder Include="Presenter\UserPagesPresenters\" />
   </ItemGroup>
 
   <ItemGroup>

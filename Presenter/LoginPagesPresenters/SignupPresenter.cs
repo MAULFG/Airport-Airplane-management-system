@@ -2,64 +2,101 @@
 using Airport_Airplane_management_system.Model.Core.Enums;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Airport_Airplane_management_system.Presenter
+namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
 {
     public class SignupPresenter
     {
         private readonly ISignupView _view;
         private readonly UserService _userService;
+        
         public SignupPresenter(ISignupView view, UserService userService)
         {
             _view = view;
             _userService = userService;
             _view.SignupClicked += OnSignupClicked;
             _view.ReturnToLoginClicked += OnReturnToLoginClicked;
+            
+            
         }
+       
         private void OnSignupClicked(object sender, EventArgs e)
         {
+            bool hasError = false;
+            _view.SetfnameError(false);
+            _view.SetlnameError(false);
+            _view.SetEmailError(false);
+            _view.SetUsernameError(false);
+            _view.SetPasswordError(false);
+            _view.SetPassword2Error(false);
             bool fnameEmpty = string.IsNullOrWhiteSpace(_view.FName);
             bool lnameEmpty = string.IsNullOrWhiteSpace(_view.LName);
             bool emailEmpty = string.IsNullOrWhiteSpace(_view.Email);
             bool passwordEmpty = string.IsNullOrWhiteSpace(_view.Password);
             bool confirmpasswordEmpty = string.IsNullOrWhiteSpace(_view.ConfirmPassword);
             bool usernameEmpty = string.IsNullOrWhiteSpace(_view.Username);
-            if (string.IsNullOrEmpty(_view.FName))
+            
+            if (string.IsNullOrWhiteSpace(_view.FName))
             {
-                _view.ShowError("Error");
+                _view.SetfnameError(true);
+                hasError = true;
+            }
+
+            if (string.IsNullOrWhiteSpace(_view.LName))
+            {
+                _view.SetlnameError(true);
+                hasError = true;
+            }
+
+            if (string.IsNullOrWhiteSpace(_view.Email))
+            {
+                _view.SetEmailError(true);
+                hasError = true;
+            }
+
+            if (string.IsNullOrWhiteSpace(_view.Username))
+            {
+                _view.SetUsernameError(true);
+                hasError = true;
+            }
+
+            if (string.IsNullOrWhiteSpace(_view.Password))
+            {
+                _view.SetPasswordError(true);
+                hasError = true;
+            }
+
+            if (string.IsNullOrWhiteSpace(_view.ConfirmPassword))
+            {
+                _view.SetPassword2Error(true);
+                hasError = true;
+            }
+
+            // cross-field validation
+            if (!string.IsNullOrWhiteSpace(_view.Password) &&
+                !string.IsNullOrWhiteSpace(_view.ConfirmPassword) &&
+                _view.Password != _view.ConfirmPassword)
+            {
+                _view.SetPasswordError(true);
+                _view.SetPassword2Error(true);
+                _view.ShowError("Passwords do not match.");
                 return;
             }
-            if (string.IsNullOrEmpty(_view.LName))
+
+            // stop if any field missing
+            if (hasError)
             {
-                _view.ShowError("Error");
-                return;
-            }
-            if (string.IsNullOrEmpty(_view.Email))
-            {
-                _view.ShowError("Error");
-                return;
-            }
-            if (string.IsNullOrEmpty(_view.Password))
-            {
-                _view.ShowError("Error");
-                return;
-            }
-            if (string.IsNullOrEmpty(_view.ConfirmPassword))
-            {
-                _view.ShowError("Error");
-                return;
-            }
-            if (string.IsNullOrEmpty(_view.Username))
-            {
-                _view.ShowError("Error");
+                _view.ShowError("Please fill in all required fields.");
                 return;
             }
             if (_view.Password != _view.ConfirmPassword)
             {
-                _view.HighlightFields1(true, true);
+                _view.SetPasswordError(true);
+                _view.SetPassword2Error(true);
                 _view.ShowError("Passwords do not match.");
                 return;
             }
