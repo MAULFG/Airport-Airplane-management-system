@@ -1,6 +1,6 @@
 ﻿namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
-    partial class MyTicketsBookingHistory
+    partial class Notifications
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,11 +30,11 @@
         {
             SuspendLayout();
             // 
-            // MyTicketsBookingHistory
+            // Notifications
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Name = "MyTicketsBookingHistory";
+            Name = "Notifications";
             Size = new Size(963, 683);
             ResumeLayout(false);
         }

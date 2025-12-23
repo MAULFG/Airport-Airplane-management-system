@@ -14,11 +14,11 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         void ShowError(string message);
         void ShowMessage(string message);
         void ClearFields();
-        void Returnlogin();
+        
        void HighlightFields2(bool newpassError, bool confirmpassError);
 
        void HighlightFields1(bool usernameError, bool emailError);
-
+     
         event EventHandler ResetClicked;
         event EventHandler ReturnToLoginClicked;
     }

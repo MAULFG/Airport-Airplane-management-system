@@ -1,6 +1,7 @@
-﻿using System;
-using Airport_Airplane_management_system.Model.Services;
+﻿using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
+using Airport_Airplane_management_system.View.Interfaces;
+using System;
 
 namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
 {
@@ -8,15 +9,16 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
     {
         private readonly ILoginView _view;
         private readonly UserService _userService;
-
-        public LoginPresenter(ILoginView view, UserService userService)
+        private readonly INavigationService _navigation;
+        public LoginPresenter(ILoginView view, UserService userService, INavigationService navigation)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 
             _view.LoginClicked += OnLoginClicked;
-            _view.ForgotPasswordClicked += Forgetpasswordpage;
-            _view.SignUpClicked += showsignup;
+            _view.ForgotPasswordClicked += OnForgotPasswordClicked;
+            _view.SignUpClicked += OnSignUpClicked;
         }
 
         private void OnLoginClicked(object sender, EventArgs e)
@@ -43,17 +45,19 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
 
             // Successful login
             if (user.UserID == 313)
-                _view.ShowAdminPanel();
+            {
+                _navigation.NavigateToAdmin();
+                _view.ClearFields();
+            }
             else
-                _view.ShowUserPanel();
+            {
+                _navigation.NavigateToUser();
+                _view.ClearFields();
+            }
+                
         }
-        private void Forgetpasswordpage(object sender, EventArgs e)
-        {
-            _view.ShowForgetpasswordpage();
-        }
-        private void showsignup(object sender, EventArgs e)
-        {
-            _view.ShowSignUpPage();
-        }
+        private void OnSignUpClicked(object sender, EventArgs e) => _navigation.NavigateToSignUp();
+        private void OnForgotPasswordClicked(object sender, EventArgs e) => _navigation.NavigateToForgotPassword();
+
     }
 }

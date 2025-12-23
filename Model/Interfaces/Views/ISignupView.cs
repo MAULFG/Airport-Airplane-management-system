@@ -23,7 +23,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         void SetfnameError(bool isError);
         void SetlnameError(bool isError);
         void SetPassword2Error(bool isError);
-        void Returnlogin();
+    
         event EventHandler SignupClicked;
         event EventHandler ReturnToLoginClicked;
 

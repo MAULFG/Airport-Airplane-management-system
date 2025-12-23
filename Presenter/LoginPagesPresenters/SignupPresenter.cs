@@ -2,6 +2,7 @@
 using Airport_Airplane_management_system.Model.Core.Enums;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.View.Interfaces;
 using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,12 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
     {
         private readonly ISignupView _view;
         private readonly UserService _userService;
-        
-        public SignupPresenter(ISignupView view, UserService userService)
+        private readonly INavigationService _navigationService;
+        public SignupPresenter(ISignupView view, UserService userService, INavigationService navigation)
         {
             _view = view;
             _userService = userService;
+            _navigationService = navigation;
             _view.SignupClicked += OnSignupClicked;
             _view.ReturnToLoginClicked += OnReturnToLoginClicked;
             
@@ -109,7 +111,8 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
                     _view.ClearFields();
                     _view.ShowError("Account created successfully 🎉");
                     _view.ClearFields();
-                    _view.Returnlogin();
+                    _view.ClearFields();
+                    _navigationService.NavigateToLogin(); 
                     break;
 
                 case AddUserResult.UsernameExists:
@@ -133,7 +136,7 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
         private void OnReturnToLoginClicked(object sender, EventArgs e)
         {
             _view.ClearFields();
-            _view.Returnlogin();
+            _navigationService.NavigateToLogin(); ;
         }
 
     }

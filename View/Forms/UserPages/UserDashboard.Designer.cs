@@ -58,6 +58,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnSearchBook = new Guna.UI2.WinForms.Guna2Button();
             btnUpcomingFlights = new Guna.UI2.WinForms.Guna2Button();
             panel1 = new Panel();
+            userAccount1 = new UserAccount();
+            userSettings1 = new UserSettings();
+            searchAndBooking1 = new SearchAndBooking();
+            notifications1 = new Notifications();
+            myTicketsBookingHistory1 = new MyTicketsBookingHistory();
             guna2Panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -85,7 +90,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2Panel1.Location = new Point(0, 0);
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            guna2Panel1.Size = new Size(235, 683);
+            guna2Panel1.Size = new Size(250, 683);
             guna2Panel1.TabIndex = 1;
             // 
             // logoutuser
@@ -244,11 +249,59 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panel1.Size = new Size(75, 75);
             panel1.TabIndex = 0;
             // 
+            // userAccount1
+            // 
+            userAccount1.Dock = DockStyle.Fill;
+            userAccount1.Location = new Point(250, 0);
+            userAccount1.Name = "userAccount1";
+            userAccount1.Size = new Size(963, 683);
+            userAccount1.TabIndex = 2;
+            userAccount1.Load += userAccount1_Load;
+            // 
+            // userSettings1
+            // 
+            userSettings1.Dock = DockStyle.Fill;
+            userSettings1.Location = new Point(250, 0);
+            userSettings1.Name = "userSettings1";
+            userSettings1.Size = new Size(963, 683);
+            userSettings1.TabIndex = 11;
+            // 
+            // searchAndBooking1
+            // 
+            searchAndBooking1.Dock = DockStyle.Fill;
+            searchAndBooking1.Location = new Point(250, 0);
+            searchAndBooking1.Name = "searchAndBooking1";
+            searchAndBooking1.Size = new Size(963, 683);
+            searchAndBooking1.TabIndex = 11;
+            // 
+            // notifications1
+            // 
+            notifications1.Dock = DockStyle.Fill;
+            notifications1.Location = new Point(250, 0);
+            notifications1.Name = "notifications1";
+            notifications1.Size = new Size(963, 683);
+            notifications1.TabIndex = 11;
+            // 
+            // myTicketsBookingHistory1
+            // 
+            myTicketsBookingHistory1.Dock = DockStyle.Fill;
+            myTicketsBookingHistory1.Location = new Point(250, 0);
+            myTicketsBookingHistory1.Name = "myTicketsBookingHistory1";
+            myTicketsBookingHistory1.Size = new Size(963, 683);
+            myTicketsBookingHistory1.TabIndex = 11;
+            myTicketsBookingHistory1.Load += myTicketsBookingHistory1_Load;
+            // 
             // UserDashboard
             // 
+            Controls.Add(myTicketsBookingHistory1);
+            Controls.Add(notifications1);
+            Controls.Add(searchAndBooking1);
+            Controls.Add(userSettings1);
+            Controls.Add(userAccount1);
             Controls.Add(guna2Panel1);
             Name = "UserDashboard";
             Size = new Size(1213, 683);
+            Load += UserDashboard_Load;
             guna2Panel1.ResumeLayout(false);
             ResumeLayout(false);
 
@@ -268,6 +321,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private Guna.UI2.WinForms.Guna2Button Settings;
         private Guna.UI2.WinForms.Guna2Button logoutuser;
     
-        private Settings settings1;
+        private UserSettings settings1;
+        private UpcomingFlights upcomingFlights2;
+        private UserAccount userAccount1;
+        private UserSettings userSettings1;
+        private SearchAndBooking searchAndBooking1;
+        private Notifications notifications1;
+        private MyTicketsBookingHistory myTicketsBookingHistory1;
     }
 }

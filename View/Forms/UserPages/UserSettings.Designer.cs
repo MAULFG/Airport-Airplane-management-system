@@ -1,6 +1,6 @@
 ﻿namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
-    partial class Settings
+    partial class UserSettings
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,8 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            SuspendLayout();
+            // 
+            // Settings
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Name = "Settings";
+            Size = new Size(963, 683);
+            ResumeLayout(false);
         }
 
         #endregion

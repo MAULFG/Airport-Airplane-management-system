@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
-    public partial class Settings : UserControl
+    public partial class Notifications : UserControl
     {
-        public Settings()
+        public Notifications()
         {
             InitializeComponent();
         }

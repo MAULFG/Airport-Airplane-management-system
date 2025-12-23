@@ -13,11 +13,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
         // <-- Add this method
         void HighlightFields(bool usernameError, bool passwordError);
 
-        void ShowAdminPanel();
-        void ShowUserPanel();
-        public void ShowForgetpasswordpage();
-        public void ShowSignUpPage();
-        
+
 
 
         event EventHandler LoginClicked;

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Airport_Airplane_management_system.Model.Repositories;
+using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Presenter.LoginPagesPresenters;
+using Airport_Airplane_management_system.View.Forms.LoginPages;
+using Airport_Airplane_management_system.View.Interfaces;
+using Airport_Airplane_management_system.Model.Interfaces.Views;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Airport_Airplane_management_system.Model.Services;
-using Airport_Airplane_management_system.Model.Repositories;
-using Airport_Airplane_management_system.View.Forms.LoginPages;
-using Airport_Airplane_management_system.Presenter.LoginPagesPresenters;
 
 namespace Airport_Airplane_management_system.View.Forms.LoginPages
 {
@@ -12,7 +14,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
     {
         private readonly LoginPresenter _presenter;
 
-        public LoginPage()
+        public LoginPage(INavigationService navigationService)
         {
             InitializeComponent();
 
@@ -36,7 +38,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             var userService = new UserService(userRepo);
 
             // Initialize presenter
-            _presenter = new LoginPresenter(this, userService);
+            _presenter = new LoginPresenter(this, userService, navigationService);
             // Center the panel horizontally initially
             CenterGradientPanelVertically();
 
@@ -77,27 +79,6 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             PasswordTB.BorderColor = passwordError ? Color.Red : Color.DarkGray;
         }
 
-        public void ShowAdminPanel()
-        {
-            var main = (Main1)this.ParentForm;
-            main.ShowAdmin();
-        }
-
-        public void ShowUserPanel()
-        {
-            var main = (Main1)this.ParentForm;
-            main.ShowUser();
-        }
-        public void ShowForgetpasswordpage()
-        {
-            var main = (Main1)this.ParentForm;
-            main.ShowForget();
-        }
-        public void ShowSignUpPage()
-        {
-            var main = (Main1)this.ParentForm;
-            main.ShowSignUp();
-        }
         // Events
         public event EventHandler LoginClicked;
         public event EventHandler SignUpClicked;
@@ -113,6 +94,11 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel2_Paint_1(object sender, PaintEventArgs e)
         {
 
         }

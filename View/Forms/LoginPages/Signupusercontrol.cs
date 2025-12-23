@@ -3,6 +3,7 @@ using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter.LoginPagesPresenters;
+using Airport_Airplane_management_system.View.Interfaces;
 using Guna.UI2.WinForms;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,8 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
     public partial class Signupusercontrol : UserControl, ISignupView
     {
         private readonly SignupPresenter _presenter;
-        public Signupusercontrol()
+        private readonly INavigationService _navigation;
+        public Signupusercontrol(INavigationService navigation)
         {
             InitializeComponent();
             fnameTB.TextChanged += InputChanged;
@@ -37,7 +39,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             );
             UserService userService = new UserService(userRepo);
 
-            _presenter = new SignupPresenter(this, userService);
+            _presenter = new SignupPresenter(this, userService,navigation);
         }
         private void InputChanged(object sender, EventArgs e)
         {
@@ -117,11 +119,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
         {
             CenterPanelVertically();
         }
-        public void Returnlogin()
-        {
-            var main = (Main1)this.ParentForm;
-            main.ShowLogin();
-        }
+        
         public event EventHandler SignupClicked;
         public event EventHandler ReturnToLoginClicked;
         private void CenterPanelVertically()

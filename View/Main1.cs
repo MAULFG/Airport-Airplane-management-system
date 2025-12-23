@@ -1,90 +1,63 @@
-﻿using Airport_Airplane_management_system.Presenter;
-using Airport_Airplane_management_system.View.Forms.AdminPages;
+﻿using Airport_Airplane_management_system.View.Forms.AdminPages;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
 using Airport_Airplane_management_system.View.Forms.UserPages;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+using Airport_Airplane_management_system.View.Interfaces;
 
-namespace Airport_Airplane_management_system.View
+public partial class Main1 : Form, INavigationService
 {
-    public partial class Main1 : Form
+    private readonly LoginPage loginPage;
+    private readonly UserDashboard userDashboard;
+    private readonly AdminDashboard adminDashboard;
+    private readonly Signupusercontrol signUpPage;
+    private readonly ForgetUserControl forgotPasswordPage;
+
+    public Main1()
     {
-        public Main1()
-        {
-            InitializeComponent();
-        }
-        public void ShowUser()
-        {
-            loginPage1.Hide();
-            forgetUserControl1.Hide();
-            signupusercontrol1.Hide();
-            userDashboard1.Show();
-        }
-        public void ShowAdmin()
-        {
-            loginPage1.Hide();
-            forgetUserControl1.Hide();
-            signupusercontrol1.Hide();
-            userDashboard1.Hide();
-        }
-        public void ShowForget()
-        {
-            loginPage1.Hide();
-            forgetUserControl1.Show();
-            signupusercontrol1.Hide();
-            userDashboard1.Hide();
-        }
-        public void ShowSignUp()
-        {
-            loginPage1.Hide();
-            forgetUserControl1.Hide();
-            signupusercontrol1.Show();
-            userDashboard1.Hide();
+        InitializeComponent();
 
-        }
-        public void ShowLogin()
-        {
-            loginPage1.Show();
-            forgetUserControl1.Hide();
-            signupusercontrol1.Hide();
-            userDashboard1.Hide();
-        }
-        public void Main1_Load(object sender, EventArgs e)
-        {
-            loginPage1.Show();
-            forgetUserControl1.Hide();
-            signupusercontrol1.Hide();
-            userDashboard1.Hide();
-        }
+        // Initialize pages and pass this as INavigationService
+        loginPage = new LoginPage(this);
+        userDashboard = new UserDashboard(this);
+        adminDashboard = new AdminDashboard();
+        signUpPage = new Signupusercontrol(this);
+        forgotPasswordPage = new ForgetUserControl(this);
 
-        private void loginPage1_Load(object sender, EventArgs e)
-        {
+        // Set docking
+        loginPage.Dock = DockStyle.Fill;
+        userDashboard.Dock = DockStyle.Fill;
+        adminDashboard.Dock = DockStyle.Fill;
+        signUpPage.Dock = DockStyle.Fill;
+        forgotPasswordPage.Dock = DockStyle.Fill;
 
-        }
+        // Add to form
+        Controls.Add(loginPage);
+        Controls.Add(userDashboard);
+        Controls.Add(adminDashboard);
+        Controls.Add(signUpPage);
+        Controls.Add(forgotPasswordPage);
 
-        private void forgetUserControl1_Load(object sender, EventArgs e)
-        {
+        // Show login page initially
+        NavigateToLogin();
+    }
 
-        }
 
-        private void signupusercontrol1_Load(object sender, EventArgs e)
-        {
 
-        }
+    public void NavigateToLogin() => loginPage.BringToFront();
+    public void NavigateToUser() => userDashboard.BringToFront();
+    public void NavigateToAdmin() => adminDashboard.BringToFront();
+    public void NavigateToSignUp() => signUpPage.BringToFront();
+    public void NavigateToForgotPassword() => forgotPasswordPage.BringToFront();
 
-        private void signupusercontrol1_Load_1(object sender, EventArgs e)
-        {
+    // optional wrappers
+    public void ShowAdmin() => NavigateToAdmin();
+    public void ShowUser() => NavigateToUser();
+    public void ShowSignUp() => NavigateToSignUp();
+    public void ShowForget() => NavigateToForgotPassword();
+    public void ReturnLogin() => NavigateToLogin();
+   
 
-        }
+    private void Main1_Load(object sender, EventArgs e)
+    {
 
-        private void userDashboard1_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

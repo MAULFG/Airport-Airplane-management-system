@@ -2,6 +2,7 @@
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.View.Interfaces;
 using Guna.UI2.WinForms;
 using System;
 using System.Drawing;
@@ -12,8 +13,8 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
     public partial class ForgetUserControl : UserControl, IForgetPasswordView
     {
         private readonly ForgetPasswordPresenter _presenter;
-
-        public ForgetUserControl()
+        private readonly INavigationService _navigation;
+        public ForgetUserControl(INavigationService navigation)
         {
             InitializeComponent();
 
@@ -36,7 +37,8 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             );
             UserService userService = new UserService(userRepo);
 
-            _presenter = new ForgetPasswordPresenter(this, userService);
+            _presenter = new ForgetPasswordPresenter(this, userService,navigation);
+            
         }
 
         #region IForgetPasswordView Implementation
@@ -50,16 +52,13 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
         {
             MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+       
 
         public void ShowMessage(string message)
         {
             MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        public void Returnlogin()
-        {
-           var main = (Main1)this.ParentForm;
-           main.ShowLogin();
-        }
+        
 
         public void ClearFields()
         {

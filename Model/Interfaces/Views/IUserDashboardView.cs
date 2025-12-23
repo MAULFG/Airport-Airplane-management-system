@@ -1,22 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Windows.Forms;
 
-namespace Airport_Airplane_management_system.Model.Interfaces.Views
+namespace Airport_Airplane_management_system.View.Interfaces
 {
     public interface IUserDashboardView
     {
-        // Method to display bookings in the UI
-        void DisplayBookings(List<BookingRow> bookings);
-    }
+        event EventHandler UpcomingFlightsClicked;
+        event EventHandler SearchBookClicked;
+        event EventHandler MyTicketsClicked;
+        event EventHandler NotificationsClicked;
+        event EventHandler SettingsClicked;
+        event EventHandler AccountClicked;
+        event EventHandler LogoutClicked;
+        event EventHandler Main;
 
-    // DTO to send booking data from Presenter to View
-    public class BookingRow
-    {
-        public int BookingID { get; set; }
-        public string FlightRoute { get; set; }
-        public string Category { get; set; }
-        public string Seat { get; set; }
-        public string Status { get; set; }
+        // Methods to show/hide pages, called by Presenter
+        void UpcomingFlights();
+        void SearchBook();
+        void MyTickets();
+        void Notifications();
+        void UserSettings();
+        void UserAccount();
+        void Logout();
+
     }
 }

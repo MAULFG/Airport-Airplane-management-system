@@ -1,5 +1,6 @@
 ﻿using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.View.Interfaces;
 using System;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,12 @@ public class ForgetPasswordPresenter
 {
     private readonly IForgetPasswordView _view;
     private readonly UserService _userService;
-
-    public ForgetPasswordPresenter(IForgetPasswordView view, UserService userService)
+    private readonly INavigationService _navigationService;
+    public ForgetPasswordPresenter(IForgetPasswordView view, UserService userService, INavigationService navigation)
     {
         _view = view;
         _userService = userService;
+        _navigationService = navigation;
 
         _view.ResetClicked += OnResetClicked;
         _view.ReturnToLoginClicked += OnReturnToLoginClicked;
@@ -29,7 +31,7 @@ public class ForgetPasswordPresenter
         // Basic validation
         if (string.IsNullOrWhiteSpace(_view.Username))
         {
-            _view.HighlightFields1(usernameEmpty,emailEmpty);
+            _view.HighlightFields1(usernameEmpty, emailEmpty);
             _view.ShowError("Username is required.");
             return;
         }
@@ -73,7 +75,7 @@ public class ForgetPasswordPresenter
     private void OnReturnToLoginClicked(object sender, EventArgs e)
     {
         _view.ClearFields();
-        _view.Returnlogin();
+        _navigationService.NavigateToLogin();
     }
 }
 
