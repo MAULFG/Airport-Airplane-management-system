@@ -1,78 +1,61 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes.Crew;
-using Airport_Airplane_management_system.Model.Core.Classes.Flights;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Interfaces.Services;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Airport_Airplane_management_system.Model.Services
 {
-    public class CrewService
+    public class CrewService : ICrewService
     {
         private readonly ICrewRepository _crewRepo;
-        private readonly List<Crew> _crewMembers;
+        private readonly IFlightRepository _flightRepo;
 
-        public CrewService(ICrewRepository crewRepo)
+        public CrewService(ICrewRepository crewRepo, IFlightRepository flightRepo)
         {
             _crewRepo = crewRepo;
-            _crewMembers = _crewRepo.GetAllCrew();
+            _flightRepo = flightRepo;
         }
 
-        public List<Crew> GetCrew() => _crewMembers;
+        public List<Crew> GetCrew() => _crewRepo.GetAll();
+        public List<Flight> GetFlights() => _flightRepo.GetAllFlights();
 
-        public List<Crew> GetCrewForFlight(int flightId)
-            => _crewRepo.GetCrewForFlight(flightId);
-
-        public List<Crew> GetUnassignedCrew()
-            => _crewRepo.GetUnassignedCrew();
-
-        public bool AssignCrewToFlight(Crew crew, int flightId)
+        public void AddCrew(string name, string role, string status, string email, string phone, int? flightId)
         {
-            crew.AssignToFlight(flightId);
+            ValidateStatusVsFlight(status, flightId);
 
-            bool result = _crewRepo.UpdateCrew(crew);
-            if (result)
-            {
-                var c = _crewMembers.FirstOrDefault(x => x.EmployeeId == crew.EmployeeId);
-                if (c != null) c.AssignToFlight(flightId);
-            }
-            return result;
+            string emp = _crewRepo.GenerateNextEmployeeId();
+            var crew = new Crew(name, role, Normalize(status), emp, email, phone);//{FlightId = flightId };
+
+            if (!_crewRepo.Insert(crew, out var err))
+                throw new Exception(err);
         }
 
-        public bool UnassignCrew(Crew crew)
+        public void UpdateCrew(string employeeId, string name, string role, string status, string email, string phone, int? flightId)
         {
-            crew.UnassignFromFlight();
+            ValidateStatusVsFlight(status, flightId);
 
-            bool result = _crewRepo.UpdateCrew(crew);
-            if (result)
-            {
-                var c = _crewMembers.FirstOrDefault(x => x.EmployeeId == crew.EmployeeId);
-                if (c != null) c.UnassignFromFlight();
-            }
-            return result;
+            var crew = new Crew(name, role, Normalize(status), employeeId, email, phone) { FlightId = flightId };
+
+            if (!_crewRepo.Update(crew, out var err))
+                throw new Exception(err);
         }
 
-
-        public bool AddCrew(Crew crew)
+        public bool DeleteCrew(string employeeId)
         {
-            bool result = _crewRepo.InsertCrew(crew);
-            if (result)
-            {
-                _crewMembers.Add(crew);
-            }
-            return result;
+            if (!_crewRepo.DeleteByEmployeeId(employeeId, out var err))
+                throw new Exception(err);
+
+            return true;
         }
 
-        public bool RemoveCrew(string employeeId)
+        public void ValidateStatusVsFlight(string status, int? flightId)
         {
-            bool result = _crewRepo.DeleteCrew(employeeId);
-            if (result)
-            {
-                var c = _crewMembers.FirstOrDefault(x => x.EmployeeId == employeeId);
-                if (c != null) _crewMembers.Remove(c);
-            }
-            return result;
+            if (status.Equals("Inactive", StringComparison.OrdinalIgnoreCase) && flightId != null)
+                throw new Exception("Inactive crew members cannot be assigned to a flight.");
         }
 
-        public string GetNextEmployeeId() => _crewRepo.GenerateNextEmployeeId();
+        private static string Normalize(string ui)
+            => ui.Equals("Active", StringComparison.OrdinalIgnoreCase) ? "active" : "inactive";
     }
 }

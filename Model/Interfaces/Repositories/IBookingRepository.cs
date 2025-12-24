@@ -1,8 +1,7 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes.Flights;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static Airport_Airplane_management_system.Model.Core.Classes.Users.User;
+using  Airport_Airplane_management_system.Model.Core.Classes;
 
 namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
 {

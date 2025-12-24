@@ -1,6 +1,7 @@
 ﻿namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
-    partial class CrewManagement
+    public partial class CrewManagement : UserControl
+
     {
         /// <summary> 
         /// Required designer variable.

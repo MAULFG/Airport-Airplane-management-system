@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
-namespace Airport_Airplane_management_system.Model.Core.Classes.Crew
+namespace Airport_Airplane_management_system.Model.Core.Classes
 {
     public class Crew
     {
@@ -19,7 +19,7 @@ namespace Airport_Airplane_management_system.Model.Core.Classes.Crew
 
         private static readonly Regex EmpIdRegex = new(@"^EMP\d{3}$", RegexOptions.Compiled);
 
-        public int? FlightId { get; private set; } // Nullable: can be unassigned
+        public int? FlightId { get;  set; } // Nullable: can be unassigned
         public string FullName { get; private set; }
         public string Role { get; private set; }
         public string Status { get; private set; }   // "active" / "inactive"

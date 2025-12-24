@@ -1,11 +1,10 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes.Seats;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Airport_Airplane_management_system.Model.Core.Classes.Planes;
-using CrewEntity = Airport_Airplane_management_system.Model.Core.Classes.Crew.Crew;
+using CrewEntity = Airport_Airplane_management_system.Model.Core.Classes.Crew;
 
-namespace Airport_Airplane_management_system.Model.Core.Classes.Flights
+namespace Airport_Airplane_management_system.Model.Core.Classes
 {
     public class Flight
     {

@@ -1,4 +1,4 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes.Users;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Core.Enums;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;

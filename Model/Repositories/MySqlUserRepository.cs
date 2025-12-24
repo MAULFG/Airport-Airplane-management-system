@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Airport_Airplane_management_system.Model.Core.Classes.Users;
+using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 
 namespace Airport_Airplane_management_system.Model.Repositories

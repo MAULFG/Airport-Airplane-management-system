@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Airport_Airplane_management_system.Model.Core.Classes.Flights;
+using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.View.Interfaces;
 using Airport_Airplane_management_system.View.Controls;
 
