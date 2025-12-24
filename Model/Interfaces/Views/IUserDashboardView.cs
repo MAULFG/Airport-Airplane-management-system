@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Windows.Forms;
+using Airport_Airplane_management_system.View.Forms.UserPages;
 
 namespace Airport_Airplane_management_system.View.Interfaces
 {
     public interface IUserDashboardView
     {
+        // Events triggered by button clicks
         event EventHandler UpcomingFlightsClicked;
         event EventHandler SearchBookClicked;
         event EventHandler MyTicketsClicked;
@@ -12,16 +13,17 @@ namespace Airport_Airplane_management_system.View.Interfaces
         event EventHandler SettingsClicked;
         event EventHandler AccountClicked;
         event EventHandler LogoutClicked;
-        event EventHandler Main;
+        event EventHandler UserMainClicked;
 
-        // Methods to show/hide pages, called by Presenter
+        // Methods called by Presenter to show specific panels
         void UpcomingFlights();
         void SearchBook();
         void MyTickets();
         void Notifications();
         void UserSettings();
         void UserAccount();
+        void ShowMainUser();
+        // Logout action
         void Logout();
-
     }
 }

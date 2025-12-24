@@ -1,6 +1,6 @@
 ﻿namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
-    partial class CrewManagement
+    partial class MainA
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,11 +30,11 @@
         {
             SuspendLayout();
             // 
-            // CrewManagement
+            // AdminMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Name = "CrewManagement";
+            Name = "AdminMain";
             Size = new Size(963, 683);
             ResumeLayout(false);
         }

@@ -29,7 +29,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             EmailTB.TextChanged += InputChanged;
             PasswordTB.TextChanged += InputChanged;
             PasswordTB2.TextChanged += InputChanged;
-
+            
             CenterPanelVertically();
             this.Resize += ForgetUserControl_Resize;
             signupbtn.Click += (s, e) => SignupClicked?.Invoke(this, EventArgs.Empty);

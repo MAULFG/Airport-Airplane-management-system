@@ -1,7 +1,7 @@
 ﻿using System;
 using Airport_Airplane_management_system.View.Interfaces;
 
-namespace Airport_Airplane_management_system.Presenters
+namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 {
     public class UserDashboardPresenter
     {
@@ -13,6 +13,7 @@ namespace Airport_Airplane_management_system.Presenters
             _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
             // Subscribe to view events
+            _view.UserMainClicked += OnMainClicked;
             _view.UpcomingFlightsClicked += OnUpcomingFlightsClicked;
             _view.SearchBookClicked += OnSearchBookClicked;
             _view.MyTicketsClicked += OnMyTicketsClicked;
@@ -23,6 +24,11 @@ namespace Airport_Airplane_management_system.Presenters
         }
 
         // Event handlers
+        private void OnMainClicked(object sender, EventArgs e)
+        {
+            _view.ShowMainUser();
+        }
+        
         private void OnUpcomingFlightsClicked(object sender, EventArgs e)
         {
             _view.UpcomingFlights();

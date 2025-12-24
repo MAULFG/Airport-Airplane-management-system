@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Airport_Airplane_management_system.Presenter
+namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
 {
     public class FlightPresenter
     {
@@ -14,7 +14,6 @@ namespace Airport_Airplane_management_system.Presenter
         {
             _service = service;
         }
-
         public List<Flight> GetFlights() => _service.GetFlights();
         
         public void LoadSeatsForFlight(Flight flight) => _service.LoadSeatsForFlight(flight);

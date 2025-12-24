@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using Airport_Airplane_management_system.Model.Core.Classes.Flights;
 
-namespace Airport_Airplane_management_system.View.Interfaces
+public interface IUpcomingFlightsView
 {
-    public interface IUpcomingFlightsView
-    {
-        event Action ViewLoaded;
-        event Action<Flight> FlightSelected;
+    event EventHandler LoadFlightsRequested;
+    event EventHandler<int> FlightSelected;
 
-        void ShowFlights(IEnumerable<Flight> flights);
-        void ShowError(string message);
-    }
+    void DisplayFlights(IEnumerable<Flight> flights);
+    void ClearFlights();
+    void ShowError(string message);
+
+    // Method to trigger loading when panel is shown
+    void RefreshFlights();
 }
