@@ -1,53 +1,55 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes;
-using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+﻿using System.Windows.Forms;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
-using Airport_Airplane_management_system.Model.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Airport_Airplane_management_system.Presenter
+namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
 {
     public class AdminDashboardPresenter
     {
-
         private readonly IAdminDashboardView _view;
-        private readonly IFlightRepository _flightRepo;
-        private readonly IBookingRepository _bookingRepo;
-        private readonly FlightService _flightService;
-        private readonly BookingService _bookingService;
+
+        private readonly Control _dashboard;
+        private readonly Control _crew;
+        private readonly Control _flight;
+        private readonly Control _plane;
+        private readonly Control _passenger;
+        private readonly Control _reports;
+        private readonly Control _accountSettings;
 
         public AdminDashboardPresenter(
             IAdminDashboardView view,
-            FlightService flightService,
-            BookingService bookingService)
+            Control dashboard,
+            Control crew,
+            Control flight,
+            Control plane,
+            Control passenger,
+            Control reports,
+            Control accountSettings)
         {
             _view = view;
-            _flightService = flightService;
-            _bookingService = bookingService;
+
+           // _dashboard = dashboard;
+            _crew = crew;
+            _flight = flight;
+            _plane = plane;
+            _passenger = passenger;
+            _reports = reports;
+            _accountSettings = accountSettings;
+
+            HookEvents();
+
+            // Default page
+            _view.ShowPage(_dashboard);
         }
 
-       
-
-        public void CancelFlight(int flightId)
+        private void HookEvents()
         {
-            bool success = _flightService.CancelFlight(flightId, out string error);
-            if (success)
-                _view.ShowMessage("Flight canceled successfully.");
-            else
-                _view.ShowMessage("Failed to cancel flight: " + error);
+            _view.DashboardClicked += () => _view.ShowPage(_dashboard);
+            _view.CrewManagementClicked += () => _view.ShowPage(_crew);
+            _view.FlightManagementClicked += () => _view.ShowPage(_flight);
+            _view.PlaneManagementClicked += () => _view.ShowPage(_plane);
+            _view.PassengerManagementClicked += () => _view.ShowPage(_passenger);
+            _view.ReportsClicked += () => _view.ShowPage(_reports);
+            _view.AccountSettingsClicked += () => _view.ShowPage(_accountSettings);
         }
-
-
-     
-
-
-        public void SearchFlights(string from = null, string to = null,
-                          int? year = null, int? month = null, int? day = null)
-        {
-            var flights = _flightService.SearchFlights(from, to, year, month, day);
-            _view.DisplaySearchResults(flights);
-        }
-
     }
 }

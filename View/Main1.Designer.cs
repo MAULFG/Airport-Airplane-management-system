@@ -23,7 +23,7 @@
         Margin = new Padding(3, 2, 3, 2);
         Name = "Main1";
         Text = "Airport Management System";
-        Load += Main1_Load;
+        //Load += Main1_Load;
         ResumeLayout(false);
     }
 }

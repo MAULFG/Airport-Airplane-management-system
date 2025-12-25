@@ -88,7 +88,12 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         {
             _isEditMode = true;
             _editingEmployeeId = c.EmployeeId;
+
             _view.SetEditMode(true);
+
+            // fill UI (safe cast)
+            if (_view is Airport_Airplane_management_system.View.Forms.AdminPages.CrewManagement v)
+                v.FillFormFromCrew(c);
         }
 
         private void ExitEditMode()

@@ -94,6 +94,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             InitializeComponent();
             BuildUI();
             this.Load += (_, __) => ViewLoaded?.Invoke();
+            this.Load += (_, __) => MessageBox.Show("Crew View Loaded");
+
         }
 
 

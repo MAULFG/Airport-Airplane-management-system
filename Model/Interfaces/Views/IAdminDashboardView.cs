@@ -1,14 +1,23 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using System.Windows.Forms;
 
 namespace Airport_Airplane_management_system.Model.Interfaces.Views
 {
     public interface IAdminDashboardView
     {
-        void DisplaySearchResults(List<Flight> flights);
-     
-        void ShowMessage(string message);
+        event Action ViewLoaded;
+
+        event Action DashboardClicked;
+        event Action CrewManagementClicked;
+        event Action FlightManagementClicked;
+        event Action PlaneManagementClicked;
+        event Action PassengerManagementClicked;
+        event Action ReportsClicked;
+        event Action AccountSettingsClicked;
+
+        void ShowPage(Control page);
+
+        void ShowError(string message);
+        void ShowInfo(string message);
     }
 }
