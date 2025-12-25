@@ -5,6 +5,9 @@ using Airport_Airplane_management_system.View.Interfaces;
 
 public partial class Main1 : Form, INavigationService
 {
+    
+    private int _currentUserId;
+
     private readonly LoginPage loginPage;
     private readonly UserDashboard userDashboard;
     private readonly AdminDashboard adminDashboard;
@@ -40,7 +43,8 @@ public partial class Main1 : Form, INavigationService
         NavigateToLogin();
     }
 
-
+    public void SetCurrentUserId(int userId) => _currentUserId = userId;
+    public int GetCurrentUserId() => _currentUserId;
 
     public void NavigateToLogin() => loginPage.BringToFront();
     public void NavigateToUser() => userDashboard.BringToFront();

@@ -258,8 +258,19 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             userAccount1.TabIndex = 2;
             userAccount1.Load += userAccount1_Load;
             // 
+            // upcomming flights
+            // 
+            upcomingFlights1 = new UpcomingFlights();
+            upcomingFlights1.Dock = DockStyle.Fill;
+            upcomingFlights1.Location = new Point(250, 0);
+            upcomingFlights1.Name = "upcomingFlights1";
+            upcomingFlights1.Size = new Size(963, 683);
+            upcomingFlights1.TabIndex = 12;
+
+            // 
             // userSettings1
             // 
+           // userSettings1 = new UserSettings();
             userSettings1.Dock = DockStyle.Fill;
             userSettings1.Location = new Point(250, 0);
             userSettings1.Name = "userSettings1";
@@ -298,6 +309,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Controls.Add(searchAndBooking1);
             Controls.Add(userSettings1);
             Controls.Add(userAccount1);
+            Controls.Add(upcomingFlights1); // added
             Controls.Add(guna2Panel1);
             Name = "UserDashboard";
             Size = new Size(1213, 683);
@@ -321,8 +333,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private Guna.UI2.WinForms.Guna2Button Settings;
         private Guna.UI2.WinForms.Guna2Button logoutuser;
     
-        private UserSettings settings1;
-        private UpcomingFlights upcomingFlights2;
+       // private UserSettings settings1;
+        // private UpcomingFlights upcomingFlights2;
         private UserAccount userAccount1;
         private UserSettings userSettings1;
         private SearchAndBooking searchAndBooking1;

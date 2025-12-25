@@ -22,10 +22,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public UserDashboard(INavigationService navigation)
         {
             InitializeComponent();
+
+            _navigation = navigation;
+
+            userSettings1.Initialize(_navigation);
+
             InitializePanelContent();
             InitializeButtonEvents();
-            _presenter = new UserDashboardPresenter(this, navigation);
+
+            _presenter = new UserDashboardPresenter(this, _navigation);
         }
+
+
         private void InitializeButtonEvents()
         {
             guna2Button1.Click += (s, e) =>
@@ -90,7 +98,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         public void UpcomingFlights()
         {
-            upcomingFlights2.Show();
+            upcomingFlights1.Show(); // was 2 make it 1
             searchAndBooking1.Hide();
             myTicketsBookingHistory1.Hide();
             notifications1.Hide();
@@ -100,7 +108,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
         public void SearchBook()
         {
-            upcomingFlights2.Hide();
+            upcomingFlights1.Hide(); // was 2 make it 1
             searchAndBooking1.Show();
             myTicketsBookingHistory1.Hide();
             notifications1.Hide();
@@ -109,7 +117,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
         public void MyTickets()
         {
-            upcomingFlights2.Hide();
+            upcomingFlights1.Hide(); // was 2 make it 1
             searchAndBooking1.Hide();
             myTicketsBookingHistory1.Show();
             notifications1.Hide();
@@ -118,7 +126,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
         public void Notifications()
         {
-            upcomingFlights2.Hide();
+            upcomingFlights1.Hide(); // was 2 make it 1
             searchAndBooking1.Hide();
             myTicketsBookingHistory1.Hide();
             notifications1.Show();
@@ -127,16 +135,21 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
         public void UserSettings()
         {
-            upcomingFlights2.Hide();
+            upcomingFlights1.Hide();
             searchAndBooking1.Hide();
             myTicketsBookingHistory1.Hide();
             notifications1.Hide();
-            userSettings1.Show();
             userAccount1.Hide();
+
+            userSettings1.Show();
+            userSettings1.BringToFront();
         }
+
+
+
         public void UserAccount()
         {
-            upcomingFlights2.Hide();
+            upcomingFlights1.Hide(); // was 2 make it 1
             searchAndBooking1.Hide();
             myTicketsBookingHistory1.Hide();
             notifications1.Hide();
@@ -151,7 +164,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private void upcomingFlights2_Load(object sender, EventArgs e)
         {
 
-        }
+        } 
 
         private void UserDashboard_Load(object sender, EventArgs e)
         {

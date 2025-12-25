@@ -43,6 +43,8 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
                 return;
             }
 
+            _navigation.SetCurrentUserId(user.UserID);
+
             // Successful login
             if (user.UserID == 313)
             {

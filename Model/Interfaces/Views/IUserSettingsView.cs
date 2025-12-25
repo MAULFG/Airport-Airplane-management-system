@@ -1,0 +1,38 @@
+﻿using System;
+
+namespace Airport_Airplane_management_system.Model.Interfaces.Views
+{
+    public interface IUserSettingsView
+    {
+        int UserId { get; }
+
+        string CurrentPassword { get; }
+        string NewPassword { get; }
+        string ConfirmPassword { get; }
+
+        string NewEmail { get; }
+        string ConfirmPasswordForEmail { get; }
+
+        string NewUsername { get; }
+        string ConfirmPasswordForUsername { get; }
+
+        void SetHeader(string username, string email, DateTime createdAt, DateTime? lastLoginAt);
+        void SetUsername(string username);
+        void SetEmail(string email);
+
+        void ShowError(string message);
+        void ShowInfo(string message);
+
+        void ToggleUsernamePanel(bool visible);
+        void ClearPasswordFields();
+        void ClearEmailFields();
+        void ClearUsernameFields();
+
+        event Action ViewLoaded;
+        event Action ChangePasswordClicked;
+        event Action UpdateEmailClicked;
+        event Action ShowChangeUsernameClicked;
+        event Action ConfirmUsernameChangeClicked;
+        event Action CancelUsernameChangeClicked;
+    }
+}

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 
-namespace Ticket_Booking_System_OOP.Model.Repositories
+namespace Airport_Airplane_management_system.Model.Repositories
 {
     public class MySqlCrewRepository : ICrewRepository
     {
