@@ -315,6 +315,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private void BuildRightCard()
         {
+            
+
             lblCount = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
@@ -343,7 +345,17 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 FlowDirection = FlowDirection.TopDown,
                 BackColor = Color.Transparent
             };
+
+            // Enable double buffering AFTER initializing
+            typeof(Panel).InvokeMember(
+                "DoubleBuffered",
+                System.Reflection.BindingFlags.SetProperty |
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic,
+                null, flow, new object[] { true });
+
             rightCard.Controls.Add(flow);
+
         }
 
         private Label MakeLabel(string text, int x, int y)
@@ -438,32 +450,45 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (flow == null) return;
 
             flow.SuspendLayout();
-            flow.Controls.Clear();
 
             string filter = cmbFilter.SelectedItem?.ToString() ?? "All Flights";
 
             List<Crew> view;
             if (filter == "All Flights")
-                view = allCrew.ToList();
+                view = allCrew;
             else if (filter == "Unassigned")
-                view = allCrew.Where(c => !c.FlightId.HasValue).ToList();
-            else if (filter.StartsWith("Flight #"))
-            {
-                string num = filter.Replace("Flight #", "").Trim();
-                if (int.TryParse(num, out int flightId))
-                    view = allCrew.Where(c => c.FlightId.HasValue && c.FlightId.Value == flightId).ToList();
-                else
-                    view = allCrew.ToList();
-            }
+                view = allCrew.FindAll(c => !c.FlightId.HasValue);
+            else if (filter.StartsWith("Flight #") && int.TryParse(filter.Replace("Flight #", ""), out int flightId))
+                view = allCrew.FindAll(c => c.FlightId == flightId);
             else
-            {
-                view = allCrew.ToList();
-            }
+                view = allCrew;
 
             lblCount.Text = $"Crew Members ({view.Count})";
 
+            // Use dictionary to track existing controls
+            var existing = new Dictionary<string, Control>();
+            foreach (Control ctrl in flow.Controls)
+            {
+                if (ctrl.Tag is string empId) existing[empId] = ctrl;
+            }
+
+            flow.Controls.Clear();
+
             foreach (var c in view)
-                flow.Controls.Add(CreateCrewCard(c));
+            {
+                if (existing.TryGetValue(c.EmployeeId, out var ctrl))
+                {
+                    // Reuse existing control
+                    flow.Controls.Add(ctrl);
+                }
+                else
+                {
+                    // Create new control
+                    var card = CreateCrewCard(c);
+                    card.Tag = c.EmployeeId; // Tag for reuse
+                    flow.Controls.Add(card);
+                }
+            }
 
             flow.ResumeLayout();
         }

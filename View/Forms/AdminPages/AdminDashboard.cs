@@ -1,4 +1,8 @@
-﻿using Airport_Airplane_management_system.Model.Interfaces.Views;
+﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
+using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Presenter.AdminPages;
 using Airport_Airplane_management_system.Presenter.AdminPagesPresenters;
 using Airport_Airplane_management_system.View.Interfaces;
 using Guna.UI2.WinForms;
@@ -10,6 +14,7 @@ using System.Drawing;
 using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
+using Ticket_Booking_System_OOP.Model.Repositories;
 
 namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
@@ -25,11 +30,20 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event EventHandler LogoutAClicked;
         private readonly INavigationService _navigation;
         private readonly AdminDashboardPresenter _presenter;
+        private CrewManagementPresenter _crewpresenter;
+        private readonly IFlightRepository flightRepo;
+        private readonly ICrewRepository crewRepo;
+        private readonly CrewService crewService;
         public AdminDashboard(INavigationService navigation)
         {
+            
             InitializeComponent();
             _navigation = navigation;
             _presenter = new AdminDashboardPresenter(this, navigation);
+            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            crewService = new CrewService(crewRepo, flightRepo);
+            _crewpresenter = new CrewManagementPresenter(crewManagement1, crewService);
             HideAllPanels();
             InitializeButtonEvents();
             MainA();
@@ -87,8 +101,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                btnpasenger,
                btnplane,
                btnreport,
-               btnlogoutA 
-               
+               btnlogoutA
+
 
             };
 
@@ -125,6 +139,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         }
 
         private void passengerMangement1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void maina1_Load(object sender, EventArgs e)
         {
 
         }

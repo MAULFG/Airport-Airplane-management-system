@@ -19,7 +19,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
         private void OnLoadFlights(object sender, EventArgs e)
         {
-            var flights = _service.GetFlights();
+            var flights = _service.LoadFlightsWithSeats();
             _view.LoadFlights(flights);
         }
     }

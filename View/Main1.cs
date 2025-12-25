@@ -1,10 +1,15 @@
 ﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Interfaces.Services;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Presenter;
+using Airport_Airplane_management_system.Presenter.AdminPages;
+using Airport_Airplane_management_system.Presenter.AdminPagesPresenters;
 using Airport_Airplane_management_system.View.Forms.AdminPages;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
 using Airport_Airplane_management_system.View.Forms.UserPages;
 using Airport_Airplane_management_system.View.Interfaces;
+using Ticket_Booking_System_OOP.Model.Repositories;
 
 public partial class Main1 : Form, INavigationService
 {
@@ -17,8 +22,11 @@ public partial class Main1 : Form, INavigationService
     private readonly IFlightRepository flightRepo;
     private readonly IUserRepository userRepo;
     private readonly IBookingRepository bookingRepo;
+    private readonly IPlaneRepository planeRepo;
+    
     private readonly FlightService flightService;
     private readonly UpcomingFlights upcomingFlightsPage;
+    private readonly AdminDashboardPresenter _adminPresenter;
     public Main1()
     {
         InitializeComponent();
@@ -26,9 +34,10 @@ public partial class Main1 : Form, INavigationService
         flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-
-
-        flightService = new FlightService(flightRepo, userRepo, bookingRepo);
+        planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+        
+        flightService = new FlightService(flightRepo, userRepo, bookingRepo,planeRepo);
+        
         // Initialize pages and pass this as INavigationService
         loginPage = new LoginPage(this);
         userDashboard = new UserDashboard(this);
@@ -36,7 +45,7 @@ public partial class Main1 : Form, INavigationService
         signUpPage = new Signupusercontrol(this);
         forgotPasswordPage = new ForgetUserControl(this);
 
-
+       
         upcomingFlightsPage = new UpcomingFlights();
         upcomingFlightsPage.Dock = DockStyle.Fill;
         userDashboard.Controls.Add(upcomingFlightsPage);
@@ -53,7 +62,8 @@ public partial class Main1 : Form, INavigationService
         Controls.Add(adminDashboard);
         Controls.Add(signUpPage);
         Controls.Add(forgotPasswordPage);
-
+    
+      
         // Show login page initially
         NavigateToLogin();
     }
@@ -88,6 +98,8 @@ public partial class Main1 : Form, INavigationService
         Controls.Add(adminDashboard);
         adminDashboard.BringToFront();
     }
+   
+
 
     public void NavigateToSignUp() => signUpPage.BringToFront();
     public void NavigateToForgotPassword() => forgotPasswordPage.BringToFront();

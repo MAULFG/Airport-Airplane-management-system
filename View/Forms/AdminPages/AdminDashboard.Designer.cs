@@ -253,58 +253,61 @@
             // 
             // crewManagement1
             // 
+            crewManagement1.BackColor = Color.FromArgb(245, 246, 250);
             crewManagement1.Dock = DockStyle.Fill;
-            crewManagement1.Location = new Point(250, 0);
+            crewManagement1.Location = new Point(0, 0);
             crewManagement1.Name = "crewManagement1";
-            crewManagement1.Size = new Size(963, 683);
+            crewManagement1.Size = new Size(1213, 683);
             crewManagement1.TabIndex = 3;
             // 
             // flightManagement1
             // 
+            flightManagement1.BackColor = SystemColors.AppWorkspace;
             flightManagement1.Dock = DockStyle.Fill;
-            flightManagement1.Location = new Point(250, 0);
+            flightManagement1.Location = new Point(0, 0);
             flightManagement1.Name = "flightManagement1";
-            flightManagement1.Size = new Size(963, 683);
+            flightManagement1.Size = new Size(1213, 683);
             flightManagement1.TabIndex = 4;
             // 
             // planeManagements1
             // 
             planeManagements1.Dock = DockStyle.Fill;
-            planeManagements1.Location = new Point(250, 0);
+            planeManagements1.Location = new Point(0, 0);
             planeManagements1.Name = "planeManagements1";
-            planeManagements1.Size = new Size(963, 683);
+            planeManagements1.Size = new Size(1213, 683);
             planeManagements1.TabIndex = 6;
             // 
             // reports1
             // 
             reports1.Dock = DockStyle.Fill;
-            reports1.Location = new Point(250, 0);
+            reports1.Location = new Point(0, 0);
             reports1.Name = "reports1";
-            reports1.Size = new Size(963, 683);
+            reports1.Size = new Size(1213, 683);
             reports1.TabIndex = 8;
             // 
             // notrificationsa1
             // 
             notrificationsa1.Dock = DockStyle.Fill;
-            notrificationsa1.Location = new Point(250, 0);
+            notrificationsa1.Location = new Point(0, 0);
             notrificationsa1.Name = "notrificationsa1";
-            notrificationsa1.Size = new Size(963, 683);
+            notrificationsa1.Size = new Size(1213, 683);
             notrificationsa1.TabIndex = 9;
             // 
             // maina1
             // 
             maina1.Dock = DockStyle.Fill;
-            maina1.Location = new Point(250, 0);
+            maina1.Location = new Point(0, 0);
             maina1.Name = "maina1";
-            maina1.Size = new Size(963, 683);
+            maina1.Size = new Size(1213, 683);
             maina1.TabIndex = 10;
+            maina1.Load += maina1_Load;
             // 
             // passengerMangement1
             // 
             passengerMangement1.Dock = DockStyle.Fill;
-            passengerMangement1.Location = new Point(250, 0);
+            passengerMangement1.Location = new Point(0, 0);
             passengerMangement1.Name = "passengerMangement1";
-            passengerMangement1.Size = new Size(963, 683);
+            passengerMangement1.Size = new Size(1213, 683);
             passengerMangement1.TabIndex = 11;
             passengerMangement1.Load += passengerMangement1_Load;
             // 
@@ -320,7 +323,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(guna2Panel1); // first
+            Controls.Add(guna2Panel1);
             Controls.Add(maina1);
             Controls.Add(flightManagement1);
             Controls.Add(planeManagements1);
