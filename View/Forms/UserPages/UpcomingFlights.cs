@@ -201,6 +201,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Size = new Size(160, 40),
                 Location = new Point(details.Width - 180, 115),
                 FillColor = Color.FromArgb(30, 144, 255),
+                BackColor = Color.White,
                 ForeColor = Color.White,
                 BorderRadius = 10
             };

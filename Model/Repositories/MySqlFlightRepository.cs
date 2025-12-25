@@ -36,7 +36,11 @@ namespace Airport_Airplane_management_system.Model.Repositories
                 DateTime arrival = reader.GetDateTime("arrival");
 
                 // Plane object should be loaded separately in service
-                flights.Add(new Flight(flightId, null, fromCity, toCity, departure, arrival, new Dictionary<string, decimal>()));
+                flights.Add(new Flight(flightId, null, fromCity, toCity, departure, arrival, new Dictionary<string, decimal>())
+                {
+                    PlaneIDFromDb = planeId
+                });
+
             }
 
             return flights;
@@ -87,41 +91,7 @@ WHERE f.departure >= NOW()
             object result = cmd.ExecuteScalar();
             return (result == null || result == DBNull.Value) ? 0 : Convert.ToInt32(result);
         }
-        public List<Plane> GetAllPlanes()
-        {
-            var planes = new List<Plane>();
-            using var conn = new MySqlConnection(_connStr);
-            conn.Open();
-
-            using var cmd = new MySqlCommand("SELECT * FROM planes", conn);
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                int id = reader.GetInt32("id");
-                string type = reader.GetString("type");
-                string status = reader.GetString("status");
-
-                Plane p = type switch
-                {
-                    "HighLevel" => new HighLevel(id, status),
-                    "A320" => new MidRangeA320(id, status),
-                    "PrivateJet" => new PrivateJet(id, status),
-                    _ => new MidRangeA320(id, status)
-                };
-
-                p.GenerateSeats();
-                planes.Add(p);
-            }
-
-            if (!planes.Any())
-            {
-                Plane dummy = new MidRangeA320(-1, "Available");
-                dummy.GenerateSeats();
-                planes.Add(dummy);
-            }
-
-            return planes;
-        }
+        
 
         
 

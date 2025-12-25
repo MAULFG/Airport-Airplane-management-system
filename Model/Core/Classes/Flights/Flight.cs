@@ -15,6 +15,8 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
         public string To { get; set; }
         public DateTime Departure { get; set; }
         public DateTime Arrival { get; set; }
+        public int PlaneIDFromDb { get; set; }
+
 
         // Crew assigned to this flight
         public List<CrewEntity> CrewList { get; set; } = new List<CrewEntity>();

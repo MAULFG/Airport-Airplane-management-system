@@ -14,7 +14,41 @@ namespace Airport_Airplane_management_system.Model.Repositories
         {
             _connStr = connStr;
         }
+        public List<Plane> GetAllPlanesf()
+        {
+            var planes = new List<Plane>();
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
 
+            using var cmd = new MySqlCommand("SELECT * FROM planes", conn);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int id = reader.GetInt32("id");
+                string type = reader.GetString("type");
+                string status = reader.GetString("status");
+
+                Plane p = type switch
+                {
+                    "HighLevel" => new HighLevel(id, status),
+                    "A320" => new MidRangeA320(id, status),
+                    "PrivateJet" => new PrivateJet(id, status),
+                    _ => new MidRangeA320(id, status)
+                };
+
+                p.GenerateSeats();
+                planes.Add(p);
+            }
+
+            if (!planes.Any())
+            {
+                Plane dummy = new MidRangeA320(-1, "Available");
+                dummy.GenerateSeats();
+                planes.Add(dummy);
+            }
+
+            return planes;
+        }
         public List<Plane> GetAllPlanes()
         {
             var planes = new List<Plane>();

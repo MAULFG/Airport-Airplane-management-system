@@ -8,7 +8,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
 {
     public interface IFlightRepository
     {
-        List<Plane> GetAllPlanes();
+        
         List<Flight> GetAllFlights();
         Flight GetFlightById(int flightId);
         List<FlightSeats> GetSeatsForFlight(int flightId);

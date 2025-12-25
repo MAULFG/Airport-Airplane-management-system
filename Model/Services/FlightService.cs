@@ -28,34 +28,42 @@ namespace Airport_Airplane_management_system.Model.Services
         // -----------------------------
         public List<Flight> LoadFlightsWithSeats()
         {
-            // 1. Load planes
-            var planes = _planeRepo.GetAllPlanes();
+            // 1️⃣ Load all planes from repository
+            var planes = _planeRepo.GetAllPlanesf();
 
-            // 2. Load flights
+            // 2️⃣ Load all flights
             var flights = _flightRepo.GetAllFlights();
 
-            // 3. Load seats and assign passengers
+            // 3️⃣ Load all users (for seat assignment)
             var users = _userRepo.GetAllUsers();
 
             foreach (var flight in flights)
             {
+                // --- Assign the correct Plane object ---
+                // Make sure Flight class has a property PlaneIDFromDb that holds the plane_id from DB
+                flight.Plane = planes.FirstOrDefault(p => p.PlaneID == flight.PlaneIDFromDb);
+
+                // --- Load seats for this flight ---
                 flight.FlightSeats.Clear();
                 var seats = _flightRepo.GetSeatsForFlight(flight.FlightID);
 
                 foreach (var seat in seats)
                 {
+                    // Assign passenger if booked
                     if (seat.UserId.HasValue)
                     {
                         var passenger = users.FirstOrDefault(u => u.UserID == seat.UserId.Value);
                         if (passenger != null)
                             seat.AssignPassenger(passenger);
                     }
+
                     flight.FlightSeats.Add(seat);
                 }
             }
 
-            return flights; // ready to pass to presenter/view
+            return flights;
         }
+
         public List<Flight> GetFlights()
         {
             return _flightRepo.GetAllFlights();
