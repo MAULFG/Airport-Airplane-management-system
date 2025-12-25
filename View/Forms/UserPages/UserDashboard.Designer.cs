@@ -63,6 +63,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             searchAndBooking1 = new SearchAndBooking();
             notifications1 = new Notifications();
             myTicketsBookingHistory1 = new MyTicketsBookingHistory();
+            upcomingFlights1 = new UpcomingFlights();
+            mainUserPage1 = new MainUserPage();
             guna2Panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -92,6 +94,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges18;
             guna2Panel1.Size = new Size(250, 683);
             guna2Panel1.TabIndex = 1;
+            guna2Panel1.Paint += guna2Panel1_Paint;
             // 
             // logoutuser
             // 
@@ -256,7 +259,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             userAccount1.Name = "userAccount1";
             userAccount1.Size = new Size(963, 683);
             userAccount1.TabIndex = 2;
-            userAccount1.Load += userAccount1_Load;
             // 
             // userSettings1
             // 
@@ -284,6 +286,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             // myTicketsBookingHistory1
             // 
+            myTicketsBookingHistory1.BackColor = SystemColors.ActiveCaption;
             myTicketsBookingHistory1.Dock = DockStyle.Fill;
             myTicketsBookingHistory1.Location = new Point(250, 0);
             myTicketsBookingHistory1.Name = "myTicketsBookingHistory1";
@@ -291,13 +294,27 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             myTicketsBookingHistory1.TabIndex = 11;
             myTicketsBookingHistory1.Load += myTicketsBookingHistory1_Load;
             // 
+            // upcomingFlights1
+            // 
+            upcomingFlights1.BackColor = SystemColors.ControlLight;
+            upcomingFlights1.Dock = DockStyle.Fill;
+            upcomingFlights1.Location = new Point(250, 0);
+            upcomingFlights1.Name = "upcomingFlights1";
+            upcomingFlights1.Size = new Size(963, 683);
+            upcomingFlights1.TabIndex = 11;
+            // 
+            // mainUserPage1
+            // 
+            mainUserPage1.Dock = DockStyle.Fill;
+            mainUserPage1.Location = new Point(250, 0);
+            mainUserPage1.Name = "mainUserPage1";
+            mainUserPage1.Size = new Size(963, 683);
+            mainUserPage1.TabIndex = 12;
+            mainUserPage1.Load += mainUserPage1_Load;
+            // 
             // UserDashboard
             // 
-            Controls.Add(myTicketsBookingHistory1);
-            Controls.Add(notifications1);
-            Controls.Add(searchAndBooking1);
-            Controls.Add(userSettings1);
-            Controls.Add(userAccount1);
+            
             Controls.Add(guna2Panel1);
             Name = "UserDashboard";
             Size = new Size(1213, 683);
@@ -316,17 +333,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private Guna.UI2.WinForms.Guna2Button guna2Button1;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
        
-        private UpcomingFlights upcomingFlights1;
+       
         private Guna.UI2.WinForms.Guna2Button Account;
         private Guna.UI2.WinForms.Guna2Button Settings;
         private Guna.UI2.WinForms.Guna2Button logoutuser;
     
         private UserSettings settings1;
-        private UpcomingFlights upcomingFlights2;
+        private UpcomingFlights upcomingFlights1;
         private UserAccount userAccount1;
         private UserSettings userSettings1;
         private SearchAndBooking searchAndBooking1;
         private Notifications notifications1;
         private MyTicketsBookingHistory myTicketsBookingHistory1;
+        private MainUserPage mainUserPage1;
     }
 }

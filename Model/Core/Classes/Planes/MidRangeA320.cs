@@ -1,9 +1,8 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes.Seats;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Airport_Airplane_management_system.Model.Core.Classes.Planes
+namespace Airport_Airplane_management_system.Model.Core.Classes
 {
     public class MidRangeA320 : Plane
     {

@@ -1,40 +1,49 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
 
-namespace Airport_Airplane_management_system.View.Forms.UserPages
+namespace Ticket_Booking_System_OOP.WinFormsApp.Forms.UserPages
 {
-    partial class UpcomingFlights
+    public partial class UpcomingFlights : UserControl
     {
+        private FlowLayoutPanel flowFlights;
 
+        // Event used by the presenter
+        public event EventHandler LoadFlightsRequested;
+
+        public UpcomingFlights()
+        {
+            InitializeComponent();
+        }
 
         private void InitializeComponent()
         {
             flowFlights = new FlowLayoutPanel();
+
             SuspendLayout();
-            // 
-            // flowFlights
-            // 
-            flowFlights.AutoScroll = true;
+
+            // ---------------- FLOW PANEL ----------------
             flowFlights.Dock = DockStyle.Fill;
+            flowFlights.AutoScroll = true;                 // ✅ scrolling
+            flowFlights.WrapContents = false;              // ✅ vertical list
             flowFlights.FlowDirection = FlowDirection.TopDown;
-            flowFlights.Location = new Point(0, 0);
-            flowFlights.Margin = new Padding(2);
-            flowFlights.Name = "flowFlights";
-            flowFlights.Padding = new Padding(9, 9, 9, 9);
-            flowFlights.Size = new Size(963, 683);
-            flowFlights.TabIndex = 0;
-            flowFlights.WrapContents = false;
-            // 
-            // UpcomingFlights
-            // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.ControlLight;
+            flowFlights.Padding = new Padding(10);
+            flowFlights.BackColor = Color.Transparent;
+
+            // ---------------- USER CONTROL ----------------
+            BackColor = SystemColors.ControlDark;
+            Dock = DockStyle.Fill;                          // ✅ IMPORTANT
             Controls.Add(flowFlights);
-            Margin = new Padding(2);
             Name = "UpcomingFlights";
-            Size = new Size(963, 683);
+
+            // Trigger presenter AFTER control is shown
+            this.VisibleChanged += (s, e) =>
+            {
+                if (Visible)
+                    LoadFlightsRequested?.Invoke(this, EventArgs.Empty);
+            };
+
             ResumeLayout(false);
         }
-        private System.Windows.Forms.FlowLayoutPanel flowFlights;
     }
 }

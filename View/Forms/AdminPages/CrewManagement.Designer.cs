@@ -1,6 +1,7 @@
 ﻿namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
-    partial class CrewManagement
+    public partial class CrewManagement : UserControl
+
     {
         /// <summary> 
         /// Required designer variable.
@@ -34,8 +35,10 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ActiveCaption;
             Name = "CrewManagement";
             Size = new Size(963, 683);
+            Load += CrewManagement_Load;
             ResumeLayout(false);
         }
 

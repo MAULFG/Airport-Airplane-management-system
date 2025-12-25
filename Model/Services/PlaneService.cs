@@ -1,5 +1,4 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes.Planes;
-using Airport_Airplane_management_system.Model.Core.Classes.Flights;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;

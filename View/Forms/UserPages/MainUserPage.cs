@@ -6,11 +6,11 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Airport_Airplane_management_system.View.Controls
+namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
-    public partial class BookingCard : UserControl
+    public partial class MainUserPage : UserControl
     {
-        public BookingCard()
+        public MainUserPage()
         {
             InitializeComponent();
         }

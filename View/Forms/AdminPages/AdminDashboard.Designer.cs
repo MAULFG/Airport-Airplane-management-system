@@ -63,6 +63,7 @@
             notrificationsa1 = new NotrificationsA();
             maina1 = new MainA();
             passengerMangement1 = new PassengerMangement();
+            mainUserPage1 = new Airport_Airplane_management_system.View.Forms.UserPages.MainUserPage();
             guna2Panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -219,7 +220,6 @@
             btnplane.TabIndex = 3;
             btnplane.Text = "Plane Managment";
             btnplane.TextAlign = HorizontalAlignment.Left;
-       
             // 
             // btnFlight
             // 
@@ -238,7 +238,6 @@
             btnFlight.TabIndex = 4;
             btnFlight.Text = "Flight Management";
             btnFlight.TextAlign = HorizontalAlignment.Left;
-           
             // 
             // panel1
             // 
@@ -309,18 +308,26 @@
             passengerMangement1.TabIndex = 11;
             passengerMangement1.Load += passengerMangement1_Load;
             // 
+            // mainUserPage1
+            // 
+            mainUserPage1.Dock = DockStyle.Fill;
+            mainUserPage1.Location = new Point(250, 0);
+            mainUserPage1.Name = "mainUserPage1";
+            mainUserPage1.Size = new Size(963, 683);
+            mainUserPage1.TabIndex = 12;
+            // 
             // AdminDashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(passengerMangement1);
+            Controls.Add(guna2Panel1); // first
             Controls.Add(maina1);
-            Controls.Add(notrificationsa1);
-            Controls.Add(reports1);
-            Controls.Add(planeManagements1);
             Controls.Add(flightManagement1);
+            Controls.Add(planeManagements1);
             Controls.Add(crewManagement1);
-            Controls.Add(guna2Panel1);
+            Controls.Add(passengerMangement1);
+            Controls.Add(reports1);
+            Controls.Add(notrificationsa1);
             Name = "AdminDashboard";
             Size = new Size(1213, 683);
             guna2Panel1.ResumeLayout(false);
@@ -348,5 +355,6 @@
         private NotrificationsA notrificationsa1;
         private MainA maina1;
         private PassengerMangement passengerMangement1;
+        private UserPages.MainUserPage mainUserPage1;
     }
 }

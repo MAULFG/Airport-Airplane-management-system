@@ -9,8 +9,8 @@ using Airport_Airplane_management_system.View.Interfaces;
 public partial class Main1 : Form, INavigationService
 {
     private readonly LoginPage loginPage;
-    private readonly UserDashboard userDashboard;
-    private readonly AdminDashboard adminDashboard;
+    private  UserDashboard userDashboard;
+    private   AdminDashboard adminDashboard;
     private readonly Signupusercontrol signUpPage;
     private readonly ForgetUserControl forgotPasswordPage;
     // Flight-related services
@@ -61,8 +61,34 @@ public partial class Main1 : Form, INavigationService
 
 
     public void NavigateToLogin() => loginPage.BringToFront();
-    public void NavigateToUser() => userDashboard.BringToFront();
-    public void NavigateToAdmin() => adminDashboard.BringToFront();
+    public void NavigateToUser()
+    {
+        if (userDashboard != null)
+            Controls.Remove(userDashboard);
+
+        userDashboard = new UserDashboard(this)
+        {
+            Dock = DockStyle.Fill
+        };
+
+        Controls.Add(userDashboard);
+        userDashboard.BringToFront();
+    }
+
+    public void NavigateToAdmin()
+    {
+        if (adminDashboard != null)
+            Controls.Remove(adminDashboard);
+
+        adminDashboard = new AdminDashboard(this)
+        {
+            Dock = DockStyle.Fill
+        };
+
+        Controls.Add(adminDashboard);
+        adminDashboard.BringToFront();
+    }
+
     public void NavigateToSignUp() => signUpPage.BringToFront();
     public void NavigateToForgotPassword() => forgotPasswordPage.BringToFront();
 

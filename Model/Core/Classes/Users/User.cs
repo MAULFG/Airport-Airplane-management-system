@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Airport_Airplane_management_system.Model.Core.Classes.Flights;
-
-namespace Airport_Airplane_management_system.Model.Core.Classes.Users
+namespace Airport_Airplane_management_system.Model.Core.Classes
 {
     public class User
     {

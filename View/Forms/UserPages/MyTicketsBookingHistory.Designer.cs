@@ -34,6 +34,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ActiveCaption;
             Name = "MyTicketsBookingHistory";
             Size = new Size(963, 683);
             ResumeLayout(false);

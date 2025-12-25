@@ -32,19 +32,27 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _presenter = new AdminDashboardPresenter(this, navigation);
             HideAllPanels();
             InitializeButtonEvents();
+            MainA();
         }
         private void InitializeButtonEvents()
         {
+            btnMainA.Click += (s, e) => MainAClicked?.Invoke(this, EventArgs.Empty);
 
-            btnlogoutA.Click += (s, e) => Logout();
-            btnMainA.Click += (s, e) => ShowOnly(maina1, btnMainA);
-            btnnotrificationA.Click += (s, e) => ShowOnly(notrificationsa1, btnnotrificationA);
-            btnFlight.Click += (s, e) => ShowOnly(flightManagement1, btnFlight);
-            btncrew.Click += (s, e) => ShowOnly(crewManagement1, btncrew);
-            btnpasenger.Click += (s, e) => ShowOnly(passengerMangement1, btnpasenger);
-            btnplane.Click += (s, e) => ShowOnly(planeManagements1, btnplane);
-            btnreport.Click += (s, e) => ShowOnly(reports1, btnreport);
+            btnFlight.Click += (s, e) => FlightManagementClicked?.Invoke(this, EventArgs.Empty);
+
+            btnplane.Click += (s, e) => PlaneManagementClicked?.Invoke(this, EventArgs.Empty);
+
+            btncrew.Click += (s, e) => CrewManagementClicked?.Invoke(this, EventArgs.Empty);
+
+            btnpasenger.Click += (s, e) => PassengerManagementClicked?.Invoke(this, EventArgs.Empty);
+
+            btnreport.Click += (s, e) => ReportsClicked?.Invoke(this, EventArgs.Empty);
+
+            btnnotrificationA.Click += (s, e) => NotrificationAClicked?.Invoke(this, EventArgs.Empty);
+
+            btnlogoutA.Click += (s, e) => LogoutAClicked?.Invoke(this, EventArgs.Empty);
         }
+
 
         private void HideAllPanels()
         {
@@ -61,9 +69,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private void ShowOnly(Control panelToShow, Guna2Button activeButton)
         {
             HideAllPanels();
-            panelToShow.Show();
+
+            panelToShow.Visible = true;
+            panelToShow.BringToFront();   // 🔥 REQUIRED
+
             SetActiveButton(activeButton);
         }
+
         private void SetActiveButton(Guna2Button activeBtn)
         {
             Guna2Button[] buttons =
@@ -88,8 +100,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public void Logout()
         {
             HideAllPanels();
-            SetActiveButton(btnlogoutA); // Reset highlight
-            LogoutAClicked?.Invoke(this, EventArgs.Empty);
+            SetActiveButton(btnlogoutA);
         }
         public void MainA() => ShowOnly(maina1, btnMainA);
         public void NotrificationA() => ShowOnly(notrificationsa1, btnnotrificationA);
