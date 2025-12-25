@@ -61,7 +61,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             var card = new Guna2Panel
             {
-                Width = 950,
+                Width = 920,
                 Height = 70,
                 FillColor = Color.White,
                 BorderRadius = 10,
@@ -73,7 +73,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             var planePic = new Guna2PictureBox
             {
                 Size = new Size(50, 50),
-                Image = Properties.Resources.icon,
+                Image = Properties.Resources.icon1,
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 Location = new Point(10, 10)
             };
@@ -138,35 +138,60 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             details.Controls.Add(CreateRow("Departure:", f.Departure, 30));
             details.Controls.Add(CreateRow("Arrival:", f.Arrival, 55));
 
-            // ===== SEAT CALCULATION =====
-            int fT = 0, bT = 0, eT = 0;
-            int fA = 0, bA = 0, eA = 0;
+            // Seat counts
+            int firstTotal = 0, businessTotal = 0, economyTotal = 0;
+            int firstAvailable = 0, businessAvailable = 0, economyAvailable = 0;
 
-            foreach (var s in f.FlightSeats)
+            if (f?.FlightSeats != null)
             {
-                if (s.ClassType == "First") { fT++; if (!s.IsBooked) fA++; }
-                if (s.ClassType == "Business") { bT++; if (!s.IsBooked) bA++; }
-                if (s.ClassType == "Economy") { eT++; if (!s.IsBooked) eA++; }
+                foreach (var s in f.FlightSeats)
+                {
+                    if (s == null || string.IsNullOrWhiteSpace(s.ClassType)) continue;
+                    string type = s.ClassType.Trim().ToLower();
+
+                    switch (type)
+                    {
+                        case "first":
+                            firstTotal++;
+                            if (!s.IsBooked) firstAvailable++;
+                            break;
+                        case "business":
+                            businessTotal++;
+                            if (!s.IsBooked) businessAvailable++;
+                            break;
+                        case "economy":
+                            economyTotal++;
+                            if (!s.IsBooked) economyAvailable++;
+                            break;
+                    }
+                }
             }
 
+            int totalSeats = firstTotal + businessTotal + economyTotal;
+            int totalAvailable = firstAvailable + businessAvailable + economyAvailable;
+            details.Controls.Add(new Guna2HtmlLabel
+            {
+                Text = $"Total Seats: {totalSeats}",
+                Font = new Font("Arial", 9, FontStyle.Bold),
+                Location = new Point(0, 85),
+                AutoSize = true
+            });
+
+            details.Controls.Add(new Guna2HtmlLabel
+            {
+                Text = $"Available Seats: {totalAvailable}",
+                Font = new Font("Arial", 9, FontStyle.Bold),
+                Location = new Point(150, 85),
+                AutoSize = true
+            });
             int y = 110;
             int x = 0;
-            int gap = 220;
+            int spacing = 220;
 
-            if (fT > 0)
-            {
-                details.Controls.Add(CreateSeatLabel($"First Class: {fA}/{fT}", x, y));
-                x += gap;
-            }
-            if (bT > 0)
-            {
-                details.Controls.Add(CreateSeatLabel($"Business Class: {bA}/{bT}", x, y));
-                x += gap;
-            }
-            if (eT > 0)
-            {
-                details.Controls.Add(CreateSeatLabel($"Economy Class: {eA}/{eT}", x, y));
-            }
+            if (firstTotal > 0) { details.Controls.Add(CreateSeatLabel($"First Class: {firstAvailable}/{firstTotal}", x, y)); x += spacing; }
+            if (businessTotal > 0) { details.Controls.Add(CreateSeatLabel($"Business Class: {businessAvailable}/{businessTotal}", x, y)); x += spacing; }
+            if (economyTotal > 0) { details.Controls.Add(CreateSeatLabel($"Economy Class: {economyAvailable}/{economyTotal}", x, y)); }
+
 
             // ===== GO BUTTON =====
             var btnGo = new Guna2Button
@@ -179,6 +204,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 ForeColor = Color.White,
                 BorderRadius = 10
             };
+            btnGo.Click += (s, e) => MessageBox.Show($"Navigate to Flight {f.FlightID}");
             details.Controls.Add(btnGo);
 
             // ===== TOGGLE =====
@@ -207,31 +233,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Size = new Size(600, 20)
             };
 
-            panel.Controls.Add(new Guna2HtmlLabel
-            {
-                Text = title,
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(0, 0)
-            });
-
-            panel.Controls.Add(new Guna2HtmlLabel
-            {
-                Text = date.ToString("yyyy-MM-dd HH:mm"),
-                Location = new Point(120, 0)
-            });
+            panel.Controls.Add(new Guna2HtmlLabel { Text = title, Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(0, 0), AutoSize = true });
+            panel.Controls.Add(new Guna2HtmlLabel { Text = date.ToString("yyyy-MM-dd"), Font = new Font("Arial", 9), Location = new Point(120, 0), AutoSize = true });
+            panel.Controls.Add(new Guna2HtmlLabel { Text = date.ToString("HH:mm"), Font = new Font("Arial", 9), Location = new Point(260, 0), AutoSize = true });
 
             return panel;
         }
 
-        private Guna2HtmlLabel CreateSeatLabel(string text, int x, int y)
-        {
-            return new Guna2HtmlLabel
-            {
-                Text = text,
-                Font = new Font("Arial", 9),
-                Location = new Point(x, y),
-                AutoSize = true
-            };
-        }
+        private Guna2HtmlLabel CreateSeatLabel(string text, int x, int y) =>
+             new Guna2HtmlLabel { Text = text, Font = new Font("Arial", 9), Location = new Point(x, y), AutoSize = true };
+
     }
 }
