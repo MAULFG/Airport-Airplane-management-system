@@ -1,13 +1,12 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Airport_Airplane_management_system.Model.Core.Classes;
 
 namespace Airport_Airplane_management_system.Model.Interfaces.Views
 {
-
     public interface ICrewManagementView
     {
-        // ===== Inputs (read from UI) =====
+        // Inputs
         string FullName { get; }
         string Email { get; }
         string Phone { get; }
@@ -15,24 +14,24 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         string Status { get; }
         int? SelectedFlightId { get; }
 
-        // ===== Rendering =====
-        void RenderCrew(List<Crew> crew);
+        // Rendering
+        void RenderCrew(IEnumerable<Crew> crew);
         void RenderFlights(List<Flight> flights);
         void SetEditMode(bool editing);
+        int? GetFlightFilter();
+        void SetFlightFilter(int? flightId);
+        void FillForm(string fullName, string role, string status, string email, string phone, int? flightId);
 
-        // ===== Feedback =====
+        // Feedback
         void ShowError(string message);
         void ShowInfo(string message);
 
-        // ===== UI Events =====
+        // Events
         event Action<Crew> EditRequested;
         event Action<Crew> DeleteRequested;
-
-
-        event Action ViewLoaded;
+        event EventHandler LoadCrewRequested;
         event Action AddOrUpdateClicked;
         event Action CancelEditClicked;
         event Action FilterChanged;
-
     }
 }
