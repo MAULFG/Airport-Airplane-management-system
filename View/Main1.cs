@@ -27,6 +27,8 @@ public partial class Main1 : Form, INavigationService
     private readonly FlightService flightService;
     private readonly UpcomingFlights upcomingFlightsPage;
     private readonly AdminDashboardPresenter _adminPresenter;
+
+    private int _currentUserId;
     public Main1()
     {
         InitializeComponent();
@@ -116,4 +118,15 @@ public partial class Main1 : Form, INavigationService
     {
 
     }
+
+    public void SetCurrentUserId(int userId)
+    {
+        _currentUserId = userId;
+    }
+
+    public int GetCurrentUserId()
+    {
+        return _currentUserId;
+    }
+
 }

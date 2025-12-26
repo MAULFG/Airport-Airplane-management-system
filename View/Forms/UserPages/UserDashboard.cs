@@ -133,7 +133,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public void SearchBook() => ShowOnly(searchAndBooking1, btnSearchBook);
         public void MyTickets() => ShowOnly(myTicketsBookingHistory1, btnMyTickets);
         public void Notifications() => ShowOnly(notifications1, btnNotifications);
-        public void UserSettings() => ShowOnly(userSettings1, Settings);
+        public void UserSettings()
+        {
+            userSettings1.Initialize(_navigation);
+            userSettings1.Activate();
+            ShowOnly(userSettings1, Settings);
+        }
+
         public void UserAccount() => ShowOnly(userAccount1, Account);
         public void ShowMainUser()
         {

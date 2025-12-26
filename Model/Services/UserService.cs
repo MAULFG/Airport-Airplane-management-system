@@ -9,7 +9,6 @@ namespace Airport_Airplane_management_system.Model.Services
     public class UserService
     {
         private readonly IUserRepository _userRepo;
-    
         public UserService(IUserRepository userRepo)
         {
             _userRepo = userRepo;
@@ -19,8 +18,12 @@ namespace Airport_Airplane_management_system.Model.Services
         public User Authenticate(string username, string password)
         {
             var user = _userRepo.GetUserByUsername(username);
+
             if (user != null && user.Password == password)
-                return user;
+            {
+                _userRepo.UpdateLastLogin(user.UserID, DateTime.Now);
+                return user; 
+            }
 
             return null;
         }
