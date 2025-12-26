@@ -31,7 +31,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             flowCrew = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                AutoScroll = true,  
+                AutoScroll = true,  // keep vertical scroll
                 WrapContents = false,
                 FlowDirection = FlowDirection.TopDown,
                 Padding = new Padding(12, 50, 12, 12)
@@ -283,6 +283,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Margin = new Padding(0, 0, 0, 12),
                 Height = 120,
                 ShadowDepth = 100,
+                ShadowShift = 5,
                 ShadowColor = Color.Black
                 
             };
@@ -340,7 +341,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             int d = card.Width / 2 - 100;
             card.Controls.Add(btnDel);
 
-            card.Controls.Add(InfoLine("Employee ID:", c.EmployeeId, 16, 56));
+            card.Controls.Add(InfoLine("ID:", c.EmployeeId, 16, 56));
             card.Controls.Add(InfoLine("Email:", c.Email, 16, 80));
             card.Controls.Add(InfoLine("Phone:", c.Phone, d, 56));
 
@@ -359,10 +360,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private Control InfoLine(string label, string value, int x, int y)
         {
             var p = new Guna2Panel { Location = new Point(x, y), Size = new Size(230, 22), BackColor = Color.Transparent ,FillColor=Color.Transparent};
-            var l1 = new Label { Text = label, AutoSize = true, Location = new Point(0, 2), Font = new Font("Segoe UI", 9F),BackColor=Color.Transparent,ForeColor = Color.FromArgb(120, 120, 120) };
-            var l2 = new Label { Text = value ?? "", AutoSize = true, Location = new Point(l1.Right - 28, 2), Font = new Font("Segoe UI", 9F), BackColor = Color.Transparent, ForeColor = Color.FromArgb(60, 60, 60) };
+            var l1 = new Label { Text = label, AutoSize = true, Location = new Point(10, 2), Font = new Font("Segoe UI", 9F),BackColor=Color.Transparent,ForeColor = Color.FromArgb(120, 120, 120) };
+            var l2 = new Label { Text = value ?? "", AutoSize = true, Location = new Point(l1.Right - 50, 2), Font = new Font("Segoe UI", 9F), BackColor = Color.Transparent, ForeColor = Color.FromArgb(60, 60, 60) };
             p.Controls.Add(l1); p.Controls.Add(l2);
-            p.SizeChanged += (_, __) => l2.Location = new Point(l1.Right + 6, 2);
+            p.SizeChanged += (_, __) => l2.Location = new Point(l1.Right-40, 2);
             return p;
         }
             
