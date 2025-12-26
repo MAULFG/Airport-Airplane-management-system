@@ -1,12 +1,12 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
-using Airport_Airplane_management_system.Model.Interfaces.Services;
+
 using System;
 using System.Collections.Generic;
 
 namespace Airport_Airplane_management_system.Model.Services
 {
-    public class CrewService : ICrewService
+    public class CrewService 
     {
         private readonly ICrewRepository _crewRepo;
         private readonly IFlightRepository _flightRepo;
