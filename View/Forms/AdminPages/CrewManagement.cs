@@ -350,9 +350,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             card.SizeChanged += (_, __) =>
             {
                 btnEdit.Location = new Point(card.Width - 96, 10);
-                btnDel.Location = new Point(card.Width - 48, 10);
-               
-                
+                btnDel.Location = new Point(card.Width - 48, 10);      
             };
 
             return card;
