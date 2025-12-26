@@ -46,7 +46,6 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
             }
 
             _navigation.SetCurrentUserId(user.UserID);
-           // _userSettingsRepository.UpdateLastLogin(user.UserID, DateTime.Now);
 
             // Successful login
             if (user.UserID == 313)
