@@ -23,9 +23,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             InitializeComponent();
 
-            _navigation = navigation;
+            _navigation = navigation; // added for settings panel
 
-            userSettings1.Initialize(_navigation);
+            userSettings1.Initialize(_navigation); // added for settings panel
 
             InitializePanelContent();
             InitializeButtonEvents();
@@ -135,11 +135,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
         public void UserSettings()
         {
-            upcomingFlights1.Hide();
+            upcomingFlights1.Hide(); // was 2 make it 1
             searchAndBooking1.Hide();
             myTicketsBookingHistory1.Hide();
             notifications1.Hide();
             userAccount1.Hide();
+
+            userSettings1.Initialize(_navigation);   // pass navigation (Main1)
+            userSettings1.Activate();               // triggers presenter to load header
 
             userSettings1.Show();
             userSettings1.BringToFront();

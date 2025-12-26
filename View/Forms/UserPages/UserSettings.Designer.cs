@@ -15,545 +15,635 @@
 
         private void InitializeComponent()
         {
-            this.pnlRoot = new Guna.UI2.WinForms.Guna2Panel();
-            this.grpSecurity = new Guna.UI2.WinForms.Guna2GroupBox();
-            this.lblCurrentPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.txtCurrentPass = new Guna.UI2.WinForms.Guna2TextBox();
-            this.lblNewPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.txtNewPass = new Guna.UI2.WinForms.Guna2TextBox();
-            this.lblConfirmPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.txtConfirmPass = new Guna.UI2.WinForms.Guna2TextBox();
-            this.btnChangePassword = new Guna.UI2.WinForms.Guna2Button();
-            this.grpAccount = new Guna.UI2.WinForms.Guna2GroupBox();
-            this.lblUsernameCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.txtUsername = new Guna.UI2.WinForms.Guna2TextBox();
-            this.lblEmailCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.txtEmail = new Guna.UI2.WinForms.Guna2TextBox();
-            this.sepAccount1 = new Guna.UI2.WinForms.Guna2Separator();
-            this.lblNewEmailCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.txtNewEmail = new Guna.UI2.WinForms.Guna2TextBox();
-            this.lblConfirmEmailPassCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.txtConfirmPasswordForEmail = new Guna.UI2.WinForms.Guna2TextBox();
-            this.btnUpdateEmail = new Guna.UI2.WinForms.Guna2Button();
-            this.sepAccount2 = new Guna.UI2.WinForms.Guna2Separator();
-            this.btnShowChangeUsername = new Guna.UI2.WinForms.Guna2Button();
-            this.pnlChangeUsername = new Guna.UI2.WinForms.Guna2Panel();
-            this.txtNewUsername = new Guna.UI2.WinForms.Guna2TextBox();
-            this.txtConfirmPassForUsername = new Guna.UI2.WinForms.Guna2TextBox();
-            this.btnConfirmUsernameChange = new Guna.UI2.WinForms.Guna2Button();
-            this.btnCancelUsernameChange = new Guna.UI2.WinForms.Guna2Button();
-            this.sepAccountBottom = new Guna.UI2.WinForms.Guna2Separator();
-            this.lblCreatedAtCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.lblCreatedAtValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.lblLastLoginCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.lblLastLoginValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.lblSubtitle = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.lblTitle = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.pnlRoot.SuspendLayout();
-            this.grpSecurity.SuspendLayout();
-            this.grpAccount.SuspendLayout();
-            this.pnlChangeUsername.SuspendLayout();
-            this.SuspendLayout();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            pnlRoot = new Guna.UI2.WinForms.Guna2Panel();
+            grpSecurity = new Guna.UI2.WinForms.Guna2GroupBox();
+            lblCurrentPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            txtCurrentPass = new Guna.UI2.WinForms.Guna2TextBox();
+            lblNewPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            txtNewPass = new Guna.UI2.WinForms.Guna2TextBox();
+            lblConfirmPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            txtConfirmPass = new Guna.UI2.WinForms.Guna2TextBox();
+            btnChangePassword = new Guna.UI2.WinForms.Guna2Button();
+            grpAccount = new Guna.UI2.WinForms.Guna2GroupBox();
+            pnlAccountContent = new Guna.UI2.WinForms.Guna2Panel();
+            pnlChangeUsername = new Guna.UI2.WinForms.Guna2Panel();
+            txtNewUsername = new Guna.UI2.WinForms.Guna2TextBox();
+            txtConfirmPassForUsername = new Guna.UI2.WinForms.Guna2TextBox();
+            btnConfirmUsernameChange = new Guna.UI2.WinForms.Guna2Button();
+            btnCancelUsernameChange = new Guna.UI2.WinForms.Guna2Button();
+            btnShowChangeUsername = new Guna.UI2.WinForms.Guna2Button();
+            btnUpdateEmail = new Guna.UI2.WinForms.Guna2Button();
+            txtConfirmPasswordForEmail = new Guna.UI2.WinForms.Guna2TextBox();
+            lblConfirmEmailPassCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            txtNewEmail = new Guna.UI2.WinForms.Guna2TextBox();
+            lblNewEmailCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            txtEmail = new Guna.UI2.WinForms.Guna2TextBox();
+            lblEmailCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            txtUsername = new Guna.UI2.WinForms.Guna2TextBox();
+            lblUsernameCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            pnlAccountFooter = new Guna.UI2.WinForms.Guna2Panel();
+            lblCreatedAtCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            lblCreatedAtValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            lblLastLoginCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            lblLastLoginValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            lblSubtitle = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            lblTitle = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            pnlRoot.SuspendLayout();
+            grpSecurity.SuspendLayout();
+            grpAccount.SuspendLayout();
+            pnlAccountContent.SuspendLayout();
+            pnlChangeUsername.SuspendLayout();
+            pnlAccountFooter.SuspendLayout();
+            SuspendLayout();
             // 
             // pnlRoot
             // 
-            this.pnlRoot.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.pnlRoot.Controls.Add(this.grpSecurity);
-            this.pnlRoot.Controls.Add(this.grpAccount);
-            this.pnlRoot.Controls.Add(this.lblSubtitle);
-            this.pnlRoot.Controls.Add(this.lblTitle);
-            this.pnlRoot.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlRoot.Location = new System.Drawing.Point(0, 0);
-            this.pnlRoot.Name = "pnlRoot";
-            this.pnlRoot.Padding = new System.Windows.Forms.Padding(30, 25, 30, 25);
-            this.pnlRoot.Size = new System.Drawing.Size(1400, 700);
-            this.pnlRoot.TabIndex = 0;
+            pnlRoot.BackColor = Color.WhiteSmoke;
+            pnlRoot.Controls.Add(grpSecurity);
+            pnlRoot.Controls.Add(grpAccount);
+            pnlRoot.Controls.Add(lblSubtitle);
+            pnlRoot.Controls.Add(lblTitle);
+            pnlRoot.CustomizableEdges = customizableEdges39;
+            pnlRoot.Location = new Point(0, 0);
+            pnlRoot.Margin = new Padding(4);
+            pnlRoot.Name = "pnlRoot";
+            pnlRoot.Padding = new Padding(38, 31, 38, 31);
+            pnlRoot.ShadowDecoration.CustomizableEdges = customizableEdges40;
+            pnlRoot.Size = new Size(1750, 1094);
+            pnlRoot.TabIndex = 0;
             // 
             // grpSecurity
             // 
-            this.grpSecurity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpSecurity.BorderRadius = 14;
-            this.grpSecurity.Controls.Add(this.lblCurrentPass);
-            this.grpSecurity.Controls.Add(this.txtCurrentPass);
-            this.grpSecurity.Controls.Add(this.lblNewPass);
-            this.grpSecurity.Controls.Add(this.txtNewPass);
-            this.grpSecurity.Controls.Add(this.lblConfirmPass);
-            this.grpSecurity.Controls.Add(this.txtConfirmPass);
-            this.grpSecurity.Controls.Add(this.btnChangePassword);
-            this.grpSecurity.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(235)))), ((int)(((byte)(240)))));
-            this.grpSecurity.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.grpSecurity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(33)))), ((int)(((byte)(45)))));
-            this.grpSecurity.Location = new System.Drawing.Point(836, 130);
-            this.grpSecurity.Name = "grpSecurity";
-            this.grpSecurity.Size = new System.Drawing.Size(534, 540);
-            this.grpSecurity.TabIndex = 0;
-            this.grpSecurity.Text = "Security";
+            grpSecurity.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            grpSecurity.BorderRadius = 14;
+            grpSecurity.Controls.Add(lblCurrentPass);
+            grpSecurity.Controls.Add(txtCurrentPass);
+            grpSecurity.Controls.Add(lblNewPass);
+            grpSecurity.Controls.Add(txtNewPass);
+            grpSecurity.Controls.Add(lblConfirmPass);
+            grpSecurity.Controls.Add(txtConfirmPass);
+            grpSecurity.Controls.Add(btnChangePassword);
+            grpSecurity.CustomBorderColor = Color.FromArgb(230, 235, 240);
+            grpSecurity.CustomizableEdges = customizableEdges9;
+            grpSecurity.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            grpSecurity.ForeColor = Color.FromArgb(25, 33, 45);
+            grpSecurity.Location = new Point(906, 162);
+            grpSecurity.Margin = new Padding(4);
+            grpSecurity.Name = "grpSecurity";
+            grpSecurity.Padding = new Padding(18, 55, 18, 18);
+            grpSecurity.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            grpSecurity.Size = new Size(716, 820);
+            grpSecurity.TabIndex = 3;
+            grpSecurity.Text = "Security";
             // 
             // lblCurrentPass
             // 
-            this.lblCurrentPass.AutoSize = false;
-            this.lblCurrentPass.BackColor = System.Drawing.Color.Transparent;
-            this.lblCurrentPass.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblCurrentPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(70)))), ((int)(((byte)(85)))));
-            this.lblCurrentPass.Location = new System.Drawing.Point(22, 67);
-            this.lblCurrentPass.Name = "lblCurrentPass";
-            this.lblCurrentPass.Size = new System.Drawing.Size(380, 30);
-            this.lblCurrentPass.TabIndex = 0;
-            this.lblCurrentPass.Text = "Current Password";
+            lblCurrentPass.AutoSize = false;
+            lblCurrentPass.BackColor = Color.Transparent;
+            lblCurrentPass.Font = new Font("Segoe UI", 11F);
+            lblCurrentPass.ForeColor = Color.FromArgb(60, 70, 85);
+            lblCurrentPass.Location = new Point(28, 84);
+            lblCurrentPass.Margin = new Padding(4);
+            lblCurrentPass.Name = "lblCurrentPass";
+            lblCurrentPass.Size = new Size(475, 38);
+            lblCurrentPass.TabIndex = 0;
+            lblCurrentPass.Text = "Current Password";
             // 
             // txtCurrentPass
             // 
-            this.txtCurrentPass.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtCurrentPass.BorderRadius = 10;
-            this.txtCurrentPass.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtCurrentPass.DefaultText = "";
-            this.txtCurrentPass.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtCurrentPass.IconLeftSize = new System.Drawing.Size(16, 16);
-            this.txtCurrentPass.IconRightSize = new System.Drawing.Size(16, 16);
-            this.txtCurrentPass.IconRight = global::Airport_Airplane_management_system.Properties.Resources.icons8_closed_eye_100;
-
-            this.txtCurrentPass.Location = new System.Drawing.Point(22, 98);
-            this.txtCurrentPass.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtCurrentPass.Name = "txtCurrentPass";
-            this.txtCurrentPass.PlaceholderText = "Enter current password";
-            this.txtCurrentPass.SelectedText = "";
-            this.txtCurrentPass.Size = new System.Drawing.Size(445, 44);
-            this.txtCurrentPass.TabIndex = 1;
-            this.txtCurrentPass.UseSystemPasswordChar = true;
+            txtCurrentPass.BorderColor = Color.FromArgb(220, 225, 230);
+            txtCurrentPass.BorderRadius = 10;
+            txtCurrentPass.Cursor = Cursors.IBeam;
+            txtCurrentPass.CustomizableEdges = customizableEdges1;
+            txtCurrentPass.DefaultText = "";
+            txtCurrentPass.Font = new Font("Segoe UI", 10F);
+            txtCurrentPass.Location = new Point(28, 122);
+            txtCurrentPass.Margin = new Padding(4, 6, 4, 6);
+            txtCurrentPass.Name = "txtCurrentPass";
+            txtCurrentPass.PlaceholderText = "Enter current password";
+            txtCurrentPass.SelectedText = "";
+            txtCurrentPass.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            txtCurrentPass.Size = new Size(650, 55);
+            txtCurrentPass.TabIndex = 1;
+            txtCurrentPass.UseSystemPasswordChar = true;
             // 
             // lblNewPass
             // 
-            this.lblNewPass.AutoSize = false;
-            this.lblNewPass.BackColor = System.Drawing.Color.Transparent;
-            this.lblNewPass.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblNewPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(70)))), ((int)(((byte)(85)))));
-            this.lblNewPass.Location = new System.Drawing.Point(22, 167);
-            this.lblNewPass.Name = "lblNewPass";
-            this.lblNewPass.Size = new System.Drawing.Size(357, 30);
-            this.lblNewPass.TabIndex = 2;
-            this.lblNewPass.Text = "New Password";
+            lblNewPass.AutoSize = false;
+            lblNewPass.BackColor = Color.Transparent;
+            lblNewPass.Font = new Font("Segoe UI", 11F);
+            lblNewPass.ForeColor = Color.FromArgb(60, 70, 85);
+            lblNewPass.Location = new Point(28, 209);
+            lblNewPass.Margin = new Padding(4);
+            lblNewPass.Name = "lblNewPass";
+            lblNewPass.Size = new Size(446, 38);
+            lblNewPass.TabIndex = 2;
+            lblNewPass.Text = "New Password";
             // 
             // txtNewPass
             // 
-            this.txtNewPass.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtNewPass.BorderRadius = 10;
-            this.txtNewPass.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtNewPass.DefaultText = "";
-            this.txtNewPass.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtNewPass.IconRightSize = new System.Drawing.Size(16, 16);
-            this.txtNewPass.IconRight = global::Airport_Airplane_management_system.Properties.Resources.icons8_closed_eye_100;
-            this.txtNewPass.Location = new System.Drawing.Point(22, 198);
-            this.txtNewPass.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtNewPass.Name = "txtNewPass";
-            this.txtNewPass.PlaceholderText = "Enter new password";
-            this.txtNewPass.SelectedText = "";
-            this.txtNewPass.Size = new System.Drawing.Size(445, 44);
-            this.txtNewPass.TabIndex = 3;
-            this.txtNewPass.UseSystemPasswordChar = true;
+            txtNewPass.BorderColor = Color.FromArgb(220, 225, 230);
+            txtNewPass.BorderRadius = 10;
+            txtNewPass.Cursor = Cursors.IBeam;
+            txtNewPass.CustomizableEdges = customizableEdges3;
+            txtNewPass.DefaultText = "";
+            txtNewPass.Font = new Font("Segoe UI", 10F);
+            txtNewPass.Location = new Point(28, 248);
+            txtNewPass.Margin = new Padding(4, 6, 4, 6);
+            txtNewPass.Name = "txtNewPass";
+            txtNewPass.PlaceholderText = "Enter new password";
+            txtNewPass.SelectedText = "";
+            txtNewPass.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            txtNewPass.Size = new Size(650, 55);
+            txtNewPass.TabIndex = 3;
+            txtNewPass.UseSystemPasswordChar = true;
             // 
             // lblConfirmPass
             // 
-            this.lblConfirmPass.AutoSize = false;
-            this.lblConfirmPass.BackColor = System.Drawing.Color.Transparent;
-            this.lblConfirmPass.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblConfirmPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(70)))), ((int)(((byte)(85)))));
-            this.lblConfirmPass.Location = new System.Drawing.Point(22, 267);
-            this.lblConfirmPass.Name = "lblConfirmPass";
-            this.lblConfirmPass.Size = new System.Drawing.Size(386, 30);
-            this.lblConfirmPass.TabIndex = 4;
-            this.lblConfirmPass.Text = "Confirm Password";
+            lblConfirmPass.AutoSize = false;
+            lblConfirmPass.BackColor = Color.Transparent;
+            lblConfirmPass.Font = new Font("Segoe UI", 11F);
+            lblConfirmPass.ForeColor = Color.FromArgb(60, 70, 85);
+            lblConfirmPass.Location = new Point(28, 334);
+            lblConfirmPass.Margin = new Padding(4);
+            lblConfirmPass.Name = "lblConfirmPass";
+            lblConfirmPass.Size = new Size(482, 38);
+            lblConfirmPass.TabIndex = 4;
+            lblConfirmPass.Text = "Confirm Password";
             // 
             // txtConfirmPass
             // 
-            this.txtConfirmPass.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtConfirmPass.BorderRadius = 10;
-            this.txtConfirmPass.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtConfirmPass.DefaultText = "";
-            this.txtConfirmPass.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtConfirmPass.IconRightSize = new System.Drawing.Size(16, 16);
-            this.txtConfirmPass.IconRight = global::Airport_Airplane_management_system.Properties.Resources.icons8_closed_eye_100;
-            this.txtConfirmPass.Location = new System.Drawing.Point(22, 298);
-            this.txtConfirmPass.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtConfirmPass.Name = "txtConfirmPass";
-            this.txtConfirmPass.PlaceholderText = "Confirm new password";
-            this.txtConfirmPass.SelectedText = "";
-            this.txtConfirmPass.Size = new System.Drawing.Size(445, 44);
-            this.txtConfirmPass.TabIndex = 5;
-            this.txtConfirmPass.UseSystemPasswordChar = true;
+            txtConfirmPass.BorderColor = Color.FromArgb(220, 225, 230);
+            txtConfirmPass.BorderRadius = 10;
+            txtConfirmPass.Cursor = Cursors.IBeam;
+            txtConfirmPass.CustomizableEdges = customizableEdges5;
+            txtConfirmPass.DefaultText = "";
+            txtConfirmPass.Font = new Font("Segoe UI", 10F);
+            txtConfirmPass.Location = new Point(28, 372);
+            txtConfirmPass.Margin = new Padding(4, 6, 4, 6);
+            txtConfirmPass.Name = "txtConfirmPass";
+            txtConfirmPass.PlaceholderText = "Confirm new password";
+            txtConfirmPass.SelectedText = "";
+            txtConfirmPass.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            txtConfirmPass.Size = new Size(650, 55);
+            txtConfirmPass.TabIndex = 5;
+            txtConfirmPass.UseSystemPasswordChar = true;
             // 
             // btnChangePassword
             // 
-            this.btnChangePassword.BorderRadius = 12;
-            this.btnChangePassword.FillColor = System.Drawing.Color.DodgerBlue;
-            this.btnChangePassword.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnChangePassword.ForeColor = System.Drawing.Color.White;
-            this.btnChangePassword.Location = new System.Drawing.Point(22, 375);
-            this.btnChangePassword.Name = "btnChangePassword";
-            this.btnChangePassword.Size = new System.Drawing.Size(445, 44);
-            this.btnChangePassword.TabIndex = 6;
-            this.btnChangePassword.Text = "Change Password";
+            btnChangePassword.BorderRadius = 12;
+            btnChangePassword.CustomizableEdges = customizableEdges7;
+            btnChangePassword.FillColor = Color.DodgerBlue;
+            btnChangePassword.Font = new Font("Segoe UI", 10F);
+            btnChangePassword.ForeColor = Color.White;
+            btnChangePassword.Location = new Point(28, 469);
+            btnChangePassword.Margin = new Padding(4);
+            btnChangePassword.Name = "btnChangePassword";
+            btnChangePassword.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            btnChangePassword.Size = new Size(650, 55);
+            btnChangePassword.TabIndex = 6;
+            btnChangePassword.Text = "Change Password";
             // 
             // grpAccount
             // 
-            this.grpAccount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.grpAccount.BorderRadius = 14;
-            this.grpAccount.Controls.Add(this.lblUsernameCaption);
-            this.grpAccount.Controls.Add(this.txtUsername);
-            this.grpAccount.Controls.Add(this.lblEmailCaption);
-            this.grpAccount.Controls.Add(this.txtEmail);
-            this.grpAccount.Controls.Add(this.sepAccount1);
-            this.grpAccount.Controls.Add(this.lblNewEmailCaption);
-            this.grpAccount.Controls.Add(this.txtNewEmail);
-            this.grpAccount.Controls.Add(this.lblConfirmEmailPassCaption);
-            this.grpAccount.Controls.Add(this.txtConfirmPasswordForEmail);
-            this.grpAccount.Controls.Add(this.btnUpdateEmail);
-            this.grpAccount.Controls.Add(this.sepAccount2);
-            this.grpAccount.Controls.Add(this.btnShowChangeUsername);
-            this.grpAccount.Controls.Add(this.pnlChangeUsername);
-            this.grpAccount.Controls.Add(this.sepAccountBottom);
-            this.grpAccount.Controls.Add(this.lblCreatedAtCaption);
-            this.grpAccount.Controls.Add(this.lblCreatedAtValue);
-            this.grpAccount.Controls.Add(this.lblLastLoginCaption);
-            this.grpAccount.Controls.Add(this.lblLastLoginValue);
-            this.grpAccount.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(235)))), ((int)(((byte)(240)))));
-            this.grpAccount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.grpAccount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(33)))), ((int)(((byte)(45)))));
-            this.grpAccount.Location = new System.Drawing.Point(30, 130);
-            this.grpAccount.Name = "grpAccount";
-            this.grpAccount.Size = new System.Drawing.Size(702, 540);
-            this.grpAccount.TabIndex = 1;
-            this.grpAccount.Text = "Account Settings";
+            grpAccount.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            grpAccount.BorderRadius = 14;
+            grpAccount.Controls.Add(pnlAccountContent);
+            grpAccount.Controls.Add(pnlAccountFooter);
+            grpAccount.CustomBorderColor = Color.FromArgb(230, 235, 240);
+            grpAccount.CustomizableEdges = customizableEdges37;
+            grpAccount.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            grpAccount.ForeColor = Color.FromArgb(25, 33, 45);
+            grpAccount.Location = new Point(38, 162);
+            grpAccount.Margin = new Padding(4);
+            grpAccount.Name = "grpAccount";
+            grpAccount.Padding = new Padding(18, 55, 18, 18);
+            grpAccount.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            grpAccount.Size = new Size(820, 820);
+            grpAccount.TabIndex = 1;
+            grpAccount.Text = "Account Settings";
             // 
-            // lblUsernameCaption
+            // pnlAccountContent
             // 
-            this.lblUsernameCaption.AutoSize = false;
-            this.lblUsernameCaption.BackColor = System.Drawing.Color.Transparent;
-            this.lblUsernameCaption.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblUsernameCaption.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(70)))), ((int)(((byte)(85)))));
-            this.lblUsernameCaption.Location = new System.Drawing.Point(22, 57);
-            this.lblUsernameCaption.Name = "lblUsernameCaption";
-            this.lblUsernameCaption.Size = new System.Drawing.Size(320, 30);
-            this.lblUsernameCaption.TabIndex = 0;
-            this.lblUsernameCaption.Text = "Username";
-            // 
-            // txtUsername
-            // 
-            this.txtUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtUsername.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtUsername.BorderRadius = 10;
-            this.txtUsername.Cursor = System.Windows.Forms.Cursors.No;
-            this.txtUsername.DefaultText = "";
-            this.txtUsername.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(251)))));
-            this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtUsername.Location = new System.Drawing.Point(22, 88);
-            this.txtUsername.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtUsername.Name = "txtUsername";
-            this.txtUsername.PlaceholderText = "";
-            this.txtUsername.ReadOnly = true;
-            this.txtUsername.SelectedText = "";
-            this.txtUsername.Size = new System.Drawing.Size(642, 44);
-            this.txtUsername.TabIndex = 1;
-            // 
-            // lblEmailCaption
-            // 
-            this.lblEmailCaption.AutoSize = false;
-            this.lblEmailCaption.BackColor = System.Drawing.Color.Transparent;
-            this.lblEmailCaption.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblEmailCaption.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(70)))), ((int)(((byte)(85)))));
-            this.lblEmailCaption.Location = new System.Drawing.Point(22, 145);
-            this.lblEmailCaption.Name = "lblEmailCaption";
-            this.lblEmailCaption.Size = new System.Drawing.Size(346, 30);
-            this.lblEmailCaption.TabIndex = 2;
-            this.lblEmailCaption.Text = "Current Email";
-            // 
-            // txtEmail
-            // 
-            this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtEmail.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtEmail.BorderRadius = 10;
-            this.txtEmail.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.txtEmail.DefaultText = "";
-            this.txtEmail.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(251)))));
-            this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtEmail.Location = new System.Drawing.Point(22, 176);
-            this.txtEmail.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.PlaceholderText = "";
-            this.txtEmail.ReadOnly = true;
-            this.txtEmail.SelectedText = "";
-            this.txtEmail.Size = new System.Drawing.Size(642, 44);
-            this.txtEmail.TabIndex = 3;
-            // 
-            // sepAccount1
-            // 
-            this.sepAccount1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.sepAccount1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.sepAccount1.Location = new System.Drawing.Point(22, 235);
-            this.sepAccount1.Name = "sepAccount1";
-            this.sepAccount1.Size = new System.Drawing.Size(654, 10);
-            this.sepAccount1.TabIndex = 4;
-            // 
-            // lblNewEmailCaption
-            // 
-            this.lblNewEmailCaption.AutoSize = false;
-            this.lblNewEmailCaption.BackColor = System.Drawing.Color.Transparent;
-            this.lblNewEmailCaption.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblNewEmailCaption.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(70)))), ((int)(((byte)(85)))));
-            this.lblNewEmailCaption.Location = new System.Drawing.Point(22, 249);
-            this.lblNewEmailCaption.Name = "lblNewEmailCaption";
-            this.lblNewEmailCaption.Size = new System.Drawing.Size(323, 30);
-            this.lblNewEmailCaption.TabIndex = 5;
-            this.lblNewEmailCaption.Text = "New Email";
-            // 
-            // txtNewEmail
-            // 
-            this.txtNewEmail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNewEmail.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtNewEmail.BorderRadius = 10;
-            this.txtNewEmail.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtNewEmail.DefaultText = "";
-            this.txtNewEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtNewEmail.Location = new System.Drawing.Point(22, 280);
-            this.txtNewEmail.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtNewEmail.Name = "txtNewEmail";
-            this.txtNewEmail.PlaceholderText = "Enter new email";
-            this.txtNewEmail.SelectedText = "";
-            this.txtNewEmail.Size = new System.Drawing.Size(642, 44);
-            this.txtNewEmail.TabIndex = 6;
-            // 
-            // lblConfirmEmailPassCaption
-            // 
-            this.lblConfirmEmailPassCaption.AutoSize = false;
-            this.lblConfirmEmailPassCaption.BackColor = System.Drawing.Color.Transparent;
-            this.lblConfirmEmailPassCaption.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblConfirmEmailPassCaption.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(70)))), ((int)(((byte)(85)))));
-            this.lblConfirmEmailPassCaption.Location = new System.Drawing.Point(22, 333);
-            this.lblConfirmEmailPassCaption.Name = "lblConfirmEmailPassCaption";
-            this.lblConfirmEmailPassCaption.Size = new System.Drawing.Size(386, 30);
-            this.lblConfirmEmailPassCaption.TabIndex = 7;
-            this.lblConfirmEmailPassCaption.Text = "Confirm Password";
-            // 
-            // txtConfirmPasswordForEmail
-            // 
-            this.txtConfirmPasswordForEmail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtConfirmPasswordForEmail.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtConfirmPasswordForEmail.BorderRadius = 10;
-            this.txtConfirmPasswordForEmail.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtConfirmPasswordForEmail.DefaultText = "";
-            this.txtConfirmPasswordForEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtConfirmPasswordForEmail.Location = new System.Drawing.Point(22, 364);
-            this.txtConfirmPasswordForEmail.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtConfirmPasswordForEmail.Name = "txtConfirmPasswordForEmail";
-            this.txtConfirmPasswordForEmail.PlaceholderText = "Enter your password";
-            this.txtConfirmPasswordForEmail.SelectedText = "";
-            this.txtConfirmPasswordForEmail.Size = new System.Drawing.Size(642, 44);
-            this.txtConfirmPasswordForEmail.TabIndex = 8;
-            this.txtConfirmPasswordForEmail.UseSystemPasswordChar = true;
-            // 
-            // btnUpdateEmail
-            // 
-            this.btnUpdateEmail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdateEmail.BorderRadius = 12;
-            this.btnUpdateEmail.FillColor = System.Drawing.Color.DodgerBlue;
-            this.btnUpdateEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnUpdateEmail.ForeColor = System.Drawing.Color.White;
-            this.btnUpdateEmail.Location = new System.Drawing.Point(22, 420);
-            this.btnUpdateEmail.Name = "btnUpdateEmail";
-            this.btnUpdateEmail.Size = new System.Drawing.Size(642, 44);
-            this.btnUpdateEmail.TabIndex = 9;
-            this.btnUpdateEmail.Text = "Update Email";
-            // 
-            // sepAccount2
-            // 
-            this.sepAccount2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.sepAccount2.Location = new System.Drawing.Point(22, 475);
-            this.sepAccount2.Name = "sepAccount2";
-            this.sepAccount2.Size = new System.Drawing.Size(760, 10);
-            this.sepAccount2.TabIndex = 10;
-            // 
-            // btnShowChangeUsername
-            // 
-            this.btnShowChangeUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnShowChangeUsername.BorderRadius = 12;
-            this.btnShowChangeUsername.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(59)))), ((int)(((byte)(89)))));
-            this.btnShowChangeUsername.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnShowChangeUsername.ForeColor = System.Drawing.Color.White;
-            this.btnShowChangeUsername.Location = new System.Drawing.Point(22, 495);
-            this.btnShowChangeUsername.Name = "btnShowChangeUsername";
-            this.btnShowChangeUsername.Size = new System.Drawing.Size(642, 40);
-            this.btnShowChangeUsername.TabIndex = 11;
-            this.btnShowChangeUsername.Text = "Change Username...";
+            pnlAccountContent.AutoScroll = true;
+            pnlAccountContent.BackColor = Color.Transparent;
+            pnlAccountContent.Controls.Add(pnlChangeUsername);
+            pnlAccountContent.Controls.Add(btnShowChangeUsername);
+            pnlAccountContent.Controls.Add(btnUpdateEmail);
+            pnlAccountContent.Controls.Add(txtConfirmPasswordForEmail);
+            pnlAccountContent.Controls.Add(lblConfirmEmailPassCaption);
+            pnlAccountContent.Controls.Add(txtNewEmail);
+            pnlAccountContent.Controls.Add(lblNewEmailCaption);
+            pnlAccountContent.Controls.Add(txtEmail);
+            pnlAccountContent.Controls.Add(lblEmailCaption);
+            pnlAccountContent.Controls.Add(txtUsername);
+            pnlAccountContent.Controls.Add(lblUsernameCaption);
+            pnlAccountContent.CustomizableEdges = customizableEdges33;
+            pnlAccountContent.Location = new Point(14, 62);
+            pnlAccountContent.Margin = new Padding(4);
+            pnlAccountContent.Name = "pnlAccountContent";
+            pnlAccountContent.Padding = new Padding(8, 6, 8, 6);
+            pnlAccountContent.ShadowDecoration.CustomizableEdges = customizableEdges34;
+            pnlAccountContent.Size = new Size(784, 670);
+            pnlAccountContent.TabIndex = 201;
             // 
             // pnlChangeUsername
             // 
-            this.pnlChangeUsername.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.pnlChangeUsername.BorderRadius = 12;
-            this.pnlChangeUsername.BorderThickness = 1;
-            this.pnlChangeUsername.Controls.Add(this.txtNewUsername);
-            this.pnlChangeUsername.Controls.Add(this.txtConfirmPassForUsername);
-            this.pnlChangeUsername.Controls.Add(this.btnConfirmUsernameChange);
-            this.pnlChangeUsername.Controls.Add(this.btnCancelUsernameChange);
-            this.pnlChangeUsername.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(251)))));
-            this.pnlChangeUsername.Location = new System.Drawing.Point(22, 545);
-            this.pnlChangeUsername.Name = "pnlChangeUsername";
-            this.pnlChangeUsername.Size = new System.Drawing.Size(760, 140);
-            this.pnlChangeUsername.TabIndex = 12;
-            this.pnlChangeUsername.Visible = false;
+            pnlChangeUsername.BorderColor = Color.FromArgb(220, 225, 230);
+            pnlChangeUsername.BorderRadius = 12;
+            pnlChangeUsername.BorderThickness = 1;
+            pnlChangeUsername.Controls.Add(txtNewUsername);
+            pnlChangeUsername.Controls.Add(txtConfirmPassForUsername);
+            pnlChangeUsername.Controls.Add(btnConfirmUsernameChange);
+            pnlChangeUsername.Controls.Add(btnCancelUsernameChange);
+            pnlChangeUsername.CustomizableEdges = customizableEdges19;
+            pnlChangeUsername.FillColor = Color.FromArgb(248, 249, 251);
+            pnlChangeUsername.Location = new Point(8, 503);
+            pnlChangeUsername.Margin = new Padding(10, 12, 10, 0);
+            pnlChangeUsername.Name = "pnlChangeUsername";
+            pnlChangeUsername.Padding = new Padding(15);
+            pnlChangeUsername.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            pnlChangeUsername.Size = new Size(768, 150);
+            pnlChangeUsername.TabIndex = 12;
+            pnlChangeUsername.Visible = false;
             // 
             // txtNewUsername
             // 
-            this.txtNewUsername.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtNewUsername.BorderRadius = 10;
-            this.txtNewUsername.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtNewUsername.DefaultText = "";
-            this.txtNewUsername.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtNewUsername.Location = new System.Drawing.Point(12, 10);
-            this.txtNewUsername.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtNewUsername.Name = "txtNewUsername";
-            this.txtNewUsername.PlaceholderText = "Enter new username";
-            this.txtNewUsername.SelectedText = "";
-            this.txtNewUsername.Size = new System.Drawing.Size(500, 40);
-            this.txtNewUsername.TabIndex = 0;
+            txtNewUsername.BorderColor = Color.FromArgb(220, 225, 230);
+            txtNewUsername.BorderRadius = 10;
+            txtNewUsername.Cursor = Cursors.IBeam;
+            txtNewUsername.CustomizableEdges = customizableEdges11;
+            txtNewUsername.DefaultText = "";
+            txtNewUsername.Font = new Font("Segoe UI", 10F);
+            txtNewUsername.Location = new Point(15, 15);
+            txtNewUsername.Margin = new Padding(4, 5, 4, 5);
+            txtNewUsername.Name = "txtNewUsername";
+            txtNewUsername.PlaceholderText = "Enter new username";
+            txtNewUsername.SelectedText = "";
+            txtNewUsername.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            txtNewUsername.Size = new Size(512, 50);
+            txtNewUsername.TabIndex = 0;
             // 
             // txtConfirmPassForUsername
             // 
-            this.txtConfirmPassForUsername.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.txtConfirmPassForUsername.BorderRadius = 10;
-            this.txtConfirmPassForUsername.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtConfirmPassForUsername.DefaultText = "";
-            this.txtConfirmPassForUsername.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtConfirmPassForUsername.Location = new System.Drawing.Point(12, 55);
-            this.txtConfirmPassForUsername.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txtConfirmPassForUsername.Name = "txtConfirmPassForUsername";
-            this.txtConfirmPassForUsername.PlaceholderText = "Enter your password";
-            this.txtConfirmPassForUsername.SelectedText = "";
-            this.txtConfirmPassForUsername.Size = new System.Drawing.Size(500, 40);
-            this.txtConfirmPassForUsername.TabIndex = 1;
-            this.txtConfirmPassForUsername.UseSystemPasswordChar = true;
+            txtConfirmPassForUsername.BorderColor = Color.FromArgb(220, 225, 230);
+            txtConfirmPassForUsername.BorderRadius = 10;
+            txtConfirmPassForUsername.Cursor = Cursors.IBeam;
+            txtConfirmPassForUsername.CustomizableEdges = customizableEdges13;
+            txtConfirmPassForUsername.DefaultText = "";
+            txtConfirmPassForUsername.Font = new Font("Segoe UI", 10F);
+            txtConfirmPassForUsername.Location = new Point(15, 75);
+            txtConfirmPassForUsername.Margin = new Padding(4, 5, 4, 5);
+            txtConfirmPassForUsername.Name = "txtConfirmPassForUsername";
+            txtConfirmPassForUsername.PlaceholderText = "Enter your password";
+            txtConfirmPassForUsername.SelectedText = "";
+            txtConfirmPassForUsername.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            txtConfirmPassForUsername.Size = new Size(512, 50);
+            txtConfirmPassForUsername.TabIndex = 1;
+            txtConfirmPassForUsername.UseSystemPasswordChar = true;
             // 
             // btnConfirmUsernameChange
             // 
-            this.btnConfirmUsernameChange.BorderRadius = 10;
-            this.btnConfirmUsernameChange.FillColor = System.Drawing.Color.DodgerBlue;
-            this.btnConfirmUsernameChange.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnConfirmUsernameChange.ForeColor = System.Drawing.Color.White;
-            this.btnConfirmUsernameChange.Location = new System.Drawing.Point(530, 10);
-            this.btnConfirmUsernameChange.Name = "btnConfirmUsernameChange";
-            this.btnConfirmUsernameChange.Size = new System.Drawing.Size(210, 40);
-            this.btnConfirmUsernameChange.TabIndex = 2;
-            this.btnConfirmUsernameChange.Text = "Confirm";
+            btnConfirmUsernameChange.BorderRadius = 10;
+            btnConfirmUsernameChange.CustomizableEdges = customizableEdges15;
+            btnConfirmUsernameChange.FillColor = Color.DodgerBlue;
+            btnConfirmUsernameChange.Font = new Font("Segoe UI", 9F);
+            btnConfirmUsernameChange.ForeColor = Color.White;
+            btnConfirmUsernameChange.Location = new Point(548, 15);
+            btnConfirmUsernameChange.Margin = new Padding(4);
+            btnConfirmUsernameChange.Name = "btnConfirmUsernameChange";
+            btnConfirmUsernameChange.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            btnConfirmUsernameChange.Size = new Size(193, 50);
+            btnConfirmUsernameChange.TabIndex = 2;
+            btnConfirmUsernameChange.Text = "Confirm";
             // 
             // btnCancelUsernameChange
             // 
-            this.btnCancelUsernameChange.BorderRadius = 10;
-            this.btnCancelUsernameChange.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(205)))), ((int)(((byte)(210)))));
-            this.btnCancelUsernameChange.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnCancelUsernameChange.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(33)))), ((int)(((byte)(45)))));
-            this.btnCancelUsernameChange.Location = new System.Drawing.Point(530, 55);
-            this.btnCancelUsernameChange.Name = "btnCancelUsernameChange";
-            this.btnCancelUsernameChange.Size = new System.Drawing.Size(210, 40);
-            this.btnCancelUsernameChange.TabIndex = 3;
-            this.btnCancelUsernameChange.Text = "Cancel";
+            btnCancelUsernameChange.BorderRadius = 10;
+            btnCancelUsernameChange.CustomizableEdges = customizableEdges17;
+            btnCancelUsernameChange.FillColor = Color.FromArgb(200, 205, 210);
+            btnCancelUsernameChange.Font = new Font("Segoe UI", 9F);
+            btnCancelUsernameChange.ForeColor = Color.FromArgb(25, 33, 45);
+            btnCancelUsernameChange.Location = new Point(548, 75);
+            btnCancelUsernameChange.Margin = new Padding(4);
+            btnCancelUsernameChange.Name = "btnCancelUsernameChange";
+            btnCancelUsernameChange.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            btnCancelUsernameChange.Size = new Size(193, 50);
+            btnCancelUsernameChange.TabIndex = 3;
+            btnCancelUsernameChange.Text = "Cancel";
             // 
-            // sepAccountBottom
+            // btnShowChangeUsername
             // 
-            this.sepAccountBottom.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(225)))), ((int)(((byte)(230)))));
-            this.sepAccountBottom.Location = new System.Drawing.Point(22, 695);
-            this.sepAccountBottom.Name = "sepAccountBottom";
-            this.sepAccountBottom.Size = new System.Drawing.Size(760, 10);
-            this.sepAccountBottom.TabIndex = 13;
+            btnShowChangeUsername.BorderRadius = 12;
+            btnShowChangeUsername.CustomizableEdges = customizableEdges21;
+            btnShowChangeUsername.FillColor = Color.FromArgb(30, 59, 89);
+            btnShowChangeUsername.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnShowChangeUsername.ForeColor = Color.White;
+            btnShowChangeUsername.Location = new Point(8, 441);
+            btnShowChangeUsername.Margin = new Padding(10, 12, 10, 0);
+            btnShowChangeUsername.Name = "btnShowChangeUsername";
+            btnShowChangeUsername.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            btnShowChangeUsername.Size = new Size(768, 50);
+            btnShowChangeUsername.TabIndex = 11;
+            btnShowChangeUsername.Text = "Change Username...";
+            // 
+            // btnUpdateEmail
+            // 
+            btnUpdateEmail.BorderRadius = 12;
+            btnUpdateEmail.CustomizableEdges = customizableEdges23;
+            btnUpdateEmail.FillColor = Color.DodgerBlue;
+            btnUpdateEmail.Font = new Font("Segoe UI", 10F);
+            btnUpdateEmail.ForeColor = Color.White;
+            btnUpdateEmail.Location = new Point(8, 350);
+            btnUpdateEmail.Margin = new Padding(10, 12, 10, 0);
+            btnUpdateEmail.Name = "btnUpdateEmail";
+            btnUpdateEmail.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            btnUpdateEmail.Size = new Size(768, 50);
+            btnUpdateEmail.TabIndex = 9;
+            btnUpdateEmail.Text = "Update Email";
+            // 
+            // txtConfirmPasswordForEmail
+            // 
+            txtConfirmPasswordForEmail.BorderColor = Color.FromArgb(220, 225, 230);
+            txtConfirmPasswordForEmail.BorderRadius = 10;
+            txtConfirmPasswordForEmail.Cursor = Cursors.IBeam;
+            txtConfirmPasswordForEmail.CustomizableEdges = customizableEdges25;
+            txtConfirmPasswordForEmail.DefaultText = "";
+            txtConfirmPasswordForEmail.Dock = DockStyle.Top;
+            txtConfirmPasswordForEmail.Font = new Font("Segoe UI", 10F);
+            txtConfirmPasswordForEmail.Location = new Point(8, 275);
+            txtConfirmPasswordForEmail.Margin = new Padding(10, 5, 10, 0);
+            txtConfirmPasswordForEmail.Name = "txtConfirmPasswordForEmail";
+            txtConfirmPasswordForEmail.PlaceholderText = "Enter your password";
+            txtConfirmPasswordForEmail.SelectedText = "";
+            txtConfirmPasswordForEmail.ShadowDecoration.CustomizableEdges = customizableEdges26;
+            txtConfirmPasswordForEmail.Size = new Size(768, 47);
+            txtConfirmPasswordForEmail.TabIndex = 8;
+            txtConfirmPasswordForEmail.UseSystemPasswordChar = true;
+            // 
+            // lblConfirmEmailPassCaption
+            // 
+            lblConfirmEmailPassCaption.AutoSize = false;
+            lblConfirmEmailPassCaption.BackColor = Color.Transparent;
+            lblConfirmEmailPassCaption.Dock = DockStyle.Top;
+            lblConfirmEmailPassCaption.Font = new Font("Segoe UI", 11F);
+            lblConfirmEmailPassCaption.ForeColor = Color.FromArgb(60, 70, 85);
+            lblConfirmEmailPassCaption.Location = new Point(8, 243);
+            lblConfirmEmailPassCaption.Margin = new Padding(10, 12, 10, 0);
+            lblConfirmEmailPassCaption.Name = "lblConfirmEmailPassCaption";
+            lblConfirmEmailPassCaption.Size = new Size(768, 32);
+            lblConfirmEmailPassCaption.TabIndex = 7;
+            lblConfirmEmailPassCaption.Text = "Confirm Password";
+            // 
+            // txtNewEmail
+            // 
+            txtNewEmail.BorderColor = Color.FromArgb(220, 225, 230);
+            txtNewEmail.BorderRadius = 10;
+            txtNewEmail.Cursor = Cursors.IBeam;
+            txtNewEmail.CustomizableEdges = customizableEdges27;
+            txtNewEmail.DefaultText = "";
+            txtNewEmail.Dock = DockStyle.Top;
+            txtNewEmail.Font = new Font("Segoe UI", 10F);
+            txtNewEmail.Location = new Point(8, 196);
+            txtNewEmail.Margin = new Padding(10, 5, 10, 0);
+            txtNewEmail.Name = "txtNewEmail";
+            txtNewEmail.PlaceholderText = "Enter new email";
+            txtNewEmail.SelectedText = "";
+            txtNewEmail.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            txtNewEmail.Size = new Size(768, 47);
+            txtNewEmail.TabIndex = 6;
+            // 
+            // lblNewEmailCaption
+            // 
+            lblNewEmailCaption.AutoSize = false;
+            lblNewEmailCaption.BackColor = Color.Transparent;
+            lblNewEmailCaption.Dock = DockStyle.Top;
+            lblNewEmailCaption.Font = new Font("Segoe UI", 11F);
+            lblNewEmailCaption.ForeColor = Color.FromArgb(60, 70, 85);
+            lblNewEmailCaption.Location = new Point(8, 164);
+            lblNewEmailCaption.Margin = new Padding(10, 8, 10, 0);
+            lblNewEmailCaption.Name = "lblNewEmailCaption";
+            lblNewEmailCaption.Size = new Size(768, 32);
+            lblNewEmailCaption.TabIndex = 5;
+            lblNewEmailCaption.Text = "New Email";
+            // 
+            // txtEmail
+            // 
+            txtEmail.BorderColor = Color.FromArgb(220, 225, 230);
+            txtEmail.BorderRadius = 10;
+            txtEmail.Cursor = Cursors.Hand;
+            txtEmail.CustomizableEdges = customizableEdges29;
+            txtEmail.DefaultText = "";
+            txtEmail.Dock = DockStyle.Top;
+            txtEmail.FillColor = Color.FromArgb(248, 249, 251);
+            txtEmail.Font = new Font("Segoe UI", 10F);
+            txtEmail.Location = new Point(8, 117);
+            txtEmail.Margin = new Padding(10, 5, 10, 0);
+            txtEmail.Name = "txtEmail";
+            txtEmail.PlaceholderText = "";
+            txtEmail.ReadOnly = true;
+            txtEmail.SelectedText = "";
+            txtEmail.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            txtEmail.Size = new Size(768, 47);
+            txtEmail.TabIndex = 3;
+            // 
+            // lblEmailCaption
+            // 
+            lblEmailCaption.AutoSize = false;
+            lblEmailCaption.BackColor = Color.Transparent;
+            lblEmailCaption.Dock = DockStyle.Top;
+            lblEmailCaption.Font = new Font("Segoe UI", 11F);
+            lblEmailCaption.ForeColor = Color.FromArgb(60, 70, 85);
+            lblEmailCaption.Location = new Point(8, 85);
+            lblEmailCaption.Margin = new Padding(10, 12, 10, 0);
+            lblEmailCaption.Name = "lblEmailCaption";
+            lblEmailCaption.Size = new Size(768, 32);
+            lblEmailCaption.TabIndex = 2;
+            lblEmailCaption.Text = "Current Email";
+            // 
+            // txtUsername
+            // 
+            txtUsername.BorderColor = Color.FromArgb(220, 225, 230);
+            txtUsername.BorderRadius = 10;
+            txtUsername.Cursor = Cursors.No;
+            txtUsername.CustomizableEdges = customizableEdges31;
+            txtUsername.DefaultText = "";
+            txtUsername.Dock = DockStyle.Top;
+            txtUsername.FillColor = Color.FromArgb(248, 249, 251);
+            txtUsername.Font = new Font("Segoe UI", 10F);
+            txtUsername.Location = new Point(8, 38);
+            txtUsername.Margin = new Padding(10, 5, 10, 0);
+            txtUsername.Name = "txtUsername";
+            txtUsername.PlaceholderText = "";
+            txtUsername.ReadOnly = true;
+            txtUsername.SelectedText = "";
+            txtUsername.ShadowDecoration.CustomizableEdges = customizableEdges32;
+            txtUsername.Size = new Size(768, 47);
+            txtUsername.TabIndex = 1;
+            txtUsername.TextChanged += txtUsername_TextChanged;
+            // 
+            // lblUsernameCaption
+            // 
+            lblUsernameCaption.AutoSize = false;
+            lblUsernameCaption.BackColor = Color.Transparent;
+            lblUsernameCaption.Dock = DockStyle.Top;
+            lblUsernameCaption.Font = new Font("Segoe UI", 11F);
+            lblUsernameCaption.ForeColor = Color.FromArgb(60, 70, 85);
+            lblUsernameCaption.Location = new Point(8, 6);
+            lblUsernameCaption.Margin = new Padding(10, 8, 10, 0);
+            lblUsernameCaption.Name = "lblUsernameCaption";
+            lblUsernameCaption.Size = new Size(768, 32);
+            lblUsernameCaption.TabIndex = 0;
+            lblUsernameCaption.Text = "Username";
+            // 
+            // pnlAccountFooter
+            // 
+            pnlAccountFooter.BackColor = Color.Transparent;
+            pnlAccountFooter.Controls.Add(lblCreatedAtCaption);
+            pnlAccountFooter.Controls.Add(lblCreatedAtValue);
+            pnlAccountFooter.Controls.Add(lblLastLoginCaption);
+            pnlAccountFooter.Controls.Add(lblLastLoginValue);
+            pnlAccountFooter.CustomizableEdges = customizableEdges35;
+            pnlAccountFooter.Location = new Point(14, 741);
+            pnlAccountFooter.Margin = new Padding(4);
+            pnlAccountFooter.Name = "pnlAccountFooter";
+            pnlAccountFooter.Padding = new Padding(12);
+            pnlAccountFooter.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            pnlAccountFooter.Size = new Size(784, 68);
+            pnlAccountFooter.TabIndex = 200;
             // 
             // lblCreatedAtCaption
             // 
-            this.lblCreatedAtCaption.BackColor = System.Drawing.Color.Transparent;
-            this.lblCreatedAtCaption.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.lblCreatedAtCaption.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(105)))), ((int)(((byte)(120)))));
-            this.lblCreatedAtCaption.Location = new System.Drawing.Point(22, 715);
-            this.lblCreatedAtCaption.Name = "lblCreatedAtCaption";
-            this.lblCreatedAtCaption.Size = new System.Drawing.Size(87, 25);
-            this.lblCreatedAtCaption.TabIndex = 14;
-            this.lblCreatedAtCaption.Text = "Created at:";
+            lblCreatedAtCaption.BackColor = Color.Transparent;
+            lblCreatedAtCaption.Font = new Font("Segoe UI", 10.2F);
+            lblCreatedAtCaption.ForeColor = Color.FromArgb(90, 105, 120);
+            lblCreatedAtCaption.Location = new Point(12, 18);
+            lblCreatedAtCaption.Margin = new Padding(4);
+            lblCreatedAtCaption.Name = "lblCreatedAtCaption";
+            lblCreatedAtCaption.Size = new Size(87, 25);
+            lblCreatedAtCaption.TabIndex = 100;
+            lblCreatedAtCaption.Text = "Created at:";
             // 
             // lblCreatedAtValue
             // 
-            this.lblCreatedAtValue.BackColor = System.Drawing.Color.Transparent;
-            this.lblCreatedAtValue.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.lblCreatedAtValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(105)))), ((int)(((byte)(120)))));
-            this.lblCreatedAtValue.Location = new System.Drawing.Point(110, 715);
-            this.lblCreatedAtValue.Name = "lblCreatedAtValue";
-            this.lblCreatedAtValue.Size = new System.Drawing.Size(10, 25);
-            this.lblCreatedAtValue.TabIndex = 15;
-            this.lblCreatedAtValue.Text = "-";
+            lblCreatedAtValue.BackColor = Color.Transparent;
+            lblCreatedAtValue.Font = new Font("Segoe UI", 10.2F);
+            lblCreatedAtValue.ForeColor = Color.FromArgb(90, 105, 120);
+            lblCreatedAtValue.Location = new Point(122, 18);
+            lblCreatedAtValue.Margin = new Padding(4);
+            lblCreatedAtValue.Name = "lblCreatedAtValue";
+            lblCreatedAtValue.Size = new Size(10, 25);
+            lblCreatedAtValue.TabIndex = 101;
+            lblCreatedAtValue.Text = "-";
             // 
             // lblLastLoginCaption
             // 
-            this.lblLastLoginCaption.BackColor = System.Drawing.Color.Transparent;
-            this.lblLastLoginCaption.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.lblLastLoginCaption.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(105)))), ((int)(((byte)(120)))));
-            this.lblLastLoginCaption.Location = new System.Drawing.Point(22, 745);
-            this.lblLastLoginCaption.Name = "lblLastLoginCaption";
-            this.lblLastLoginCaption.Size = new System.Drawing.Size(80, 25);
-            this.lblLastLoginCaption.TabIndex = 16;
-            this.lblLastLoginCaption.Text = "Last login:";
+            lblLastLoginCaption.BackColor = Color.Transparent;
+            lblLastLoginCaption.Font = new Font("Segoe UI", 10.2F);
+            lblLastLoginCaption.ForeColor = Color.FromArgb(90, 105, 120);
+            lblLastLoginCaption.Location = new Point(375, 18);
+            lblLastLoginCaption.Margin = new Padding(4);
+            lblLastLoginCaption.Name = "lblLastLoginCaption";
+            lblLastLoginCaption.Size = new Size(80, 25);
+            lblLastLoginCaption.TabIndex = 102;
+            lblLastLoginCaption.Text = "Last login:";
             // 
             // lblLastLoginValue
             // 
-            this.lblLastLoginValue.BackColor = System.Drawing.Color.Transparent;
-            this.lblLastLoginValue.Font = new System.Drawing.Font("Segoe UI", 10.2F);
-            this.lblLastLoginValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(105)))), ((int)(((byte)(120)))));
-            this.lblLastLoginValue.Location = new System.Drawing.Point(110, 745);
-            this.lblLastLoginValue.Name = "lblLastLoginValue";
-            this.lblLastLoginValue.Size = new System.Drawing.Size(10, 25);
-            this.lblLastLoginValue.TabIndex = 17;
-            this.lblLastLoginValue.Text = "-";
+            lblLastLoginValue.BackColor = Color.Transparent;
+            lblLastLoginValue.Font = new Font("Segoe UI", 10.2F);
+            lblLastLoginValue.ForeColor = Color.FromArgb(90, 105, 120);
+            lblLastLoginValue.Location = new Point(472, 18);
+            lblLastLoginValue.Margin = new Padding(4);
+            lblLastLoginValue.Name = "lblLastLoginValue";
+            lblLastLoginValue.Size = new Size(10, 25);
+            lblLastLoginValue.TabIndex = 103;
+            lblLastLoginValue.Text = "-";
             // 
             // lblSubtitle
             // 
-            this.lblSubtitle.AutoSize = false;
-            this.lblSubtitle.BackColor = System.Drawing.Color.Transparent;
-            this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(105)))), ((int)(((byte)(120)))));
-            this.lblSubtitle.Location = new System.Drawing.Point(30, 85);
-            this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(664, 39);
-            this.lblSubtitle.TabIndex = 2;
-            this.lblSubtitle.Text = "Manage your account and security.";
+            lblSubtitle.AutoSize = false;
+            lblSubtitle.BackColor = Color.Transparent;
+            lblSubtitle.Font = new Font("Segoe UI", 12F);
+            lblSubtitle.ForeColor = Color.FromArgb(90, 105, 120);
+            lblSubtitle.Location = new Point(38, 106);
+            lblSubtitle.Margin = new Padding(4);
+            lblSubtitle.Name = "lblSubtitle";
+            lblSubtitle.Size = new Size(830, 49);
+            lblSubtitle.TabIndex = 1;
+            lblSubtitle.Text = "Manage your account and security.";
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = false;
-            this.lblTitle.BackColor = System.Drawing.Color.Transparent;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 28.2F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(33)))), ((int)(((byte)(45)))));
-            this.lblTitle.Location = new System.Drawing.Point(30, 17);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(555, 82);
-            this.lblTitle.TabIndex = 3;
-            this.lblTitle.Text = "Settings";
+            lblTitle.AutoSize = false;
+            lblTitle.BackColor = Color.Transparent;
+            lblTitle.Font = new Font("Segoe UI", 28.2F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(25, 33, 45);
+            lblTitle.Location = new Point(38, 21);
+            lblTitle.Margin = new Padding(4);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(694, 102);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Settings";
             // 
             // UserSettings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.Controls.Add(this.pnlRoot);
-            this.Name = "UserSettings";
-            this.Size = new System.Drawing.Size(1400, 700);
-            this.pnlRoot.ResumeLayout(false);
-            this.grpSecurity.ResumeLayout(false);
-            this.grpAccount.ResumeLayout(false);
-            this.grpAccount.PerformLayout();
-            this.pnlChangeUsername.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(120F, 120F);
+            AutoScaleMode = AutoScaleMode.Dpi;
+            BackColor = Color.WhiteSmoke;
+            Controls.Add(pnlRoot);
+            Margin = new Padding(4);
+            Name = "UserSettings";
+            Size = new Size(1750, 1094);
+            Load += UserSettings_Load;
+            pnlRoot.ResumeLayout(false);
+            grpSecurity.ResumeLayout(false);
+            grpAccount.ResumeLayout(false);
+            pnlAccountContent.ResumeLayout(false);
+            pnlChangeUsername.ResumeLayout(false);
+            pnlAccountFooter.ResumeLayout(false);
+            pnlAccountFooter.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
@@ -570,8 +660,6 @@
 
         private Guna.UI2.WinForms.Guna2HtmlLabel lblEmailCaption;
         private Guna.UI2.WinForms.Guna2TextBox txtEmail;
-
-        private Guna.UI2.WinForms.Guna2Separator sepAccount1;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblNewEmailCaption;
         private Guna.UI2.WinForms.Guna2TextBox txtNewEmail;
 
@@ -579,8 +667,6 @@
         private Guna.UI2.WinForms.Guna2TextBox txtConfirmPasswordForEmail;
 
         private Guna.UI2.WinForms.Guna2Button btnUpdateEmail;
-
-        private Guna.UI2.WinForms.Guna2Separator sepAccount2;
         private Guna.UI2.WinForms.Guna2Button btnShowChangeUsername;
 
         private Guna.UI2.WinForms.Guna2Panel pnlChangeUsername;
@@ -589,7 +675,6 @@
         private Guna.UI2.WinForms.Guna2Button btnConfirmUsernameChange;
         private Guna.UI2.WinForms.Guna2Button btnCancelUsernameChange;
 
-        private Guna.UI2.WinForms.Guna2Separator sepAccountBottom;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblCreatedAtCaption;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblCreatedAtValue;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblLastLoginCaption;
@@ -605,5 +690,8 @@
         private Guna.UI2.WinForms.Guna2TextBox txtConfirmPass;
 
         private Guna.UI2.WinForms.Guna2Button btnChangePassword;
+
+        private Guna.UI2.WinForms.Guna2Panel pnlAccountContent;
+        private Guna.UI2.WinForms.Guna2Panel pnlAccountFooter;
     }
 }

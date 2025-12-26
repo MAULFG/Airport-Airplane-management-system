@@ -6,7 +6,7 @@ using Airport_Airplane_management_system.View.Interfaces;
 public partial class Main1 : Form, INavigationService
 {
     
-    private int _currentUserId;
+    private int _currentUserId; // added for settings panel
 
     private readonly LoginPage loginPage;
     private readonly UserDashboard userDashboard;
@@ -43,8 +43,8 @@ public partial class Main1 : Form, INavigationService
         NavigateToLogin();
     }
 
-    public void SetCurrentUserId(int userId) => _currentUserId = userId;
-    public int GetCurrentUserId() => _currentUserId;
+    public void SetCurrentUserId(int userId) => _currentUserId = userId; // added for settings panel
+    public int GetCurrentUserId() => _currentUserId; // added for settings panel
 
     public void NavigateToLogin() => loginPage.BringToFront();
     public void NavigateToUser() => userDashboard.BringToFront();

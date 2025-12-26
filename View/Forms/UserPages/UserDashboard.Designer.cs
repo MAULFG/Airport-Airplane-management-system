@@ -258,7 +258,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             userAccount1.TabIndex = 2;
             userAccount1.Load += userAccount1_Load;
             // 
-            // upcomming flights
+            // upcomming flights // aldor added this block (added for settings panel)
             // 
             upcomingFlights1 = new UpcomingFlights();
             upcomingFlights1.Dock = DockStyle.Fill;
