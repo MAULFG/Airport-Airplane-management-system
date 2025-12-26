@@ -96,28 +96,44 @@ namespace Airport_Airplane_management_system.Model.Services
             string to = null,
             int? year = null,
             int? month = null,
-            int? day = null)
+            int? day = null,
+            string seatClass = null,
+            int? passengers = null)
         {
-            var flights = _flightRepo.GetAllFlights();
+            // Load all flights with seats assigned
+            var flights = LoadFlightsWithSeats();
             var query = flights.AsEnumerable();
 
+            // Filter FROM
             if (!string.IsNullOrWhiteSpace(from))
                 query = query.Where(f => f.From.Equals(from, StringComparison.OrdinalIgnoreCase));
 
+            // Filter TO
             if (!string.IsNullOrWhiteSpace(to))
                 query = query.Where(f => f.To.Equals(to, StringComparison.OrdinalIgnoreCase));
 
+            // Filter DATE
             if (year.HasValue)
                 query = query.Where(f => f.Departure.Year == year.Value);
-
             if (month.HasValue)
                 query = query.Where(f => f.Departure.Month == month.Value);
-
             if (day.HasValue)
                 query = query.Where(f => f.Departure.Day == day.Value);
 
+            // Filter by class + passengers
+            if (!string.IsNullOrWhiteSpace(seatClass) && passengers.HasValue)
+            {
+                query = query.Where(f => f.GetAvailableSeats(seatClass).Count >= passengers.Value);
+            }
+
             return query.ToList();
         }
+
+
+
+
+
+
 
         public int GetUpcomingFlightsNotFullyBooked()
         {

@@ -200,7 +200,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Font = new Font("Arial", 12, FontStyle.Bold),
                 Size = new Size(160, 40),
                 Location = new Point(details.Width - 180, 115),
-                FillColor = Color.FromArgb(30, 144, 255),
+                FillColor = Color.DarkCyan,
                 BackColor = Color.White,
                 ForeColor = Color.White,
                 BorderRadius = 10

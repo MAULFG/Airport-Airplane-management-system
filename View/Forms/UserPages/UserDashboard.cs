@@ -1,5 +1,6 @@
 ﻿using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Presenter;
 using Airport_Airplane_management_system.Presenter.UserPagesPresenters;
 using Airport_Airplane_management_system.View.Interfaces;
 using Guna.UI2.WinForms;
@@ -23,7 +24,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private readonly UserDashboardPresenter _presenter;
         private readonly FlightService _flightService;
         private UpcomingFlightsPresenter _upcomingFlightsPresenter;
-
+        private SearchAndBookingPresenter _searchandbookingpresenter;
         private Panel panelMain;
 
         public UserDashboard(INavigationService navigation)
@@ -47,7 +48,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             
             _upcomingFlightsPresenter =
                 new UpcomingFlightsPresenter(upcomingFlights1, _flightService);
-
+            _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1,_flightService);
             // Initialize the designer panel at runtime
 
 

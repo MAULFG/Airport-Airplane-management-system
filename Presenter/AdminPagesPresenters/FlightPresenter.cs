@@ -17,8 +17,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
         public List<Flight> GetFlights() => _service.GetFlights();
         
         public void LoadSeatsForFlight(Flight flight) => _service.LoadSeatsForFlight(flight);
-        public List<Flight> SearchFlights(string from, string to, int? year, int? month, int? day)
-            => _service.SearchFlights(from, to, year, month, day);
+       
         public int CountUpcomingFlights()
         {
             return _service.GetUpcomingFlightsNotFullyBooked();
