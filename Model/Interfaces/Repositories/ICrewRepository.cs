@@ -10,6 +10,5 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
         bool Update(Crew crew, out string err);
         bool DeleteByEmployeeId(string employeeId, out string err);
         string GenerateNextEmployeeId();
-        Crew GetById(string employeeId);
     }
 }

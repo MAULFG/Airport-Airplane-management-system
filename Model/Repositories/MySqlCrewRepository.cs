@@ -203,44 +203,6 @@ WHERE employee_id = @employee_id;";
                 return false;
             }
         }
-        public Crew GetById(string employeeId)
-        {
-            if (string.IsNullOrWhiteSpace(employeeId))
-                return null;
-
-            const string sql = @"
-SELECT flight_id, employee_id, full_name, role, status, email, phone
-FROM crew_members
-WHERE employee_id = @employee_id
-LIMIT 1;";
-
-            using (var conn = new MySqlConnection(_connStr))
-            using (var cmd = new MySqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@employee_id", employeeId);
-                conn.Open();
-
-                using (var r = cmd.ExecuteReader())
-                {
-                    if (r.Read())
-                    {
-                        var crew = new Crew(
-                            fullName: r.GetString("full_name"),
-                            role: r.GetString("role"),
-                            status: r.GetString("status"),
-                            employeeId: r.GetString("employee_id"),
-                            email: r["email"] == DBNull.Value ? "" : r.GetString("email"),
-                            phone: r["phone"] == DBNull.Value ? "" : r.GetString("phone")
-                        );
-
-                        crew.FlightId = r["flight_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(r["flight_id"]);
-                        return crew;
-                    }
-                }
-            }
-
-            return null; // Not found
-        }
 
         public string GenerateNextEmployeeId()
         {

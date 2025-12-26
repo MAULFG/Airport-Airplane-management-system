@@ -256,6 +256,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbStatus.ForeColor = Color.FromArgb(68, 88, 112);
             cmbStatus.ItemHeight = 30;
             cmbStatus.Items.AddRange(new object[] { "Active", "Inactive" });
+            cmbStatus.SelectedIndex = 1;
             cmbStatus.Location = new Point(26, 357);
             cmbStatus.Name = "cmbStatus";
             cmbStatus.ShadowDecoration.CustomizableEdges = customizableEdges10;

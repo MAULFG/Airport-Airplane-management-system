@@ -25,11 +25,14 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _view.EditRequested += EnterEditMode;
             _view.DeleteRequested += DeleteCrew;
             _view.FilterChanged += RefreshCrew;
+            
+
         }
 
         private void OnLoad(object sender, EventArgs e)
         {
             _view.RenderFlights(_service.GetFlights());
+            _view.RenderFilterFlights(_service.GetFlights());
             RefreshCrew();
         }
 
@@ -42,11 +45,8 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 crew = crew.Where(c => c.FlightId == filterFlightId).ToList();
 
             _view.RenderCrew(crew);
-
-            // Sync form only when NOT editing
-            if (!_isEditMode)
-                _view.SetFlightFilter(filterFlightId);
         }
+
 
         private void OnAddOrUpdate()
         {
