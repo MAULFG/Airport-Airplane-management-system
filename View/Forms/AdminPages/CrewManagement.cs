@@ -26,16 +26,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             BuildFlow();
             WireEvents();
         }
-
-        // ======================================================
-        // INITIALIZATION
-        // ======================================================
         private void BuildFlow()
         {
             flowCrew = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                AutoScroll = true,
+                AutoScroll = true,  
                 WrapContents = false,
                 FlowDirection = FlowDirection.TopDown,
                 Padding = new Padding(12, 50, 12, 12)
@@ -81,10 +77,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     LoadCrewRequested?.Invoke(this, EventArgs.Empty);
             };
         }
-
-        // ======================================================
-        // MVP EVENTS
-        // ======================================================
         public event Action AddOrUpdateClicked;
         public event Action CancelEditClicked;
         public event Action<Crew> EditRequested;
@@ -92,9 +84,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event Action FilterChanged;
         public event EventHandler LoadCrewRequested;
 
-        // ======================================================
-        // VIEW INPUTS
-        // ======================================================
         public string FullName => txtFullName.Text.Trim();
         public string Email => txtEmail.Text.Trim();
         public string Phone => txtPhone.Text.Trim();
@@ -103,9 +92,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public int? SelectedFlightId => (cmbFlight.SelectedItem as FlightItem)?.FlightId;
         public bool IsInEditMode => _uiEditMode;
 
-        // ======================================================
-        // RENDER
-        // ======================================================
         public void RenderFlights(List<Flight> flights)
         {
             cmbFlight.Items.Clear();
@@ -165,9 +151,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         }
 
 
-        // ======================================================
-        // EDIT MODE
-        // ======================================================
         public void SetEditMode(bool editing)
         {
             _uiEditMode = editing;
@@ -212,10 +195,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             ApplyStatusRulesToFlightUI();
         }
 
-
-        // ======================================================
-        // FILTER
-        // ======================================================
         public int? GetFlightFilter()
         {
             return (cmbFilter.SelectedItem as FlightItem)?.FlightId;
@@ -240,12 +219,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 _flightIdFilter = selected.FlightId; // specific flight
         }
 
-
-
-
-        // ======================================================
-        // FORM / FILTER SYNC
-        // ======================================================
         public void SyncFormFlightWithFilter(int? flightId)
         {
             _suppressFormSync = true;
@@ -269,9 +242,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     cmbFlight.SelectedItem = item;
         }
 
-        // ======================================================
-        // STATUS RULE
-        // ======================================================
+
         private void ApplyStatusRulesToFlightUI()
         {
             bool inactive = Status.Equals("Inactive", StringComparison.OrdinalIgnoreCase);
@@ -281,18 +252,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 cmbFlight.SelectedIndex = 0;
         }
 
-        // ======================================================
-        // UI HELPERS
-        // ======================================================
         public void ShowError(string msg) =>
             MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
         public void ShowInfo(string msg) =>
             MessageBox.Show(msg, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-        // ======================================================
-        // SUPPORT TYPES
-        // ======================================================
         private class FlightItem
         {
             public int? FlightId { get; }
@@ -307,9 +272,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             public override string ToString() => Text;
         }
 
-        // ======================================================
-        // CREW CARD UI
-        // ======================================================
         private Control CreateCrewCard(Crew c)
         {
             var card = new Guna2ShadowPanel
@@ -379,10 +341,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             card.Controls.Add(InfoLine("Employee ID:", c.EmployeeId, 16, 56));
             card.Controls.Add(InfoLine("Email:", c.Email, 16, 80));
-            card.Controls.Add(InfoLine("Phone:", c.Phone, (flowCrew.ClientSize.Width - flowCrew.Padding.Horizontal)/2 - 90, 56));
+            card.Controls.Add(InfoLine("Phone:", c.Phone, 270, 56));
 
             string flightText = c.FlightId.HasValue ? c.FlightId.Value.ToString() : "Unassigned";
-            card.Controls.Add(InfoLine("Flight:", flightText, (flowCrew.ClientSize.Width - flowCrew.Padding.Horizontal) / 2 - 90, 80));
+            card.Controls.Add(InfoLine("Flight:", flightText, 270, 80));
 
             card.SizeChanged += (_, __) =>
             {
