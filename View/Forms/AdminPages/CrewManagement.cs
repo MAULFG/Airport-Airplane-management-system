@@ -180,8 +180,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (cmbFilter.Items.Count > 0)
                 cmbFilter.SelectedIndex = 0;
         }
-
-
         public void RenderFlights(List<Flight> flights)
         {
             cmbFlight.Items.Clear();
