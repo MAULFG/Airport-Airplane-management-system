@@ -89,9 +89,10 @@
             guna2Panel1.Dock = DockStyle.Left;
             guna2Panel1.FillColor = Color.FromArgb(26, 44, 63);
             guna2Panel1.Location = new Point(0, 0);
+            guna2Panel1.Margin = new Padding(3, 4, 3, 4);
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            guna2Panel1.Size = new Size(250, 683);
+            guna2Panel1.Size = new Size(286, 911);
             guna2Panel1.TabIndex = 2;
             guna2Panel1.Paint += guna2Panel1_Paint;
             // 
@@ -105,10 +106,11 @@
             btnlogoutA.ForeColor = Color.White;
             btnlogoutA.Image = Properties.Resources.logout;
             btnlogoutA.ImageAlign = HorizontalAlignment.Left;
-            btnlogoutA.Location = new Point(10, 594);
+            btnlogoutA.Location = new Point(11, 792);
+            btnlogoutA.Margin = new Padding(3, 4, 3, 4);
             btnlogoutA.Name = "btnlogoutA";
             btnlogoutA.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnlogoutA.Size = new Size(206, 45);
+            btnlogoutA.Size = new Size(235, 60);
             btnlogoutA.TabIndex = 10;
             btnlogoutA.Text = "Logout";
             btnlogoutA.TextAlign = HorizontalAlignment.Left;
@@ -123,10 +125,11 @@
             btnreport.ForeColor = Color.White;
             btnreport.Image = Properties.Resources.analytics1;
             btnreport.ImageAlign = HorizontalAlignment.Left;
-            btnreport.Location = new Point(10, 401);
+            btnreport.Location = new Point(11, 535);
+            btnreport.Margin = new Padding(3, 4, 3, 4);
             btnreport.Name = "btnreport";
             btnreport.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            btnreport.Size = new Size(214, 45);
+            btnreport.Size = new Size(245, 60);
             btnreport.TabIndex = 9;
             btnreport.Text = "Reports";
             btnreport.TextAlign = HorizontalAlignment.Left;
@@ -141,10 +144,11 @@
             btnnotrificationA.ForeColor = Color.White;
             btnnotrificationA.Image = Properties.Resources.notrification1;
             btnnotrificationA.ImageAlign = HorizontalAlignment.Left;
-            btnnotrificationA.Location = new Point(10, 452);
+            btnnotrificationA.Location = new Point(11, 603);
+            btnnotrificationA.Margin = new Padding(3, 4, 3, 4);
             btnnotrificationA.Name = "btnnotrificationA";
             btnnotrificationA.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            btnnotrificationA.Size = new Size(214, 45);
+            btnnotrificationA.Size = new Size(245, 60);
             btnnotrificationA.TabIndex = 8;
             btnnotrificationA.Text = "Notrification";
             btnnotrificationA.TextAlign = HorizontalAlignment.Left;
@@ -159,10 +163,11 @@
             btnMainA.ForeColor = Color.White;
             btnMainA.Image = Properties.Resources.dashboard;
             btnMainA.ImageAlign = HorizontalAlignment.Left;
-            btnMainA.Location = new Point(10, 130);
+            btnMainA.Location = new Point(11, 173);
+            btnMainA.Margin = new Padding(3, 4, 3, 4);
             btnMainA.Name = "btnMainA";
             btnMainA.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            btnMainA.Size = new Size(214, 45);
+            btnMainA.Size = new Size(245, 60);
             btnMainA.TabIndex = 0;
             btnMainA.Text = "Main";
             btnMainA.TextAlign = HorizontalAlignment.Left;
@@ -177,10 +182,11 @@
             btnpasenger.ForeColor = Color.White;
             btnpasenger.Image = Properties.Resources.ticket1;
             btnpasenger.ImageAlign = HorizontalAlignment.Left;
-            btnpasenger.Location = new Point(10, 350);
+            btnpasenger.Location = new Point(11, 467);
+            btnpasenger.Margin = new Padding(3, 4, 3, 4);
             btnpasenger.Name = "btnpasenger";
             btnpasenger.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            btnpasenger.Size = new Size(214, 45);
+            btnpasenger.Size = new Size(245, 60);
             btnpasenger.TabIndex = 1;
             btnpasenger.Text = "Pasenger Management";
             btnpasenger.TextAlign = HorizontalAlignment.Left;
@@ -195,10 +201,11 @@
             btncrew.ForeColor = Color.White;
             btncrew.Image = Properties.Resources.crew;
             btncrew.ImageAlign = HorizontalAlignment.Left;
-            btncrew.Location = new Point(10, 295);
+            btncrew.Location = new Point(11, 393);
+            btncrew.Margin = new Padding(3, 4, 3, 4);
             btncrew.Name = "btncrew";
             btncrew.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            btncrew.Size = new Size(214, 45);
+            btncrew.Size = new Size(245, 60);
             btncrew.TabIndex = 2;
             btncrew.Text = "Crew Management";
             btncrew.TextAlign = HorizontalAlignment.Left;
@@ -213,10 +220,11 @@
             btnplane.ForeColor = Color.White;
             btnplane.Image = Properties.Resources.fleet;
             btnplane.ImageAlign = HorizontalAlignment.Left;
-            btnplane.Location = new Point(10, 240);
+            btnplane.Location = new Point(11, 320);
+            btnplane.Margin = new Padding(3, 4, 3, 4);
             btnplane.Name = "btnplane";
             btnplane.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnplane.Size = new Size(214, 45);
+            btnplane.Size = new Size(245, 60);
             btnplane.TabIndex = 3;
             btnplane.Text = "Plane Managment";
             btnplane.TextAlign = HorizontalAlignment.Left;
@@ -231,10 +239,11 @@
             btnFlight.ForeColor = Color.White;
             btnFlight.Image = Properties.Resources.airplane2;
             btnFlight.ImageAlign = HorizontalAlignment.Left;
-            btnFlight.Location = new Point(10, 185);
+            btnFlight.Location = new Point(11, 247);
+            btnFlight.Margin = new Padding(3, 4, 3, 4);
             btnFlight.Name = "btnFlight";
             btnFlight.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            btnFlight.Size = new Size(214, 45);
+            btnFlight.Size = new Size(245, 60);
             btnFlight.TabIndex = 4;
             btnFlight.Text = "Flight Management";
             btnFlight.TextAlign = HorizontalAlignment.Left;
@@ -245,10 +254,11 @@
             panel1.BackgroundImage = Properties.Resources.icon;
             panel1.BackgroundImageLayout = ImageLayout.Stretch;
             panel1.ForeColor = Color.Transparent;
-            panel1.Location = new Point(77, 37);
+            panel1.Location = new Point(88, 49);
+            panel1.Margin = new Padding(3, 4, 3, 4);
             panel1.Name = "panel1";
-            panel1.Padding = new Padding(20, 0, 20, 0);
-            panel1.Size = new Size(75, 75);
+            panel1.Padding = new Padding(23, 0, 23, 0);
+            panel1.Size = new Size(100, 100);
             panel1.TabIndex = 0;
             // 
             // crewManagement1
@@ -256,8 +266,9 @@
             crewManagement1.BackColor = Color.FromArgb(245, 246, 250);
             crewManagement1.Dock = DockStyle.Fill;
             crewManagement1.Location = new Point(0, 0);
+            crewManagement1.Margin = new Padding(3, 4, 3, 4);
             crewManagement1.Name = "crewManagement1";
-            crewManagement1.Size = new Size(1213, 683);
+            crewManagement1.Size = new Size(1386, 911);
             crewManagement1.TabIndex = 3;
             // 
             // flightManagement1
@@ -265,40 +276,45 @@
             flightManagement1.BackColor = SystemColors.AppWorkspace;
             flightManagement1.Dock = DockStyle.Fill;
             flightManagement1.Location = new Point(0, 0);
+            flightManagement1.Margin = new Padding(3, 5, 3, 5);
             flightManagement1.Name = "flightManagement1";
-            flightManagement1.Size = new Size(1213, 683);
+            flightManagement1.Size = new Size(1386, 911);
             flightManagement1.TabIndex = 4;
             // 
             // planeManagements1
             // 
             planeManagements1.Dock = DockStyle.Fill;
             planeManagements1.Location = new Point(0, 0);
+            planeManagements1.Margin = new Padding(3, 5, 3, 5);
             planeManagements1.Name = "planeManagements1";
-            planeManagements1.Size = new Size(1213, 683);
+            planeManagements1.Size = new Size(1386, 911);
             planeManagements1.TabIndex = 6;
             // 
             // reports1
             // 
             reports1.Dock = DockStyle.Fill;
             reports1.Location = new Point(0, 0);
+            reports1.Margin = new Padding(3, 5, 3, 5);
             reports1.Name = "reports1";
-            reports1.Size = new Size(1213, 683);
+            reports1.Size = new Size(1386, 911);
             reports1.TabIndex = 8;
             // 
             // notrificationsa1
             // 
             notrificationsa1.Dock = DockStyle.Fill;
             notrificationsa1.Location = new Point(0, 0);
+            notrificationsa1.Margin = new Padding(3, 5, 3, 5);
             notrificationsa1.Name = "notrificationsa1";
-            notrificationsa1.Size = new Size(1213, 683);
+            notrificationsa1.Size = new Size(1386, 911);
             notrificationsa1.TabIndex = 9;
             // 
             // maina1
             // 
             maina1.Dock = DockStyle.Fill;
             maina1.Location = new Point(0, 0);
+            maina1.Margin = new Padding(3, 5, 3, 5);
             maina1.Name = "maina1";
-            maina1.Size = new Size(1213, 683);
+            maina1.Size = new Size(1386, 911);
             maina1.TabIndex = 10;
             maina1.Load += maina1_Load;
             // 
@@ -306,8 +322,9 @@
             // 
             passengerMangement1.Dock = DockStyle.Fill;
             passengerMangement1.Location = new Point(0, 0);
+            passengerMangement1.Margin = new Padding(3, 5, 3, 5);
             passengerMangement1.Name = "passengerMangement1";
-            passengerMangement1.Size = new Size(1213, 683);
+            passengerMangement1.Size = new Size(1386, 911);
             passengerMangement1.TabIndex = 11;
             passengerMangement1.Load += passengerMangement1_Load;
             // 
@@ -315,13 +332,14 @@
             // 
             mainUserPage1.Dock = DockStyle.Fill;
             mainUserPage1.Location = new Point(250, 0);
+            mainUserPage1.Margin = new Padding(3, 4, 3, 4);
             mainUserPage1.Name = "mainUserPage1";
             mainUserPage1.Size = new Size(963, 683);
             mainUserPage1.TabIndex = 12;
             // 
             // AdminDashboard
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(guna2Panel1);
             Controls.Add(maina1);
@@ -331,8 +349,9 @@
             Controls.Add(passengerMangement1);
             Controls.Add(reports1);
             Controls.Add(notrificationsa1);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "AdminDashboard";
-            Size = new Size(1213, 683);
+            Size = new Size(1386, 911);
             guna2Panel1.ResumeLayout(false);
             ResumeLayout(false);
         }
