@@ -281,12 +281,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Radius = 12,
                 Padding = new Padding(16, 14, 16, 14),
                 Margin = new Padding(0, 0, 0, 12),
-                Height = 140,
-                ShadowDepth = 10,
-                ShadowColor = Color.FromArgb(150, 0, 0, 0)
+                Height = 120,
+                ShadowDepth = 100,
+                ShadowColor = Color.Black
                 
             };
-            card.Width = Math.Max(100, flowCrew.ClientSize.Width - 30);
+            card.Width = Math.Max(100, flowCrew.ClientSize.Width - 25);
 
             var name = new Guna2HtmlLabel
             {
@@ -337,19 +337,22 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Location = new Point(card.Width - 48, 10)
             };
             btnDel.Click += (_, __) => DeleteRequested?.Invoke(c);
+            int d = card.Width / 2 - 100;
             card.Controls.Add(btnDel);
 
             card.Controls.Add(InfoLine("Employee ID:", c.EmployeeId, 16, 56));
             card.Controls.Add(InfoLine("Email:", c.Email, 16, 80));
-            card.Controls.Add(InfoLine("Phone:", c.Phone, 270, 56));
+            card.Controls.Add(InfoLine("Phone:", c.Phone, d, 56));
 
             string flightText = c.FlightId.HasValue ? c.FlightId.Value.ToString() : "Unassigned";
-            card.Controls.Add(InfoLine("Flight:", flightText, 270, 80));
+            card.Controls.Add(InfoLine("Flight:", flightText, d, 80));
 
             card.SizeChanged += (_, __) =>
             {
                 btnEdit.Location = new Point(card.Width - 96, 10);
                 btnDel.Location = new Point(card.Width - 48, 10);
+               
+                
             };
 
             return card;
