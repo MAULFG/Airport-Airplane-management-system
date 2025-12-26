@@ -69,6 +69,15 @@ public partial class Main1 : Form, INavigationService
     }
 
 
+    public void ShowCrewManagement(int? flightIdFilter = null)
+    {
+        // 1) ensure admin dashboard is on top
+        NavigateToAdmin();
+
+        // 2) tell admin dashboard to open Crew page + apply filter
+        adminDashboard.OpenCrewManagement(flightIdFilter);
+    }
+
 
     public void NavigateToLogin() => loginPage.BringToFront();
     public void NavigateToUser()

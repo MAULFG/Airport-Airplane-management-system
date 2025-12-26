@@ -28,6 +28,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event Action FilterChanged;
 
         // ========================= UI FIELDS =========================
+        private Guna.UI2.WinForms.Guna2ComboBox _cmbFormFlight;
+        private Guna.UI2.WinForms.Guna2ComboBox cmbFlightOptional;
+        private Guna.UI2.WinForms.Guna2ComboBox cmbFormFlight; // the left form combo ("Unassigned")
 
         private Guna2Panel root;
         private Guna2ShadowPanel leftCard;
@@ -81,11 +84,24 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             get
             {
-                if (cmbFlight?.SelectedItem is FlightItem fi)
-                    return fi.FlightId;
+                if (cmbFlight.SelectedItem == null) return null;
+
+                var text = cmbFlight.SelectedItem.ToString();
+
+                // Unassigned
+                if (text.Contains("Unassigned", StringComparison.OrdinalIgnoreCase))
+                    return null;
+
+                // Expected: "Flight #8"
+                // Extract digits
+                var digits = new string(text.Where(char.IsDigit).ToArray());
+                if (int.TryParse(digits, out int id))
+                    return id;
+
                 return null;
             }
         }
+
 
         // ========================= CTOR =========================
 
@@ -93,6 +109,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             InitializeComponent();
             BuildUI();
+            _cmbFormFlight = cmbFlightOptional; // ✅ link field to real designer control
+
             this.Load += (_, __) => ViewLoaded?.Invoke();
             this.Load += (_, __) => MessageBox.Show("Crew View Loaded");
 
@@ -103,32 +121,36 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         public void RenderFlights(List<Flight> flights)
         {
+            // 1) Right-side filter dropdown (TOP RIGHT)
+            cmbFilter.Items.Clear();
+            cmbFilter.Items.Add("All Flights");
+            foreach (var f in flights)
+                cmbFilter.Items.Add($"Flight #{f.FlightID}");
+            cmbFilter.SelectedIndex = 0;
+
+            // 2) Left form dropdown ("Flight (optional)")
             cmbFlight.Items.Clear();
-            cmbFlight.Items.Add(new FlightItem(null, "Unassigned"));
-
-            if (flights != null)
-            {
-                foreach (var f in flights.OrderByDescending(ff => ff.FlightID))
-                {
-                    string text = $"#{f.FlightID}  |  {f.From} → {f.To}  |  {f.Departure:dd MMM HH:mm}";
-                    cmbFlight.Items.Add(new FlightItem(f.FlightID, text));
-                }
-            }
-
+            cmbFlight.Items.Add("Unassigned");
+            foreach (var f in flights)
+                cmbFlight.Items.Add($"Flight #{f.FlightID}");
             cmbFlight.SelectedIndex = 0;
 
-            RefreshFilterItems();
-            ApplyStatusRulesToFlightUI();
+            // apply sync rule after refill
+            SyncFormFlightWithFilter(GetFlightFilter());
         }
+
+
 
         public void RenderCrew(List<Crew> crew)
         {
             allCrew = crew ?? new List<Crew>();
             RenderCards();
         }
+        public bool IsInEditMode { get; private set; }  // set this inside SetEditMode
 
         public void SetEditMode(bool editing)
         {
+            IsInEditMode = editing;
             _uiEditMode = editing;
 
             if (!editing)
@@ -152,6 +174,48 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             ApplyStatusRulesToFlightUI();
         }
+        public void SyncFormFlightWithFilter(int? flightId)
+        {
+            if (cmbFlight == null) return;
+
+            _suppressFormSync = true;
+            try
+            {
+                if (flightId.HasValue)
+                {
+                    // Filter = Flight #X → force form to that flight
+                    for (int i = 0; i < cmbFlight.Items.Count; i++)
+                    {
+                        if (cmbFlight.Items[i]?.ToString() == $"Flight #{flightId.Value}")
+                        {
+                            cmbFlight.SelectedIndex = i;
+                            cmbFlight.Enabled = false;   // optional UX lock
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    // Filter = All Flights → force Unassigned
+                    for (int i = 0; i < cmbFlight.Items.Count; i++)
+                    {
+                        if (cmbFlight.Items[i]?.ToString() == "Unassigned")
+                        {
+                            cmbFlight.SelectedIndex = i;
+                            cmbFlight.Enabled = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                _suppressFormSync = false;
+            }
+        }
+
+
+
 
         public void ShowError(string message)
         {
@@ -241,9 +305,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Padding = new Padding(20)
             };
         }
+        private int? _flightFilter;
+        private bool _suppressFormSync;
+
 
         private void BuildLeftCard()
         {
+
             var title = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
@@ -333,7 +401,26 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmbFilter.Items.Add("All Flights");
             cmbFilter.SelectedIndex = 0;
-            cmbFilter.SelectedIndexChanged += (_, __) => FilterChanged?.Invoke();
+            cmbFilter.SelectedIndexChanged += (_, __) =>
+            {
+                if (_suppressFilterEvent) return;
+
+                // If user manually chooses All Flights, clear the navigation filter
+                if (cmbFilter.SelectedIndex == 0)
+                    _flightIdFilter = null;
+                else
+                {
+                    // If your items are "Flight #8", parse it:
+                    var text = cmbFilter.SelectedItem?.ToString();
+                    if (int.TryParse(text, out var id))
+                        _flightIdFilter = id;
+                    else if (text != null && text.StartsWith("Flight #") && int.TryParse(text.Substring(8), out id))
+                        _flightIdFilter = id;
+                }
+
+                FilterChanged?.Invoke();
+            };
+
             rightCard.Controls.Add(cmbFilter);
 
             flow = new FlowLayoutPanel
@@ -629,5 +716,119 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             cmbFlight.SelectedIndex = 0;
         }
+        private int? _flightIdFilter;
+        private bool _suppressFilterEvent;
+
+        public int? GetFlightFilter() => _flightIdFilter;
+
+        public void SetFlightFilter(int? flightId)
+        {
+            if (flightId.HasValue)
+            {
+                // assumes your filter combobox is the top-right one (example name: cmbFilter)
+                // select "Flight #X"
+                var target = $"Flight #{flightId.Value}";
+                for (int i = 0; i < cmbFilter.Items.Count; i++)
+                {
+                    if (cmbFilter.Items[i]?.ToString() == target)
+                    {
+                        cmbFilter.SelectedIndex = i;
+                        return;
+                    }
+                }
+            }
+
+            // if null OR not found -> All Flights
+            if (cmbFilter.Items.Count > 0)
+                cmbFilter.SelectedIndex = 0;
+        }
+
+        public void ClearFlightFilter()
+        {
+            _flightIdFilter = null;
+
+            _suppressFilterEvent = true;
+            try
+            {
+                cmbFilter.SelectedIndex = 0; // "All Flights"
+            }
+            finally
+            {
+                _suppressFilterEvent = false;
+            }
+
+            FilterChanged?.Invoke();
+        }
+
+        public void SetFormSelectedFlightId(int? flightId)
+        {
+            if (_cmbFormFlight == null) return;
+
+            if (flightId.HasValue)
+            {
+                // find Flight #X (or X) in items
+                for (int i = 0; i < _cmbFormFlight.Items.Count; i++)
+                {
+                    var txt = _cmbFormFlight.Items[i]?.ToString();
+                    if (txt == flightId.Value.ToString() || txt == $"Flight #{flightId.Value}")
+                    {
+                        _cmbFormFlight.SelectedIndex = i;
+                        return;
+                    }
+                }
+            }
+
+            // otherwise set to Unassigned
+            for (int i = 0; i < _cmbFormFlight.Items.Count; i++)
+            {
+                if (string.Equals(_cmbFormFlight.Items[i]?.ToString(), "Unassigned", StringComparison.OrdinalIgnoreCase))
+                {
+                    _cmbFormFlight.SelectedIndex = i;
+                    return;
+                }
+            }
+
+            // fallback
+            _cmbFormFlight.SelectedIndex = 0;
+        }
+        public void FillForm(string fullName, string role, string status, string email, string phone, int? flightId)
+        {
+            txtFullName.Text = fullName;
+            cmbRole.SelectedItem = role;
+            cmbStatus.SelectedItem = status;
+            txtEmail.Text = email;
+            txtPhone.Text = phone;
+
+            SetFormFlight(flightId); // this selects "Flight #x" or "Unassigned"
+        }
+
+        public void SetFormFlight(int? flightId)
+        {
+            if (cmbFlight == null) return;
+
+            if (flightId.HasValue)
+            {
+                string target = $"Flight #{flightId.Value}";
+                for (int i = 0; i < cmbFlight.Items.Count; i++)
+                {
+                    if (cmbFlight.Items[i]?.ToString() == target)
+                    {
+                        cmbFlight.SelectedIndex = i;
+                        return;
+                    }
+                }
+            }
+
+            // no flight or not found
+            for (int i = 0; i < cmbFlight.Items.Count; i++)
+            {
+                if (cmbFlight.Items[i]?.ToString() == "Unassigned")
+                {
+                    cmbFlight.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
+
     }
 }

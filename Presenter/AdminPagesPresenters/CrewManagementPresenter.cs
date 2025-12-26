@@ -1,11 +1,8 @@
-﻿using Airport_Airplane_management_system.Model.Core;
-using Airport_Airplane_management_system.Model.Core.Classes;
-using Airport_Airplane_management_system.Model.Interfaces.Services;
-using Airport_Airplane_management_system.Model.Interfaces.Views;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Services;
-using Airport_Airplane_management_system.View.Forms.LoginPages;
-using Airport_Airplane_management_system.View.Interfaces;
+using Airport_Airplane_management_system.Model.Interfaces.Views;
 using System;
+using System.Linq;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPages
 {
@@ -14,17 +11,14 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private readonly ICrewManagementView _view;
         private readonly CrewService _service;
 
-        private bool _isEditMode;
-        private string _editingEmployeeId;
+        private bool _isEditMode = false;
+        private string _editingEmployeeId = null;
 
-        public CrewManagementPresenter(
-            ICrewManagementView view,
-            CrewService service)
+        public CrewManagementPresenter(ICrewManagementView view, CrewService service)
         {
             _view = view;
             _service = service;
 
-            // Wire events
             _view.ViewLoaded += OnLoad;
             _view.AddOrUpdateClicked += OnAddOrUpdate;
             _view.CancelEditClicked += ExitEditMode;
@@ -42,7 +36,16 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private void Refresh()
         {
             var crew = _service.GetCrew();
+
+            var filterFlightId = _view.GetFlightFilter();
+            if (filterFlightId.HasValue)
+                crew = crew.Where(c => c.FlightId == filterFlightId).ToList();
+
             _view.RenderCrew(crew);
+
+            // 🔴 IMPORTANT: sync ONLY when NOT editing
+            if (!_isEditMode)
+                _view.SyncFormFlightWithFilter(filterFlightId);
         }
 
         private void OnAddOrUpdate()
@@ -51,20 +54,24 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             {
                 _service.ValidateStatusVsFlight(
                     _view.Status,
-                    _view.SelectedFlightId);
+                    _view.SelectedFlightId
+                );
 
                 if (!_isEditMode)
                 {
+                    // ✅ ADD
                     _service.AddCrew(
                         _view.FullName,
                         _view.Role,
                         _view.Status,
                         _view.Email,
                         _view.Phone,
-                        _view.SelectedFlightId);
+                        _view.SelectedFlightId
+                    );
                 }
                 else
                 {
+                    // ✅ UPDATE (THIS WAS BROKEN BEFORE)
                     _service.UpdateCrew(
                         _editingEmployeeId,
                         _view.FullName,
@@ -72,7 +79,8 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                         _view.Status,
                         _view.Email,
                         _view.Phone,
-                        _view.SelectedFlightId);
+                        _view.SelectedFlightId
+                    );
                 }
 
                 ExitEditMode();
@@ -91,9 +99,16 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             _view.SetEditMode(true);
 
-            // fill UI (safe cast)
-            if (_view is Airport_Airplane_management_system.View.Forms.AdminPages.CrewManagement v)
-                v.FillFormFromCrew(c);
+            _view.FillForm(
+                c.FullName,
+                c.Role,
+                c.Status,
+                c.Email,
+                c.Phone,
+                c.FlightId
+            );
+
+            // 🔴 DO NOT sync with filter while editing
         }
 
         private void ExitEditMode()

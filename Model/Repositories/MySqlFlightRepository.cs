@@ -1,7 +1,6 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using MySql.Data.MySqlClient;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 
@@ -23,9 +22,10 @@ namespace Airport_Airplane_management_system.Model.Repositories
             using var conn = new MySqlConnection(_connStr);
             conn.Open();
 
-            string query = "SELECT * FROM flights";
+            const string query = "SELECT * FROM flights";
             using var cmd = new MySqlCommand(query, conn);
             using var reader = cmd.ExecuteReader();
+
             while (reader.Read())
             {
                 int flightId = reader.GetInt32("id");
@@ -35,12 +35,10 @@ namespace Airport_Airplane_management_system.Model.Repositories
                 DateTime departure = reader.GetDateTime("departure");
                 DateTime arrival = reader.GetDateTime("arrival");
 
-                // Plane object should be loaded separately in service
                 flights.Add(new Flight(flightId, null, fromCity, toCity, departure, arrival, new Dictionary<string, decimal>())
                 {
                     PlaneIDFromDb = planeId
                 });
-
             }
 
             return flights;
@@ -53,10 +51,11 @@ namespace Airport_Airplane_management_system.Model.Repositories
             using var conn = new MySqlConnection(_connStr);
             conn.Open();
 
-            string query = @"SELECT id, flight_id, plane_seat_index, seat_number, class_type, is_booked, user_id
-                         FROM flight_seats
-                         WHERE flight_id = @fid
-                         ORDER BY plane_seat_index";
+            const string query = @"
+SELECT id, flight_id, plane_seat_index, seat_number, class_type, is_booked, user_id
+FROM flight_seats
+WHERE flight_id = @fid
+ORDER BY plane_seat_index;";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@fid", flightId);
 
@@ -75,6 +74,7 @@ namespace Airport_Airplane_management_system.Model.Repositories
 
             return seats;
         }
+
         public int CountUpcomingFlightsNotFullyBooked()
         {
             const string sql = @"
@@ -82,20 +82,18 @@ SELECT COUNT(DISTINCT f.id)
 FROM flights f
 JOIN flight_seats fs ON fs.flight_id = f.id
 WHERE f.departure >= NOW()
-  AND fs.is_booked = 0;
-";
+  AND fs.is_booked = 0;";
 
             using var conn = new MySqlConnection(_connStr);
             conn.Open();
             using var cmd = new MySqlCommand(sql, conn);
+
             object result = cmd.ExecuteScalar();
             return (result == null || result == DBNull.Value) ? 0 : Convert.ToInt32(result);
         }
-        
 
-        
-
-        public bool InsertFlight(Flight flight, out int newFlightId, out string error)
+        // ✅ UPDATED SIGNATURE: accepts planeId separately (MVP-friendly)
+        public bool InsertFlight(Flight flight, int planeId, out int newFlightId, out string error)
         {
             newFlightId = -1;
             error = "";
@@ -109,7 +107,8 @@ SELECT LAST_INSERT_ID();";
             {
                 using var conn = new MySqlConnection(_connStr);
                 using var cmd = new MySqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@pid", flight.Plane.PlaneID);
+
+                cmd.Parameters.AddWithValue("@pid", planeId);
                 cmd.Parameters.AddWithValue("@from", flight.From);
                 cmd.Parameters.AddWithValue("@to", flight.To);
                 cmd.Parameters.AddWithValue("@dep", flight.Departure);
@@ -126,22 +125,30 @@ SELECT LAST_INSERT_ID();";
             }
         }
 
-        public bool UpdateFlightDates(int flightId, DateTime newDeparture, DateTime newArrival, out string error)
+        // ✅ UPDATED: also updates plane_id
+        public bool UpdateFlightDates(int flightId, DateTime newDeparture, DateTime newArrival, int planeId, out string error)
         {
             error = "";
+
             if (newArrival <= newDeparture)
             {
                 error = "Arrival must be after departure.";
                 return false;
             }
 
-            const string sql = "UPDATE flights SET departure=@dep, arrival=@arr WHERE id=@id;";
+            const string sql = @"
+UPDATE flights
+SET departure=@dep, arrival=@arr, plane_id=@pid
+WHERE id=@id;";
+
             try
             {
                 using var conn = new MySqlConnection(_connStr);
                 using var cmd = new MySqlCommand(sql, conn);
+
                 cmd.Parameters.AddWithValue("@dep", newDeparture);
                 cmd.Parameters.AddWithValue("@arr", newArrival);
+                cmd.Parameters.AddWithValue("@pid", planeId);
                 cmd.Parameters.AddWithValue("@id", flightId);
 
                 conn.Open();
@@ -189,6 +196,7 @@ SELECT LAST_INSERT_ID();";
                 return false;
             }
         }
+
         public Flight GetFlightById(int flightId)
         {
             using var conn = new MySqlConnection(_connStr);
@@ -201,41 +209,52 @@ SELECT LAST_INSERT_ID();";
             using var r = cmd.ExecuteReader();
             if (!r.Read()) return null;
 
-            return new Flight(
+            var f = new Flight(
                 r.GetInt32("id"),
                 null,
                 r.GetString("from_city"),
                 r.GetString("to_city"),
                 r.GetDateTime("departure"),
                 r.GetDateTime("arrival"),
-                new Dictionary<string, decimal>()
-            );
+                new Dictionary<string, decimal>());
+
+            f.PlaneIDFromDb = r.GetInt32("plane_id");
+            return f;
         }
-        public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId = null)
+
+        // ✅ UPDATED SIGNATURE + out error
+        public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId, out string error)
         {
-            string sql = @"
+            error = "";
+            try
+            {
+                string sql = @"
 SELECT COUNT(*)
 FROM flights
 WHERE plane_id = @pid
   AND (@dep < arrival AND @arr > departure)";
 
-            if (excludeFlightId.HasValue)
-                sql += " AND id <> @exclude";
+                if (excludeFlightId.HasValue)
+                    sql += " AND id <> @exclude;";
 
-            using var conn = new MySqlConnection(_connStr);
-            using var cmd = new MySqlCommand(sql, conn);
+                using var conn = new MySqlConnection(_connStr);
+                using var cmd = new MySqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@pid", planeId);
-            cmd.Parameters.AddWithValue("@dep", dep);
-            cmd.Parameters.AddWithValue("@arr", arr);
-            if (excludeFlightId.HasValue)
-                cmd.Parameters.AddWithValue("@exclude", excludeFlightId.Value);
+                cmd.Parameters.AddWithValue("@pid", planeId);
+                cmd.Parameters.AddWithValue("@dep", dep);
+                cmd.Parameters.AddWithValue("@arr", arr);
 
-            conn.Open();
-            return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                if (excludeFlightId.HasValue)
+                    cmd.Parameters.AddWithValue("@exclude", excludeFlightId.Value);
+
+                conn.Open();
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return true; // treat DB error as "conflict" to be safe
+            }
         }
-
-
     }
-
 }
