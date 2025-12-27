@@ -23,6 +23,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public CrewManagement()
         {
             InitializeComponent();
+
             BuildFlow();
             WireEvents();
         }
