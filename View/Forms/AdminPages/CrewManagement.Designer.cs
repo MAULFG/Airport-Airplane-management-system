@@ -131,7 +131,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             leftCard.Radius = 14;
             leftCard.ShadowColor = Color.Black;
             leftCard.ShadowDepth = 18;
-            leftCard.Size = new Size(353, 660);
+            leftCard.Size = new Size(357, 660);
             leftCard.TabIndex = 0;
             // 
             // cmbFlight
@@ -145,10 +145,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbFlight.Font = new Font("Segoe UI", 10F);
             cmbFlight.ForeColor = Color.FromArgb(68, 88, 112);
             cmbFlight.ItemHeight = 30;
-            cmbFlight.Location = new Point(26, 430);
+            cmbFlight.Location = new Point(17, 453);
             cmbFlight.Name = "cmbFlight";
             cmbFlight.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            cmbFlight.Size = new Size(308, 36);
+            cmbFlight.Size = new Size(327, 36);
             cmbFlight.TabIndex = 12;
             // 
             // cmbStatus
@@ -163,10 +163,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbStatus.ForeColor = Color.FromArgb(68, 88, 112);
             cmbStatus.ItemHeight = 30;
             cmbStatus.Items.AddRange(new object[] { "Active", "Inactive" });
-            cmbStatus.Location = new Point(26, 368);
+            cmbStatus.Location = new Point(17, 388);
             cmbStatus.Name = "cmbStatus";
             cmbStatus.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            cmbStatus.Size = new Size(308, 36);
+            cmbStatus.Size = new Size(327, 36);
             cmbStatus.TabIndex = 10;
             // 
             // txtPhone
@@ -175,13 +175,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtPhone.CustomizableEdges = customizableEdges5;
             txtPhone.DefaultText = "";
             txtPhone.Font = new Font("Segoe UI", 9F);
-            txtPhone.Location = new Point(26, 300);
+            txtPhone.Location = new Point(17, 316);
             txtPhone.Margin = new Padding(3, 4, 3, 4);
             txtPhone.Name = "txtPhone";
             txtPhone.PlaceholderText = "+961 70 555 000";
             txtPhone.SelectedText = "";
             txtPhone.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            txtPhone.Size = new Size(308, 42);
+            txtPhone.Size = new Size(327, 42);
             txtPhone.TabIndex = 8;
             // 
             // txtEmail
@@ -190,13 +190,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtEmail.CustomizableEdges = customizableEdges7;
             txtEmail.DefaultText = "";
             txtEmail.Font = new Font("Segoe UI", 9F);
-            txtEmail.Location = new Point(26, 231);
+            txtEmail.Location = new Point(17, 243);
             txtEmail.Margin = new Padding(3, 4, 3, 4);
             txtEmail.Name = "txtEmail";
             txtEmail.PlaceholderText = "example@airline.com";
             txtEmail.SelectedText = "";
             txtEmail.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            txtEmail.Size = new Size(308, 42);
+            txtEmail.Size = new Size(327, 42);
             txtEmail.TabIndex = 6;
             // 
             // cmbRole
@@ -211,10 +211,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbRole.ForeColor = Color.FromArgb(68, 88, 112);
             cmbRole.ItemHeight = 30;
             cmbRole.Items.AddRange(new object[] { "Captain", "First Officer", "Flight Attendant", "Purser", "Flight Engineer" });
-            cmbRole.Location = new Point(26, 168);
+            cmbRole.Location = new Point(17, 177);
             cmbRole.Name = "cmbRole";
             cmbRole.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            cmbRole.Size = new Size(308, 36);
+            cmbRole.Size = new Size(327, 36);
             cmbRole.TabIndex = 4;
             // 
             // txtFullName
@@ -223,20 +223,21 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtFullName.CustomizableEdges = customizableEdges11;
             txtFullName.DefaultText = "";
             txtFullName.Font = new Font("Segoe UI", 9F);
-            txtFullName.Location = new Point(26, 98);
+            txtFullName.Location = new Point(17, 105);
             txtFullName.Margin = new Padding(3, 4, 3, 4);
             txtFullName.Name = "txtFullName";
             txtFullName.PlaceholderText = "Enter FullName";
             txtFullName.SelectedText = "";
             txtFullName.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            txtFullName.Size = new Size(308, 42);
+            txtFullName.Size = new Size(327, 42);
             txtFullName.TabIndex = 2;
+            txtFullName.TextChanged += txtFullName_TextChanged;
             // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
-            lblTitle.Location = new Point(27, 15);
+            lblTitle.Location = new Point(26, 22);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(256, 30);
             lblTitle.TabIndex = 0;
@@ -244,7 +245,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblFullName
             // 
-            lblFullName.Location = new Point(26, 68);
+            lblFullName.Location = new Point(17, 78);
             lblFullName.Name = "lblFullName";
             lblFullName.Size = new Size(100, 23);
             lblFullName.TabIndex = 1;
@@ -252,7 +253,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblRole
             // 
-            lblRole.Location = new Point(26, 143);
+            lblRole.Location = new Point(17, 151);
             lblRole.Name = "lblRole";
             lblRole.Size = new Size(100, 23);
             lblRole.TabIndex = 3;
@@ -260,7 +261,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblEmail
             // 
-            lblEmail.Location = new Point(26, 207);
+            lblEmail.Location = new Point(17, 216);
             lblEmail.Name = "lblEmail";
             lblEmail.Size = new Size(100, 23);
             lblEmail.TabIndex = 5;
@@ -268,7 +269,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblPhone
             // 
-            lblPhone.Location = new Point(26, 275);
+            lblPhone.Location = new Point(17, 289);
             lblPhone.Name = "lblPhone";
             lblPhone.Size = new Size(100, 23);
             lblPhone.TabIndex = 7;
@@ -276,7 +277,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblStatus
             // 
-            lblStatus.Location = new Point(26, 344);
+            lblStatus.Location = new Point(17, 362);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(100, 23);
             lblStatus.TabIndex = 9;
@@ -284,7 +285,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblFlight
             // 
-            lblFlight.Location = new Point(26, 406);
+            lblFlight.Location = new Point(17, 427);
             lblFlight.Name = "lblFlight";
             lblFlight.Size = new Size(100, 23);
             lblFlight.TabIndex = 11;
@@ -296,10 +297,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnAddOrUpdate.CustomizableEdges = customizableEdges13;
             btnAddOrUpdate.Font = new Font("Segoe UI", 9F);
             btnAddOrUpdate.ForeColor = Color.White;
-            btnAddOrUpdate.Location = new Point(26, 483);
+            btnAddOrUpdate.Location = new Point(17, 512);
             btnAddOrUpdate.Name = "btnAddOrUpdate";
             btnAddOrUpdate.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnAddOrUpdate.Size = new Size(308, 40);
+            btnAddOrUpdate.Size = new Size(327, 40);
             btnAddOrUpdate.TabIndex = 13;
             btnAddOrUpdate.Text = "Add Crew Member";
             // 
@@ -309,10 +310,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnCancelEdit.CustomizableEdges = customizableEdges15;
             btnCancelEdit.Font = new Font("Segoe UI", 9F);
             btnCancelEdit.ForeColor = Color.White;
-            btnCancelEdit.Location = new Point(26, 538);
+            btnCancelEdit.Location = new Point(17, 571);
             btnCancelEdit.Name = "btnCancelEdit";
             btnCancelEdit.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            btnCancelEdit.Size = new Size(304, 40);
+            btnCancelEdit.Size = new Size(327, 40);
             btnCancelEdit.TabIndex = 14;
             btnCancelEdit.Text = "Cancel Edit";
             btnCancelEdit.Visible = false;
@@ -324,13 +325,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             rightCard.Controls.Add(cmbFilter);
             rightCard.Controls.Add(lblCount);
             rightCard.FillColor = Color.White;
-            rightCard.Location = new Point(369, 10);
+            rightCard.Location = new Point(373, 10);
             rightCard.Name = "rightCard";
             rightCard.Padding = new Padding(10);
             rightCard.Radius = 14;
             rightCard.ShadowColor = Color.Black;
             rightCard.ShadowDepth = 18;
-            rightCard.Size = new Size(584, 660);
+            rightCard.Size = new Size(577, 660);
             rightCard.TabIndex = 1;
             // 
             // cmbFilter
@@ -345,7 +346,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbFilter.ForeColor = Color.FromArgb(68, 88, 112);
             cmbFilter.ItemHeight = 30;
             cmbFilter.Items.AddRange(new object[] { "All Flights" });
-            cmbFilter.Location = new Point(300, 16);
+            cmbFilter.Location = new Point(384, 16);
             cmbFilter.Name = "cmbFilter";
             cmbFilter.ShadowDecoration.CustomizableEdges = customizableEdges18;
             cmbFilter.Size = new Size(180, 36);

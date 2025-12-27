@@ -21,6 +21,9 @@ public interface ICrewManagementView
     // Feedback
     void ShowError(string message);
     void ShowInfo(string message);
+    string CurrentFilter { get; }
+    void SetFormFlight(int? flightId);
+    void SetFilterFlight(int? flightId);
 
     // Events
     event Action<Crew> EditRequested;
