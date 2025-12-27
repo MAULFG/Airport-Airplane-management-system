@@ -4,6 +4,7 @@ using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter.AdminPages;
 using Airport_Airplane_management_system.Presenter.AdminPagesPresenters;
+using Airport_Airplane_management_system.Repositories;
 using Airport_Airplane_management_system.View.Interfaces;
 using Guna.UI2.WinForms;
 using System;
@@ -35,14 +36,17 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private IBookingRepository _bookingRepo;
         private IPlaneRepository _planeRepo;
         private ICrewRepository _crewRepo;
+        private IPassengerRepository _passengerRepo;
 
         // ===== Services =====
         private FlightService _flightService;
         private CrewService _crewService;
+        private PassengerService _passengerService;
 
         // ===== Page Presenters =====
         private FlightManagementPresenter _flightPresenter;
         private CrewManagementPresenter _crewPresenter;
+        private PassengerManagementPresenter _passengerPresenter;
 
         public AdminDashboard(INavigationService navigation)
         {
@@ -61,29 +65,48 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _planeRepo = new MySqlPlaneRepository(connStr);
             _crewRepo = new MySqlCrewRepository(connStr);
 
+            // ✅ Passenger Repo (make sure this class name matches your project)
+            _passengerRepo = new PassengerRepository(connStr);
+
             // ✅ Create services
             _flightService = new FlightService(_flightRepo, _userRepo, _bookingRepo, _planeRepo);
             _crewService = new CrewService(_crewRepo, _flightRepo);
+            _passengerService = new PassengerService(_passengerRepo);
 
             // ✅ Wire MVP presenters ONCE
+
             _flightPresenter = new FlightManagementPresenter(
-    flightManagement1,
-    _flightService,
-    openCrewForFlight: (flightId) =>
-    {
-        // 1) open crew page
-        CrewMangement();
+                flightManagement1,
+                _flightService,
+                openCrewForFlight: (flightId) =>
+                {
+                    // 1) open crew page
+                    CrewMangement();
 
-        // 2) set the crew page filter to the selected flight
-        crewManagement1.SetFilterFlight(flightId);
+                    // 2) set the crew page filter to the selected flight
+                    crewManagement1.SetFilterFlight(flightId);
 
-        // 3) also sync the left form dropdown (optional but usually wanted)
-        crewManagement1.SetFormFlight(flightId);
-    }
-);
-
+                    // 3) also sync the left form dropdown (optional but usually wanted)
+                    crewManagement1.SetFormFlight(flightId);
+                }
+            );
 
             _crewPresenter = new CrewManagementPresenter(crewManagement1, _crewService);
+
+            // ✅ Passenger MVP presenter (THIS is what was missing)
+            // Passenger MVP
+            _passengerRepo = new PassengerRepository(connStr);
+
+            // PassengerService takes ONE arg in your project (repo)
+            _passengerService = new PassengerService(_passengerRepo);
+
+            // Passenger presenter requires the count function
+            _passengerPresenter = new PassengerManagementPresenter(
+                passengerMangement1,
+                _passengerService,
+                () => _flightRepo.CountUpcomingFlightsNotFullyBooked()
+            );
+
 
             // UI init
             HideAllPanels();
