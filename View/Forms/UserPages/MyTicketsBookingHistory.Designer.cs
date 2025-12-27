@@ -37,6 +37,7 @@
             BackColor = SystemColors.ActiveCaption;
             Name = "MyTicketsBookingHistory";
             Size = new Size(963, 683);
+            Load += MyTicketsBookingHistory_Load;
             ResumeLayout(false);
         }
 

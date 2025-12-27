@@ -1,7 +1,11 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Presenter.UserPagesPresenters;
+using Airport_Airplane_management_system.View.Forms.UserPages;
+using Airport_Airplane_management_system.View.Interfaces;
 using System;
+using System.Configuration;
 using System.Linq;
 
 namespace Airport_Airplane_management_system.Presenter
@@ -10,13 +14,17 @@ namespace Airport_Airplane_management_system.Presenter
     {
         private readonly ISearchAndBookingView _view;
         private readonly FlightService _flightService;
+        private readonly INavigationService _navigation;
+        private readonly UserDashboardPresenter _userdashpresenter;
 
-        public SearchAndBookingPresenter(ISearchAndBookingView view, FlightService flightService)
+        public SearchAndBookingPresenter( ISearchAndBookingView view,FlightService flightService,INavigationService navigation,UserDashboardPresenter userDashboardPresenter)  // Add this parameter
         {
             _view = view;
             _flightService = flightService;
+            _navigation = navigation;
+            _userdashpresenter = userDashboardPresenter;  // Assign it
 
-            // Subscribe to the search button event
+            _view.BookFlightRequested += OpenBookingPage;
             _view.SearchClicked += OnSearchClicked;
         }
 
@@ -52,7 +60,10 @@ namespace Airport_Airplane_management_system.Presenter
             // Pass the Flight objects to the view
             _view.DisplayFlights(flights);
         }
-
+        private void OpenBookingPage(int flightId)
+        {
+            _userdashpresenter.OpenBookingp(flightId);
+        }
 
     }
 }

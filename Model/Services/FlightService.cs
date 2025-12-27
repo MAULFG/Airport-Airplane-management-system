@@ -164,6 +164,33 @@ namespace Airport_Airplane_management_system.Model.Services
 
             return true;
         }
+        public bool BookSeat(User user, Flight flight, FlightSeats seat, out string error, out int bookingId)
+        {
+            error = "";
+            bookingId = 0;
+
+            if (seat.IsBooked)
+            {
+                error = "Seat already booked.";
+                return false;
+            }
+
+            bool success = _bookingRepo.CreateBooking(
+                user.UserID,
+                flight.FlightID,
+                seat.Id,
+                seat.ClassType,
+                out bookingId,
+                out error
+            );
+
+            if (success)
+            {
+                seat.AssignPassenger(user); // update in memory
+            }
+
+            return success;
+        }
 
 
     }

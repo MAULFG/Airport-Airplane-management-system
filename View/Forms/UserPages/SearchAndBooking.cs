@@ -30,6 +30,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         public DateTime? DepartureDate => dtDeparture.Checked ? dtDeparture.Value : (DateTime?)null;
 
+
         public string From => cbFrom.SelectedIndex > 0 ? cbFrom.SelectedItem.ToString() : null;
         public string To => cbTo.SelectedIndex > 0 ? cbTo.SelectedItem.ToString() : null;
        
@@ -188,10 +189,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Font = new Font("Arial", 12, FontStyle.Bold),
                 Anchor = AnchorStyles.Right | AnchorStyles.Bottom
             };
+            
+            
             details.Controls.Add(btnBook);
             btnBook.Top = details.Height - btnBook.Height - 10;
             btnBook.Left = details.Width - btnBook.Width - 10;
-            btnBook.Click += (s, e) => MessageBox.Show($"Booking Flight {f.FlightID} coming soon ✈");
+            btnBook.Click += (s, e) => {
+                int flightId = f.FlightID;
+                BookFlightRequested?.Invoke(flightId);
+            };
 
             // ===== TOGGLE EXPAND/COLLAPSE =====
             void Toggle()
@@ -280,7 +286,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
         private Guna2HtmlLabel CreateSeatLabel(string text, int x, int y) =>
             new Guna2HtmlLabel { Text = text, Font = new Font("Arial", 9), Location = new Point(x, y), AutoSize = true };
-
+        public event Action<int> BookFlightRequested;
         private void flowFlights_Paint(object sender, PaintEventArgs e)
         {
 

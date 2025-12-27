@@ -19,12 +19,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public event EventHandler AccountClicked;
         public event EventHandler LogoutClicked;
         public event EventHandler UserMainClicked;
-
+        private readonly IBookingView _bookView;
+        private  BookingPage _bookForm;
         private readonly INavigationService _navigation;
         private readonly UserDashboardPresenter _presenter;
         private readonly FlightService _flightService;
+        private readonly BookingService _bookingService;
         private UpcomingFlightsPresenter _upcomingFlightsPresenter;
         private SearchAndBookingPresenter _searchandbookingpresenter;
+        private BookingPresenter _bookingpresenter;
         private Panel panelMain;
 
         public UserDashboard(INavigationService navigation)
@@ -44,12 +47,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             var userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             var bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             var planeRepo =new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+           
             _flightService = new FlightService(flightRepo, userRepo, bookingRepo,planeRepo);
             
             _upcomingFlightsPresenter =
                 new UpcomingFlightsPresenter(upcomingFlights1, _flightService);
-            _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1,_flightService);
+            _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1,_flightService,_navigation,_presenter);
+
             // Initialize the designer panel at runtime
+
 
 
             // Add all designer panels to panelMain
@@ -71,7 +77,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
        
 
         }
-
+        public void OpenBooking(int flightId)
+        {
+            var bookingForm = new BookingPage(flightId);
+            _bookForm = bookingForm; // Assign the created form
+            _bookingpresenter = new BookingPresenter(_bookView, _flightService, flightId);
+            bookingForm.ShowDialog();
+        }
         private void InitializeButtonEvents()
         {
             guna2Button1.Click += (s, e) => UserMainClicked?.Invoke(this, EventArgs.Empty);

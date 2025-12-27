@@ -238,7 +238,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             lblTitle.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
             lblTitle.Location = new Point(27, 15);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(256, 30);
+            lblTitle.Size = new Size(213, 23);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Add / Edit Crew Member";
             // 
@@ -332,6 +332,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             rightCard.ShadowDepth = 18;
             rightCard.Size = new Size(584, 660);
             rightCard.TabIndex = 1;
+            rightCard.Paint += rightCard_Paint;
             // 
             // cmbFilter
             // 
@@ -357,7 +358,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             lblCount.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
             lblCount.Location = new Point(23, 16);
             lblCount.Name = "lblCount";
-            lblCount.Size = new Size(183, 32);
+            lblCount.Size = new Size(151, 25);
             lblCount.TabIndex = 0;
             lblCount.Text = "Crew Members (0)";
             // 

@@ -285,14 +285,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 ShadowDepth = 100,
                 ShadowShift = 5,
                 ShadowColor = Color.Black
-                
+
             };
             card.Width = Math.Max(100, flowCrew.ClientSize.Width - 25);
 
             var name = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
-          
+
                 Text = c.FullName,
                 Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(30, 30, 30),
@@ -351,7 +351,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             card.SizeChanged += (_, __) =>
             {
                 btnEdit.Location = new Point(card.Width - 96, 10);
-                btnDel.Location = new Point(card.Width - 48, 10);      
+                btnDel.Location = new Point(card.Width - 48, 10);
             };
 
             return card;
@@ -359,14 +359,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private Control InfoLine(string label, string value, int x, int y)
         {
-            var p = new Guna2Panel { Location = new Point(x, y), Size = new Size(230, 22), BackColor = Color.Transparent ,FillColor=Color.Transparent};
-            var l1 = new Label { Text = label, AutoSize = true, Location = new Point(10, 2), Font = new Font("Segoe UI", 9F),BackColor=Color.Transparent,ForeColor = Color.FromArgb(120, 120, 120) };
+            var p = new Guna2Panel { Location = new Point(x, y), Size = new Size(230, 22), BackColor = Color.Transparent, FillColor = Color.Transparent };
+            var l1 = new Label { Text = label, AutoSize = true, Location = new Point(10, 2), Font = new Font("Segoe UI", 9F), BackColor = Color.Transparent, ForeColor = Color.FromArgb(120, 120, 120) };
             var l2 = new Label { Text = value ?? "", AutoSize = true, Location = new Point(l1.Right - 50, 2), Font = new Font("Segoe UI", 9F), BackColor = Color.Transparent, ForeColor = Color.FromArgb(60, 60, 60) };
             p.Controls.Add(l1); p.Controls.Add(l2);
-            p.SizeChanged += (_, __) => l2.Location = new Point(l1.Right-40, 2);
+            p.SizeChanged += (_, __) => l2.Location = new Point(l1.Right - 40, 2);
             return p;
         }
-            
+
         private Guna2HtmlLabel Badge(string text, Color back, Color fore)
         {
             return new Guna2HtmlLabel { AutoSize = true, Text = $"  {text}  ", BackColor = back, ForeColor = fore, Font = new Font("Segoe UI", 9F, FontStyle.Bold) };
@@ -374,6 +374,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
 
         private void flow_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void rightCard_Paint(object sender, PaintEventArgs e)
         {
 
         }

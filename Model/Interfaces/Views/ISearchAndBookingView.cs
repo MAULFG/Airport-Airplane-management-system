@@ -14,7 +14,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         bool IsDateSelected { get; }
 
         event EventHandler SearchClicked;
-
+        event Action<int> BookFlightRequested;
         // Updated: now takes Flight objects instead of string
         void DisplayFlights(List<Flight> flights);
 

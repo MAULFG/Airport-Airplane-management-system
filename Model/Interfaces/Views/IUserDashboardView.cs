@@ -1,5 +1,6 @@
-﻿using System;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.View.Forms.UserPages;
+using System;
 
 namespace Airport_Airplane_management_system.View.Interfaces
 {
@@ -16,6 +17,7 @@ namespace Airport_Airplane_management_system.View.Interfaces
         event EventHandler UserMainClicked;
 
         // Methods called by Presenter to show specific panels
+        void OpenBooking(int flightId);
         void UpcomingFlights();
         void SearchBook();
         void MyTickets();

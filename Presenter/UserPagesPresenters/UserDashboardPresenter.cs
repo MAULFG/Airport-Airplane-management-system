@@ -38,7 +38,10 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
         {
             _view.SearchBook();
         }
-
+        public void OpenBookingp(int flightid)
+        {
+            _view.OpenBooking(flightid);
+        }
         private void OnMyTicketsClicked(object sender, EventArgs e)
         {
             _view.MyTickets();

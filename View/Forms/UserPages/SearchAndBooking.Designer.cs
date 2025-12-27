@@ -11,7 +11,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private FlowLayoutPanel flowFilters;
         private Guna2ComboBox cbFrom, cbTo, cbClass;
         private Guna2DateTimePicker dtDeparture, dtReturn;
-        private Guna2NumericUpDown numPassengers;
         private Guna2Button btnSearch;
         private FlowLayoutPanel flowFlights;
 
@@ -27,12 +26,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             panelSearch = new Guna2Panel();
             flowFilters = new FlowLayoutPanel();
             cbFrom = new Guna2ComboBox();
@@ -40,10 +39,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblDeparture = new Label();
             dtDeparture = new Guna2DateTimePicker();
             lblPassengers = new Label();
-            numPassengers = new Guna2NumericUpDown();
             cbClass = new Guna2ComboBox();
             btnSearch = new Guna2Button();
             flowFlights = new FlowLayoutPanel();
+            numPassengers = new Guna2NumericUpDown();
             panelSearch.SuspendLayout();
             flowFilters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numPassengers).BeginInit();
@@ -127,7 +126,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblDeparture.Location = new Point(280, 15);
             lblDeparture.Margin = new Padding(5, 10, 0, 0);
             lblDeparture.Name = "lblDeparture";
-            lblDeparture.Size = new Size(68, 15);
+            lblDeparture.Size = new Size(84, 20);
             lblDeparture.TabIndex = 4;
             lblDeparture.Text = "Departure:";
             // 
@@ -138,14 +137,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             dtDeparture.FillColor = Color.DarkCyan;
             dtDeparture.Font = new Font("Segoe UI", 9F);
             dtDeparture.Format = DateTimePickerFormat.Short;
-            dtDeparture.Location = new Point(353, 10);
+            dtDeparture.Location = new Point(369, 10);
             dtDeparture.Margin = new Padding(5);
             dtDeparture.MaxDate = new DateTime(9998, 12, 31);
             dtDeparture.MinDate = new DateTime(1753, 1, 1);
             dtDeparture.Name = "dtDeparture";
             dtDeparture.ShadowDecoration.CustomizableEdges = customizableEdges6;
             dtDeparture.ShowCheckBox = true;
-            dtDeparture.Checked = false;       // start unchecked
+            dtDeparture.Checked = false; // <--- make it optional from start
             dtDeparture.Size = new Size(125, 36);
             dtDeparture.TabIndex = 5;
             // 
@@ -153,29 +152,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             lblPassengers.AutoSize = true;
             lblPassengers.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPassengers.Location = new Point(488, 15);
+            lblPassengers.Location = new Point(504, 15);
             lblPassengers.Margin = new Padding(5, 10, 0, 0);
             lblPassengers.Name = "lblPassengers";
-            lblPassengers.Size = new Size(71, 15);
+            lblPassengers.Size = new Size(91, 20);
             lblPassengers.TabIndex = 8;
             lblPassengers.Text = "Passengers:";
-            // 
-            // numPassengers
-            // 
-            numPassengers.BackColor = Color.Transparent;
-            numPassengers.BorderRadius = 10;
-            numPassengers.CustomizableEdges = customizableEdges7;
-            numPassengers.Font = new Font("Segoe UI", 9F);
-            numPassengers.Location = new Point(564, 10);
-            numPassengers.Margin = new Padding(5);
-            numPassengers.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            numPassengers.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numPassengers.Name = "numPassengers";
-            numPassengers.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            numPassengers.Size = new Size(61, 36);
-            numPassengers.TabIndex = 9;
-            numPassengers.UpDownButtonFillColor = Color.DarkCyan;
-            numPassengers.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // cbClass
             // 
@@ -189,7 +171,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cbClass.ForeColor = Color.FromArgb(68, 88, 112);
             cbClass.ItemHeight = 30;
             cbClass.Items.AddRange(new object[] { "Select Class", "Economy", "Business", "First" });
-            cbClass.Location = new Point(635, 10);
+            cbClass.Location = new Point(671, 10);
             cbClass.Margin = new Padding(5);
             cbClass.Name = "cbClass";
             cbClass.ShadowDecoration.CustomizableEdges = customizableEdges10;
@@ -203,7 +185,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnSearch.FillColor = Color.DarkCyan;
             btnSearch.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnSearch.ForeColor = Color.White;
-            btnSearch.Location = new Point(765, 10);
+            btnSearch.Location = new Point(10, 56);
             btnSearch.Margin = new Padding(5);
             btnSearch.Name = "btnSearch";
             btnSearch.PressedColor = Color.DarkCyan;
@@ -227,6 +209,23 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowFlights.WrapContents = false;
             flowFlights.Paint += flowFlights_Paint;
             // 
+            // numPassengers
+            // 
+            numPassengers.BackColor = Color.Transparent;
+            numPassengers.BorderRadius = 10;
+            numPassengers.CustomizableEdges = customizableEdges7;
+            numPassengers.Font = new Font("Segoe UI", 9F);
+            numPassengers.Location = new Point(600, 10);
+            numPassengers.Margin = new Padding(5);
+            numPassengers.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            numPassengers.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numPassengers.Name = "numPassengers";
+            numPassengers.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            numPassengers.Size = new Size(61, 36);
+            numPassengers.TabIndex = 9;
+            numPassengers.UpDownButtonFillColor = Color.DarkCyan;
+            numPassengers.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
             // SearchAndBooking
             // 
             BackColor = Color.White;
@@ -240,5 +239,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             ((System.ComponentModel.ISupportInitialize)numPassengers).EndInit();
             ResumeLayout(false);
         }
+
+        private Guna2NumericUpDown numPassengers;
     }
 }

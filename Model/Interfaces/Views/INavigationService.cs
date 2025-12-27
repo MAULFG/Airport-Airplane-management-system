@@ -9,6 +9,8 @@ namespace Airport_Airplane_management_system.View.Interfaces
         void NavigateToSignUp();
         void NavigateToForgotPassword();
         void NavigateToLogin();
+     
     }
-
 }
+
+

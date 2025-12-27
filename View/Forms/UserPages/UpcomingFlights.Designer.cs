@@ -36,12 +36,7 @@ namespace Ticket_Booking_System_OOP.WinFormsApp.Forms.UserPages
             Controls.Add(flowFlights);
             Name = "UpcomingFlights";
 
-            // Trigger presenter AFTER control is shown
-            this.VisibleChanged += (s, e) =>
-            {
-                if (Visible)
-                    LoadFlightsRequested?.Invoke(this, EventArgs.Empty);
-            };
+
 
             ResumeLayout(false);
         }

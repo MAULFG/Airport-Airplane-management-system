@@ -1,5 +1,6 @@
-﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter;
@@ -9,7 +10,9 @@ using Airport_Airplane_management_system.View.Forms.AdminPages;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
 using Airport_Airplane_management_system.View.Forms.UserPages;
 using Airport_Airplane_management_system.View.Interfaces;
+using Microsoft.VisualBasic.ApplicationServices;
 using Ticket_Booking_System_OOP.Model.Repositories;
+using AppUser = Airport_Airplane_management_system.Model.Core.Classes.User;
 
 public partial class Main1 : Form, INavigationService
 {
@@ -23,10 +26,12 @@ public partial class Main1 : Form, INavigationService
     private readonly IUserRepository userRepo;
     private readonly IBookingRepository bookingRepo;
     private readonly IPlaneRepository planeRepo;
-    
+    private readonly IBookingView bookingview; 
+
     private readonly FlightService flightService;
     private readonly UpcomingFlights upcomingFlightsPage;
     private readonly AdminDashboardPresenter _adminPresenter;
+    private readonly AppUser _user;
     public Main1()
     {
         InitializeComponent();
@@ -37,7 +42,7 @@ public partial class Main1 : Form, INavigationService
         planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         
         flightService = new FlightService(flightRepo, userRepo, bookingRepo,planeRepo);
-        
+       
         // Initialize pages and pass this as INavigationService
         loginPage = new LoginPage(this);
         userDashboard = new UserDashboard(this);
@@ -68,6 +73,10 @@ public partial class Main1 : Form, INavigationService
         NavigateToLogin();
     }
 
+
+
+
+    
 
 
     public void NavigateToLogin() => loginPage.BringToFront();

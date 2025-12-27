@@ -14,5 +14,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             InitializeComponent();
         }
+
+        private void MyTicketsBookingHistory_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

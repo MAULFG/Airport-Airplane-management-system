@@ -13,11 +13,11 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
 
         public override void GenerateSeats()
         {
-            // Business → Rows 1–4 (1A–4D)
-            AddSeats("Business", 1, 4, 4);
+            // Business → Rows 1–8 (1A–8D)
+            AddSeats("Business", 1, 8, 4);
 
-            // Economy → Rows 5–25 (5A–25F)
-            AddSeats("Economy", 5, 25, 6);
+            // Economy → Rows 9–31 (9A–31F)
+            AddSeats("Economy", 9, 31, 6);
         }
 
         private void AddSeats(string classType, int startRow, int endRow, int seatsPerRow)
