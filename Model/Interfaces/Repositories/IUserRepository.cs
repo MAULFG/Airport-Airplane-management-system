@@ -15,7 +15,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
         
         bool UsernameExists(string name);
         bool EmailExists(string name);
-
+        bool UpdateLastLogin(int userId, DateTime localTime);
     }
 
 }

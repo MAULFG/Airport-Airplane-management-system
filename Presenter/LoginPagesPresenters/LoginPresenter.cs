@@ -1,4 +1,5 @@
-﻿using Airport_Airplane_management_system.Model.Services;
+﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
 using Airport_Airplane_management_system.View.Interfaces;
 using System;
@@ -10,6 +11,7 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
         private readonly ILoginView _view;
         private readonly UserService _userService;
         private readonly INavigationService _navigation;
+        private readonly IUserSettingsRepository _userSettingsRepository;
         public LoginPresenter(ILoginView view, UserService userService, INavigationService navigation)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
@@ -42,6 +44,8 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
                 _view.ClearFields();
                 return;
             }
+
+            _navigation.SetCurrentUserId(user.UserID);
 
             // Successful login
             if (user.UserID == 313)
