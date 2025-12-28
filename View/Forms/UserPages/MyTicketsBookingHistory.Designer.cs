@@ -89,19 +89,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             // flowTickets
             // 
-            flowTickets.AutoScroll = true;
-            flowTickets.AutoScrollMinSize = new Size(0, 1);
-            flowTickets.BackColor = Color.Transparent;
-            flowTickets.Controls.Add(pnlEmpty);
             flowTickets.Dock = DockStyle.Fill;
-            flowTickets.FlowDirection = FlowDirection.TopDown;
-            flowTickets.Location = new Point(0, 0);
-            flowTickets.Margin = new Padding(0);
-            flowTickets.Name = "flowTickets";
-            flowTickets.Padding = new Padding(6);
-            flowTickets.Size = new Size(1268, 860);
-            flowTickets.TabIndex = 0;
+            flowTickets.AutoScroll = true;
             flowTickets.WrapContents = false;
+            flowTickets.FlowDirection = FlowDirection.TopDown;
+            flowTickets.AutoSize = false;          // VERY IMPORTANT
+            flowTickets.Margin = new Padding(0);
+            flowTickets.Padding = new Padding(6);
+            flowTickets.BackColor = Color.Transparent;
+
             // 
             // pnlEmpty
             // 
@@ -321,6 +317,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cardFilters.ResumeLayout(false);
             cardFilters.PerformLayout();
             ResumeLayout(false);
+
+            pnlListBody.Dock = DockStyle.Fill;
+            pnlListBody.Location = new Point(16, 70);   // you can remove Location/Size if Dock=Fill
+            pnlListBody.Size = new Size(cardList.Width - 32, cardList.Height - 86);
+            pnlListBody.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pnlListBody.AutoScroll = true;
+            pnlListBody.Padding = new Padding(6);
+
         }
     }
 }
