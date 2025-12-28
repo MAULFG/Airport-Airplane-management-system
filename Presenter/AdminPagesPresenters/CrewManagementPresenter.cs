@@ -38,6 +38,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         private void RefreshCrew()
         {
+            SyncFormWithFilter();
             var crew = _service.GetCrew();
             var filterFlightId = _view.GetFlightFilter();
 
@@ -130,5 +131,32 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 _view.ShowError(ex.Message);
             }
         }
+        // string filter = _view.CurrentFilter;
+
+        private void SyncFormWithFilter()
+        {
+            var filter = _view.CurrentFilter ?? "All Flights";
+
+            if (filter.StartsWith("Flight #"))
+            {
+                var num = filter.Replace("Flight #", "").Trim();
+                if (int.TryParse(num, out int flightId))
+                    _view.SetFormFlight(flightId);
+                else
+                    _view.SetFormFlight(null);
+            }
+            else if (filter == "Unassigned")
+            {
+                _view.SetFormFlight(null);
+            }
+            else if (filter == "All Flights")
+            {
+                // ✅ your requested behavior:
+                // when filter is "All Flights", reset Add/Edit panel flight to Unassigned
+                _view.SetFormFlight(null);
+            }
+        }
+
+
     }
 }

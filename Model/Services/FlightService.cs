@@ -12,16 +12,15 @@ namespace Airport_Airplane_management_system.Model.Services
         private readonly IUserRepository _userRepo;
         private readonly IBookingRepository _bookingRepo;
         private readonly IPlaneRepository _planeRepo;
-        public FlightService(
-            IFlightRepository flightRepo,
-            IUserRepository userRepo,
-            IBookingRepository bookingRepo, IPlaneRepository planeRepo)
+        public FlightService(IFlightRepository flightRepo, IUserRepository userRepo,
+                             IBookingRepository bookingRepo, IPlaneRepository planeRepo)
         {
-            _flightRepo = flightRepo;
-            _userRepo = userRepo;
-            _bookingRepo = bookingRepo;
-            _planeRepo = planeRepo;
+            _flightRepo = flightRepo ?? throw new ArgumentNullException(nameof(flightRepo));
+            _userRepo = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
+            _bookingRepo = bookingRepo ?? throw new ArgumentNullException(nameof(bookingRepo));
+            _planeRepo = planeRepo ?? throw new ArgumentNullException(nameof(planeRepo));
         }
+
 
         // -----------------------------
         // FLIGHTS
@@ -165,6 +164,30 @@ namespace Airport_Airplane_management_system.Model.Services
             return true;
         }
 
+        public List<Plane> GetPlanes()
+        {
+            return _planeRepo.GetAllPlanesf();
+        }
+
+        public Flight GetFlightById(int flightId)
+        {
+            return _flightRepo.GetFlightById(flightId);
+        }
+
+        public bool AddFlight(Flight flight, out int newId, out string error)
+        {
+            return _flightRepo.InsertFlight(flight, out newId, out error);
+        }
+
+        public bool UpdateFlightDates(int flightId, DateTime dep, DateTime arr, out string error)
+        {
+            return _flightRepo.UpdateFlightDates(flightId, dep, arr, out error);
+        }
+
+        public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId)
+        {
+            return _flightRepo.PlaneHasTimeConflict(planeId, dep, arr, excludeFlightId);
+        }
 
     }
 }

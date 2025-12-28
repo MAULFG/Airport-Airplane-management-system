@@ -1,12 +1,11 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
-
 using System;
 using System.Collections.Generic;
 
 namespace Airport_Airplane_management_system.Model.Services
 {
-    public class CrewService 
+    public class CrewService
     {
         private readonly ICrewRepository _crewRepo;
         private readonly IFlightRepository _flightRepo;
@@ -25,11 +24,16 @@ namespace Airport_Airplane_management_system.Model.Services
             ValidateStatusVsFlight(status, flightId);
 
             string emp = _crewRepo.GenerateNextEmployeeId();
-            var crew = new Crew(name, role, Normalize(status), emp, email, phone);//{FlightId = flightId };
+
+            var crew = new Crew(name, role, Normalize(status), emp, email, phone)
+            {
+                FlightId = flightId
+            };
 
             if (!_crewRepo.Insert(crew, out var err))
                 throw new Exception(err);
         }
+
 
         public void UpdateCrew(string employeeId, string name, string role, string status, string email, string phone, int? flightId)
         {
