@@ -327,7 +327,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private Control InfoLine(string label, string value, int x, int y)
         {
-            var p = new Panel
+            var p = new Guna2Panel
             {
                 BackColor = Color.Transparent,
                 Location = new Point(x, y),
