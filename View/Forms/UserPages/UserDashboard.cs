@@ -131,7 +131,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         // Optional: you can use these if you need events from the presenter
         public void UpcomingFlights() => ShowOnly(upcomingFlights1, btnUpcomingFlights);
         public void SearchBook() => ShowOnly(searchAndBooking1, btnSearchBook);
-        public void MyTickets() => ShowOnly(myTicketsBookingHistory1, btnMyTickets);
+        public void MyTickets()
+        {
+            myTicketsBookingHistory1.Initialize(_navigation);
+            myTicketsBookingHistory1.Activate();
+            ShowOnly(myTicketsBookingHistory1, btnMyTickets);
+        }
         public void Notifications() => ShowOnly(notifications1, btnNotifications);
         public void UserSettings()
         {
