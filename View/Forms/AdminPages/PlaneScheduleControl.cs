@@ -35,9 +35,19 @@ namespace Airport_Airplane_management_system.View.UserControls
 
             Dock = DockStyle.Fill;
             DoubleBuffered = true;
+            LayoutHeaderButtons();
+
+            var host = pnlHeader.Parent ?? pnlHeader;
+            host.SizeChanged += (s, e) => LayoutHeaderButtons();
+            pnlHeader.LocationChanged += (s, e) => LayoutHeaderButtons();
 
             // buttons
+
+            // round Add Flight
+            btnAddFlight.SizeChanged += (s, e) =>
+                btnAddFlight.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, btnAddFlight.Width, btnAddFlight.Height, 14, 14));
             btnClose.Click += (s, e) => CloseClicked?.Invoke(this, EventArgs.Empty);
+            btnClose.SizeChanged += (s, e) => MakeButtonRounded(btnClose, 10); // optional slight rounding
             btnAddFlight.Click += (s, e) => AddFlightClicked?.Invoke(this, EventArgs.Empty);
 
             // round Add Flight
@@ -76,7 +86,7 @@ namespace Airport_Airplane_management_system.View.UserControls
         }
 
         // -------------------------------------------------------
-        // Public API (CALL THIS from FlightManagement/PlaneManagement)
+        // Public API
         // -------------------------------------------------------
         public void SetAircraftTitle(string title)
         {
@@ -85,27 +95,22 @@ namespace Airport_Airplane_management_system.View.UserControls
 
         /// <summary>
         /// Bind schedule to a plane and list of flights (REAL DB VALUES).
-        /// Counts per day come from flights where Departure.Date == day.
         /// </summary>
         public void BindPlaneSchedule(int planeId, IEnumerable<Flight> planeFlights, DateTime startDate, int days = 360)
         {
             _planeId = planeId;
-
             _blocks.Clear();
 
-            // IMPORTANT: only this plane
+            // IMPORTANT: filter by the real FK you have in Flight (PlaneIDFromDb)
             foreach (var f in planeFlights.Where(x => x.PlaneIDFromDb == planeId))
             {
                 var start = f.Departure;
                 var end = f.Arrival;
-
-                // Safety: if Arrival is missing/invalid => default 1 hour
-                if (end <= start)
-                    end = start.AddHours(1);
+                if (end <= start) end = start.AddHours(1);
 
                 _blocks.Add(new FlightBlock
                 {
-                    PlaneId = planeId,
+                    PlaneId = f.PlaneIDFromDb,
                     FlightId = f.FlightID,
                     From = f.From ?? "",
                     To = f.To ?? "",
@@ -130,8 +135,8 @@ namespace Airport_Airplane_management_system.View.UserControls
             {
                 var date = startDate.Date.AddDays(i);
 
-                // REAL count from blocks
-                int count = _blocks.Count(b => b.PlaneId == _planeId && b.Start.Date == date);
+                // count flights that overlap the day (NOT only departure date)
+                int count = _blocks.Count(b => b.PlaneId == _planeId && ShouldShowOnDay(b, date));
 
                 var card = new DateCard(date, count);
                 card.Margin = new Padding(0, 0, 10, 0);
@@ -153,6 +158,18 @@ namespace Airport_Airplane_management_system.View.UserControls
             }
         }
 
+        private void ScrollToSelectedDate()
+        {
+            foreach (Control c in flowDates.Controls)
+            {
+                if (c is DateCard dc && dc.Date == _selectedDate)
+                {
+                    flowDates.ScrollControlIntoView(dc);
+                    break;
+                }
+            }
+        }
+
         // -------------------------------------------------------
         // Selected Date + Timeline Rendering
         // -------------------------------------------------------
@@ -162,15 +179,16 @@ namespace Airport_Airplane_management_system.View.UserControls
             lblTimeline.Text = $"Timeline for {_selectedDate:yyyy-MM-dd}";
 
             HighlightDateCard(_selectedDate);
+            ScrollToSelectedDate();
             RenderTimelineForSelectedDay();
         }
 
         private void RenderTimelineForSelectedDay()
         {
-            // remove old flight cards that were added directly to the table
-            ClearFlightCardsFromTable();
+            DateTime dayStart = _selectedDate.Date;
+            DateTime dayEnd = dayStart.AddDays(1);
 
-            // 1) reset all slots to Available
+            // 1) Reset all slots to AVAILABLE
             for (int r = 0; r < HOURS; r++)
             {
                 var slot = GetSlotPanelAtRow(r);
@@ -178,43 +196,52 @@ namespace Airport_Airplane_management_system.View.UserControls
 
                 slot.Visible = true;
                 slot.Enabled = true;
-
                 slot.Controls.Clear();
                 slot.Tag = null;
 
-                // padding for available layout
+                slot.BorderDash = true;
+                slot.BorderWidth = 1.2f;
                 slot.Padding = new Padding(14, 4, 14, 4);
 
                 int hour = r;
                 slot.Controls.Add(CreateAvailableButton(hour, slot));
             }
 
-
-            // 2) render real flights for selected day
+            // 2) Take flights for this plane that overlap this day
             var todays = _blocks
-                .Where(b => b.PlaneId == _planeId && b.Start.Date == _selectedDate.Date)
-                .OrderBy(b => b.Start)
+                .Where(b => b.PlaneId == _planeId && ShouldShowOnDay(b, dayStart))
+                .Select(b =>
+                {
+                    var (segStart, segEnd) = GetSegmentForDay(b, dayStart);
+                    return new { Block = b, SegStart = segStart, SegEnd = segEnd };
+                })
+                .OrderBy(x => x.SegStart)
                 .ToList();
 
-            foreach (var b in todays)
+            foreach (var item in todays)
             {
-                DateTime start = b.Start;
-                DateTime end = b.End;
+                var b = item.Block;
+                var segStart = item.SegStart;
+                var segEnd = item.SegEnd;
 
-                // Clamp to selected day boundaries (same-day timeline)
-                if (start.Date < _selectedDate) start = _selectedDate;
-                if (end.Date > _selectedDate) end = _selectedDate.AddDays(1);
+                // compute occupied hour range
+                int startHour = segStart.Hour; // include the hour containing segStart (even if minutes>0)
+                int endHour;
 
-                int startHour = Math.Max(0, start.Hour);
-
-                // Ceil end to next hour if minutes exist
-                int endHour = end.Hour + (end.Minute > 0 ? 1 : 0);
-                endHour = Math.Min(24, endHour);
+                if (segEnd == dayEnd)
+                {
+                    endHour = 24;
+                }
+                else
+                {
+                    endHour = segEnd.Hour + ((segEnd.Minute > 0 || segEnd.Second > 0) ? 1 : 0);
+                    endHour = Math.Min(24, endHour);
+                }
 
                 if (endHour <= startHour)
                     endHour = Math.Min(24, startHour + 1);
 
-                // Put SAME card in each occupied hour (like your screenshot)
+                // mark every overlapped hour as BUSY (no Available)
                 for (int h = startHour; h < endHour; h++)
                 {
                     var slot = GetSlotPanelAtRow(h);
@@ -222,19 +249,49 @@ namespace Airport_Airplane_management_system.View.UserControls
 
                     slot.Visible = true;
                     slot.Enabled = true;
-
                     slot.Controls.Clear();
                     slot.Tag = b;
 
-                    var card = new FlightCard(b);
-                    card.Dock = DockStyle.Fill;
-                    card.Margin = new Padding(0);
+                    slot.BorderDash = false;
+                    slot.BorderWidth = 0;
+                    slot.Padding = Padding.Empty;
+
+                    // show the clamped times for THIS DAY segment
+                    var card = new FlightCard(b, segStart, segEnd)
+                    {
+                        Dock = DockStyle.Fill,
+                        Margin = Padding.Empty
+                    };
                     card.Clicked += (s, e) => FlightClicked?.Invoke(this, b);
 
                     slot.Controls.Add(card);
                 }
             }
+        }
 
+        // ---------------- helpers ----------------
+
+        // Show flight on day if it overlaps that day's window at all
+        private static bool ShouldShowOnDay(FlightBlock b, DateTime day)
+        {
+            DateTime dayStart = day.Date;
+            DateTime dayEnd = dayStart.AddDays(1);
+
+            // overlap condition: start < dayEnd AND end > dayStart
+            return b.Start < dayEnd && b.End > dayStart;
+        }
+
+        // Clamp flight interval to the selected day window
+        private static (DateTime segStart, DateTime segEnd) GetSegmentForDay(FlightBlock b, DateTime day)
+        {
+            DateTime dayStart = day.Date;
+            DateTime dayEnd = dayStart.AddDays(1);
+
+            DateTime s = b.Start < dayStart ? dayStart : b.Start;
+            DateTime e = b.End > dayEnd ? dayEnd : b.End;
+
+            if (e <= s) e = s.AddHours(1);
+            return (s, e);
         }
 
         private void ClearFlightCardsFromTable()
@@ -352,7 +409,7 @@ namespace Airport_Airplane_management_system.View.UserControls
         }
 
         // -------------------------------------------------------
-        // Data DTO exposed publicly (so events/methods compile)
+        // Data DTO exposed publicly
         // -------------------------------------------------------
         public class FlightBlock
         {
@@ -479,14 +536,14 @@ namespace Airport_Airplane_management_system.View.UserControls
         {
             public event EventHandler? Clicked;
 
-            public FlightCard(FlightBlock b)
+            public FlightCard(FlightBlock b, DateTime displayStart, DateTime displayEnd)
             {
                 BackColor = Color.Transparent;
 
                 var bg = new RoundedBorderPanel
                 {
                     Dock = DockStyle.Fill,
-                    Radius = 10,
+                    Radius = 14,
                     BorderColor = Color.Transparent,
                     BorderWidth = 0,
                     BackColor = Color.FromArgb(33, 99, 255),
@@ -526,11 +583,18 @@ namespace Airport_Airplane_management_system.View.UserControls
                     TextAlign = ContentAlignment.MiddleLeft
                 };
 
+                string rightText;
+                // show 24:00 at end-of-day for nicer UI
+                if (displayEnd == displayStart.Date.AddDays(1))
+                    rightText = $"{displayStart:HH:mm} - 24:00";
+                else
+                    rightText = $"{displayStart:HH:mm} - {displayEnd:HH:mm}";
+
                 var lblTime = new Label
                 {
                     Dock = DockStyle.Fill,
                     AutoSize = true,
-                    Text = $"{b.Start:HH:mm} - {b.End:HH:mm}",
+                    Text = rightText,
                     ForeColor = Color.White,
                     Font = new Font("Segoe UI", 9f, FontStyle.Regular),
                     TextAlign = ContentAlignment.MiddleRight
@@ -557,7 +621,7 @@ namespace Airport_Airplane_management_system.View.UserControls
         }
 
         // -------------------------------------------------------
-        // Custom panels (ONE implementation only)
+        // Custom panels
         // -------------------------------------------------------
         private class RoundedBorderPanel : Panel
         {
@@ -571,6 +635,17 @@ namespace Airport_Airplane_management_system.View.UserControls
                          ControlStyles.UserPaint |
                          ControlStyles.OptimizedDoubleBuffer |
                          ControlStyles.ResizeRedraw, true);
+            }
+
+            protected override void OnSizeChanged(EventArgs e)
+            {
+                base.OnSizeChanged(e);
+
+                if (Width <= 0 || Height <= 0) return;
+
+                var rect = new Rectangle(0, 0, Width, Height);
+                using var path = GetRoundRectPath(Rectangle.Inflate(rect, -1, -1), Radius);
+                Region = new Region(path);
             }
 
             protected override void OnPaint(PaintEventArgs e)
@@ -632,10 +707,42 @@ namespace Airport_Airplane_management_system.View.UserControls
 
             return path;
         }
+        private void LayoutHeaderButtons()
+        {
+            // Use the container that REALLY reaches the right edge
+            Control host = pnlHeader.Parent ?? pnlHeader;   // usually the main content panel
+
+            int rightPad = 18;   // tweak if you want closer/farther from edge
+            int topPad = 12;
+            int gap = 10;
+
+            // y position relative to pnlHeader (so it sits in the header area)
+            int y = pnlHeader.Top + topPad;
+
+            // right edge in the same coordinate system as pnlHeader
+            int rightEdge = host.ClientSize.Width - rightPad;
+
+            // Close at far right
+            btnClose.Location = new Point(rightEdge - btnClose.Width, y);
+
+            // Add Flight just left of close
+            btnAddFlight.Location = new Point(btnClose.Left - gap - btnAddFlight.Width, y);
+
+            btnClose.BringToFront();
+            btnAddFlight.BringToFront();
+        }
+
+        private void MakeButtonRounded(Button btn, int radius = 14)
+        {
+            btn.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, btn.Width, btn.Height, radius, radius));
+        }
 
         [DllImport("gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn(
             int nLeftRect, int nTopRect, int nRightRect, int nBottomRect,
             int nWidthEllipse, int nHeightEllipse);
+
+        private void lblSelectDate_Click(object sender, EventArgs e) { }
+        private void flowDates_Paint(object sender, PaintEventArgs e) { }
     }
 }

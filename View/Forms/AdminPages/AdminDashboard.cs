@@ -150,7 +150,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 planeId,
                 flights,
                 DateTime.Today.AddDays(-2),
-                7
+                360
             );
 
             schedule.CloseClicked += (_, __) => CloseDockedScheduleOnFlightPage();
@@ -217,7 +217,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 planeId,
                 flights,
                 DateTime.Today.AddDays(-2),
-                7
+                360
             );
 
             schedule.CloseClicked += (_, __) => CloseDockedScheduleOnPlanePage();
