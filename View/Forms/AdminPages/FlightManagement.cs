@@ -15,6 +15,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
     public partial class FlightManagement : UserControl, IFlightManagementView
     {
         // MVP events
+        public event Action<int>? PlaneScheduleRequested;
         public event EventHandler ViewLoaded;
         public event EventHandler AddClicked;
         public event EventHandler UpdateClicked;
@@ -23,6 +24,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event Action<int> DeleteRequested;
         public event Action<int>? ViewCrewRequested;
         public event EventHandler FilterChanged;
+        private Panel panelScheduleHost;
+
 
         private readonly ToolTip _tip = new ToolTip();
 
@@ -51,6 +54,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             // MVP load
             Load += (_, __) => ViewLoaded?.Invoke(this, EventArgs.Empty);
+            panelScheduleHost = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Visible = false,
+                BackColor = Color.Transparent
+            };
+            Controls.Add(panelScheduleHost);
+            panelScheduleHost.BringToFront();
 
             // Add / Update
             btnAddOrUpdate.Click += (_, __) =>
@@ -81,6 +92,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             // resize card width
             flow.SizeChanged += (_, __) => RefreshCardsWidth();
+            cmbPlane.SelectionChangeCommitted += (_, __) =>
+            {
+                if (cmbPlane.SelectedItem is PlaneItem pi)
+                    PlaneScheduleRequested?.Invoke(pi.PlaneId);
+            };
+
         }
 
         // ========= IFlightManagementView inputs =========
@@ -439,5 +456,27 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (cmbPlane.Items.Count > 0)
                 cmbPlane.SelectedIndex = 0;
         }
+
+        // allow schedule form to set times back
+        public void SetTimes(DateTime dep, DateTime arr)
+        {
+            dtDeparture.Value = dep;
+            dtArrival.Value = arr;
+        }
+        public void ShowDockedSchedule(Control schedule)
+        {
+            panelScheduleHost.Controls.Clear();
+            schedule.Dock = DockStyle.Fill;
+            panelScheduleHost.Controls.Add(schedule);
+            panelScheduleHost.Visible = true;
+            panelScheduleHost.BringToFront();
+        }
+
+        public void HideDockedSchedule()
+        {
+            panelScheduleHost.Controls.Clear();
+            panelScheduleHost.Visible = false;
+        }
+
     }
 }
