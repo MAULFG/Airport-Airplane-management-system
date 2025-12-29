@@ -3,6 +3,7 @@ using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Airport_Airplane_management_system.Model.Repositories
 {
@@ -14,6 +15,7 @@ namespace Airport_Airplane_management_system.Model.Repositories
         {
             _connStr = connStr;
         }
+
         public List<Plane> GetAllPlanesf()
         {
             var planes = new List<Plane>();
@@ -36,6 +38,7 @@ namespace Airport_Airplane_management_system.Model.Repositories
                     _ => new MidRangeA320(id, status)
                 };
 
+                // TODO: once seats are stored in DB, load them from DB instead of generating
                 p.GenerateSeats();
                 planes.Add(p);
             }
@@ -49,11 +52,13 @@ namespace Airport_Airplane_management_system.Model.Repositories
 
             return planes;
         }
+
         public List<Plane> GetAllPlanes()
         {
             var planes = new List<Plane>();
             using var conn = new MySqlConnection(_connStr);
             conn.Open();
+
             string sql = "SELECT * FROM planes";
             using var cmd = new MySqlCommand(sql, conn);
             using var reader = cmd.ExecuteReader();
@@ -71,9 +76,11 @@ namespace Airport_Airplane_management_system.Model.Repositories
                     _ => new MidRangeA320(id, status)
                 };
 
+                // TODO: once seats are stored in DB, load them from DB instead of generating
                 p.GenerateSeats();
                 planes.Add(p);
             }
+
             return planes;
         }
 
@@ -127,6 +134,82 @@ WHERE plane_id = @pid
             {
                 error = ex.Message;
                 return true;
+            }
+        }
+
+        public int AddPlane(string type, string status, out string error)
+        {
+            error = "";
+            try
+            {
+                using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+
+                using var cmd = new MySqlCommand(
+                    "INSERT INTO planes (type, status) VALUES (@t, @s); SELECT LAST_INSERT_ID();",
+                    conn);
+
+                cmd.Parameters.AddWithValue("@t", type);
+                cmd.Parameters.AddWithValue("@s", status);
+
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return -1;
+            }
+        }
+
+        public bool InsertSeats(int planeId, List<Seat> seats, out string error)
+        {
+            error = "";
+
+            if (seats == null || seats.Count == 0)
+            {
+                error = "No seats to insert.";
+                return false;
+            }
+
+            try
+            {
+                using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+
+                // Safety: avoid duplicate insert if seats already exist for this plane
+                using (var checkCmd = new MySqlCommand("SELECT COUNT(*) FROM seats WHERE plane_id=@pid;", conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@pid", planeId);
+                    int existing = Convert.ToInt32(checkCmd.ExecuteScalar());
+                    if (existing > 0)
+                        return true; // already generated
+                }
+
+                using var tx = conn.BeginTransaction();
+
+                string sql = @"INSERT INTO seats
+(plane_id, seat_number, class_type, is_booked)
+VALUES (@pid, @sn, @ct, 0)";
+
+                using var cmd = new MySqlCommand(sql, conn, tx);
+
+                foreach (var seat in seats)
+                {
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@pid", planeId);
+                    cmd.Parameters.AddWithValue("@sn", seat.SeatNumber);
+                    cmd.Parameters.AddWithValue("@ct", seat.ClassType);
+                    cmd.ExecuteNonQuery();
+                }
+
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                try { /* best effort */ } catch { }
+                return false;
             }
         }
     }

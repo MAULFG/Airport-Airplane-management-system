@@ -19,7 +19,6 @@
             scrollTimeline = new Panel();
             tblTimeline = new TableLayoutPanel();
             pnlTimelineTop = new Panel();
-            btnAddFlight = new Button();
             lblTimeline = new Label();
             flowDates = new FlowLayoutPanel();
             pnlTop = new Panel();
@@ -96,28 +95,6 @@
             pnlTimelineTop.Size = new Size(1064, 46);
             pnlTimelineTop.TabIndex = 2;
             // 
-            // btnAddFlight
-            // 
-            btnAddFlight.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAddFlight.BackColor = Color.FromArgb(12, 16, 24);
-            btnAddFlight.FlatAppearance.BorderSize = 0;
-            btnAddFlight.FlatStyle = FlatStyle.Flat;
-            btnAddFlight.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            btnAddFlight.ForeColor = Color.White;
-            btnAddFlight.Location = new Point(945, 8);
-            btnAddFlight.Name = "btnAddFlight";
-            btnAddFlight.Size = new Size(119, 30);
-            btnAddFlight.TabIndex = 1;
-            btnAddFlight.Text = "＋   Add Flight";
-            btnAddFlight.UseVisualStyleBackColor = false;
-            // place it left of close button
-            btnAddFlight.Location = new Point(905, 14);
-            btnAddFlight.Name = "btnAddFlight";
-            btnAddFlight.Size = new Size(135, 30);
-            btnAddFlight.TabIndex = 1;
-            btnAddFlight.Text = "＋   Add Flight";
-            btnAddFlight.UseVisualStyleBackColor = false;
-            // 
             // lblTimeline
             // 
             lblTimeline.AutoSize = true;
@@ -174,7 +151,6 @@
             // 
             pnlHeader.BackColor = Color.White;
             pnlHeader.Controls.Add(btnClose);
-            pnlHeader.Controls.Add(btnAddFlight);
             pnlHeader.Controls.Add(lblTitle);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
@@ -243,7 +219,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowDates;
         private System.Windows.Forms.Panel pnlTimelineTop;
         private System.Windows.Forms.Label lblTimeline;
-        private System.Windows.Forms.Button btnAddFlight;
         private System.Windows.Forms.Panel scrollTimeline;
         private System.Windows.Forms.TableLayoutPanel tblTimeline;
     }

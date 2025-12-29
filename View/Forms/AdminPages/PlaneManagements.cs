@@ -17,6 +17,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event EventHandler AddPlaneClicked;
         public event Action<int> DeleteRequested;
         public event Action<int>? PlaneSelected;
+        private string _pendingPlaneType = "";
+        private string _pendingPlaneStatus = "";
+        private AddPlaneDockedControl? _addPlaneOverlay;
 
         private List<Plane> _planes = new();
 
@@ -29,7 +32,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             InitializeComponent();
 
             Load += (_, __) => ViewLoaded?.Invoke(this, EventArgs.Empty);
-            btnAddPlane.Click += (_, __) => AddPlaneClicked?.Invoke(this, EventArgs.Empty);
+            btnAddPlane.Click += (_, __) => ShowAddPlaneOverlay();
+
 
             header.SizeChanged += (_, __) =>
                 btnAddPlane.Location = new Point(header.Width - 18 - btnAddPlane.Width, 28);
@@ -355,5 +359,61 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 return (Color.FromArgb(235, 235, 235), Color.FromArgb(90, 90, 90));
             return (Color.FromArgb(222, 235, 255), Color.FromArgb(35, 93, 220));
         }
+        public bool TryGetNewPlaneInput(out string type, out string status)
+        {
+            type = _pendingPlaneType;
+            status = _pendingPlaneStatus;
+
+            _pendingPlaneType = "";
+            _pendingPlaneStatus = "";
+
+            return !string.IsNullOrWhiteSpace(type);
+        }
+
+
+        /// <summary>
+        /// Temporary modal until you wire the docked Figma sheet.
+        /// Keeps MVP contract stable: Presenter calls TryGetNewPlaneInput().
+        /// </summary>
+        private void ShowAddPlaneOverlay()
+        {
+            btnAddPlane.Enabled = false;
+            if (_addPlaneOverlay != null)
+                return;
+
+            _addPlaneOverlay = new AddPlaneDockedControl();
+            _addPlaneOverlay.Dock = DockStyle.Fill;
+
+            _addPlaneOverlay.Confirmed += (type, status) =>
+            {
+                _pendingPlaneType = type;
+                _pendingPlaneStatus = status;
+
+                CloseAddPlaneOverlay();
+
+                // NOW notify presenter
+                AddPlaneClicked?.Invoke(this, EventArgs.Empty);
+            };
+
+            _addPlaneOverlay.Cancelled += () =>
+            {
+                CloseAddPlaneOverlay();
+            };
+
+            Controls.Add(_addPlaneOverlay);
+            _addPlaneOverlay.BringToFront();
+        }
+
+        private void CloseAddPlaneOverlay()
+        {
+            btnAddPlane.Enabled = true;
+            if (_addPlaneOverlay == null)
+                return;
+
+            Controls.Remove(_addPlaneOverlay);
+            _addPlaneOverlay.Dispose();
+            _addPlaneOverlay = null;
+        }
+
     }
 }

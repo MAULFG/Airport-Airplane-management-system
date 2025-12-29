@@ -56,6 +56,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private PlaneScheduleControl _dockedScheduleOnPlanePage;
         private PlaneScheduleControl _dockedScheduleOnFlightPage;
 
+        private bool _returnToFlightAfterSchedule = false;
+        private int _returnPlaneIdAfterSchedule = -1;
+
         public AdminDashboard(INavigationService navigation)
         {
             InitializeComponent();
@@ -140,12 +143,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             var schedule = new PlaneScheduleControl();
             schedule.Dock = DockStyle.Fill;
 
+            // ✅ interactive when opened from Flight Management
+            schedule.SetMode(true);
+
             schedule.SetAircraftTitle($"{plane.Model} Schedule");
 
-            // ✅ Use repo (service doesn't have GetAllFlights)
             var flights = _flightRepo.GetAllFlights();
 
-            // ✅ Bind real flights to schedule (counts per day will be real)
             schedule.BindPlaneSchedule(
                 planeId,
                 flights,
@@ -166,7 +170,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     if (dlg.ShowDialog() == DialogResult.OK)
                     {
                         flightManagement1.SetTimes(dlg.SelectedDeparture, dlg.SelectedArrival);
-
                         CloseDockedScheduleOnFlightPage();
                         FlightMangement();
                     }
@@ -176,6 +179,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             flightManagement1.ShowDockedSchedule(schedule);
             _dockedScheduleOnFlightPage = schedule;
         }
+
+
 
         private void CloseDockedScheduleOnFlightPage()
         {
@@ -209,6 +214,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             var schedule = new PlaneScheduleControl();
             schedule.Dock = DockStyle.Fill;
 
+            // ✅ view-only mode (Plane Management entry)
+            schedule.SetMode(false);
+
             schedule.SetAircraftTitle($"{plane.Model} Schedule");
 
             var flights = _flightRepo.GetAllFlights();
@@ -222,28 +230,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             schedule.CloseClicked += (_, __) => CloseDockedScheduleOnPlanePage();
 
-            schedule.SlotSelected += (_, info) =>
-            {
-                DateTime suggestedDate = info.date.Date;
-                DateTime suggestedDeparture = suggestedDate.AddHours(info.hour);
-                DateTime suggestedArrival = suggestedDeparture.AddHours(3);
-
-                using (var dlg = new SlotDialog(suggestedDate, suggestedDeparture, suggestedArrival))
-                {
-                    if (dlg.ShowDialog() == DialogResult.OK)
-                    {
-                        // In plane page we don't necessarily set flightManagement times
-                        // So we just close for now (you can later decide behavior)
-                        CloseDockedScheduleOnPlanePage();
-                        PlaneMangement();
-                    }
-                }
-            };
+            // ❌ IMPORTANT: DO NOT attach SlotSelected here (no SlotDialog in plane page)
 
             planeManagements1.Controls.Add(schedule);
             schedule.BringToFront();
             _dockedScheduleOnPlanePage = schedule;
         }
+
 
         private void CloseDockedScheduleOnPlanePage()
         {

@@ -13,7 +13,6 @@ namespace Airport_Airplane_management_system.View.UserControls
     {
         // ---- Events for outside (Presenter/Form) ----
         public event EventHandler? CloseClicked;
-        public event EventHandler? AddFlightClicked;
 
         // Click on empty "Available" slot => (selectedDate, hour)
         public event EventHandler<(DateTime date, int hour)>? SlotSelected;
@@ -29,6 +28,8 @@ namespace Airport_Airplane_management_system.View.UserControls
         private int _planeId;
         private readonly List<FlightBlock> _blocks = new();
 
+        public bool AllowBooking { get; private set; } = true;
+
         public PlaneScheduleControl()
         {
             InitializeComponent();
@@ -42,21 +43,8 @@ namespace Airport_Airplane_management_system.View.UserControls
             pnlHeader.LocationChanged += (s, e) => LayoutHeaderButtons();
 
             // buttons
-
-            // round Add Flight
-            btnAddFlight.SizeChanged += (s, e) =>
-                btnAddFlight.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, btnAddFlight.Width, btnAddFlight.Height, 14, 14));
             btnClose.Click += (s, e) => CloseClicked?.Invoke(this, EventArgs.Empty);
-            btnClose.SizeChanged += (s, e) => MakeButtonRounded(btnClose, 10); // optional slight rounding
-            btnAddFlight.Click += (s, e) => AddFlightClicked?.Invoke(this, EventArgs.Empty);
-
-            // round Add Flight
-            btnAddFlight.SizeChanged += (s, e) =>
-            {
-                btnAddFlight.Region = Region.FromHrgn(
-                    CreateRoundRectRgn(0, 0, btnAddFlight.Width, btnAddFlight.Height, 14, 14)
-                );
-            };
+            btnClose.SizeChanged += (s, e) => MakeButtonRounded(btnClose, 10);
 
             // horizontal scroll (date cards)
             flowDates.AutoScroll = true;
@@ -93,6 +81,12 @@ namespace Airport_Airplane_management_system.View.UserControls
             lblTitle.Text = title;
         }
 
+        public void SetMode(bool allowBooking)
+        {
+            AllowBooking = allowBooking;
+            // no rendering here; BindPlaneSchedule -> SetSelectedDate -> RenderTimelineForSelectedDay
+        }
+
         /// <summary>
         /// Bind schedule to a plane and list of flights (REAL DB VALUES).
         /// </summary>
@@ -101,7 +95,6 @@ namespace Airport_Airplane_management_system.View.UserControls
             _planeId = planeId;
             _blocks.Clear();
 
-            // IMPORTANT: filter by the real FK you have in Flight (PlaneIDFromDb)
             foreach (var f in planeFlights.Where(x => x.PlaneIDFromDb == planeId))
             {
                 var start = f.Departure;
@@ -224,8 +217,7 @@ namespace Airport_Airplane_management_system.View.UserControls
                 var segStart = item.SegStart;
                 var segEnd = item.SegEnd;
 
-                // compute occupied hour range
-                int startHour = segStart.Hour; // include the hour containing segStart (even if minutes>0)
+                int startHour = segStart.Hour;
                 int endHour;
 
                 if (segEnd == dayEnd)
@@ -256,7 +248,6 @@ namespace Airport_Airplane_management_system.View.UserControls
                     slot.BorderWidth = 0;
                     slot.Padding = Padding.Empty;
 
-                    // show the clamped times for THIS DAY segment
                     var card = new FlightCard(b, segStart, segEnd)
                     {
                         Dock = DockStyle.Fill,
@@ -271,17 +262,13 @@ namespace Airport_Airplane_management_system.View.UserControls
 
         // ---------------- helpers ----------------
 
-        // Show flight on day if it overlaps that day's window at all
         private static bool ShouldShowOnDay(FlightBlock b, DateTime day)
         {
             DateTime dayStart = day.Date;
             DateTime dayEnd = dayStart.AddDays(1);
-
-            // overlap condition: start < dayEnd AND end > dayStart
             return b.Start < dayEnd && b.End > dayStart;
         }
 
-        // Clamp flight interval to the selected day window
         private static (DateTime segStart, DateTime segEnd) GetSegmentForDay(FlightBlock b, DateTime day)
         {
             DateTime dayStart = day.Date;
@@ -292,17 +279,6 @@ namespace Airport_Airplane_management_system.View.UserControls
 
             if (e <= s) e = s.AddHours(1);
             return (s, e);
-        }
-
-        private void ClearFlightCardsFromTable()
-        {
-            if (tblTimeline == null) return;
-
-            for (int i = tblTimeline.Controls.Count - 1; i >= 0; i--)
-            {
-                if (tblTimeline.Controls[i] is FlightCard)
-                    tblTimeline.Controls.RemoveAt(i);
-            }
         }
 
         // -------------------------------------------------------
@@ -350,9 +326,9 @@ namespace Airport_Airplane_management_system.View.UserControls
                     Cursor = Cursors.Hand
                 };
 
-                // click on empty slot (panel click)
                 slot.Click += (s, e) =>
                 {
+                    if (!AllowBooking) return;
                     if (slot.Tag is FlightBlock) return;
                     SlotSelected?.Invoke(this, (_selectedDate, capturedHour));
                 };
@@ -386,13 +362,20 @@ namespace Airport_Airplane_management_system.View.UserControls
                 TabStop = false
             };
 
+            if (!AllowBooking)
+            {
+                btn.Enabled = false;
+                btn.Cursor = Cursors.Default;
+                btn.ForeColor = Color.FromArgb(190, 190, 190);
+            }
+
             btn.FlatAppearance.BorderSize = 0;
             btn.FlatAppearance.MouseOverBackColor = Color.Transparent;
             btn.FlatAppearance.MouseDownBackColor = Color.Transparent;
 
-            // click on available button
             btn.Click += (s, e) =>
             {
+                if (!AllowBooking) return;
                 if (slot.Tag is FlightBlock) return;
                 SlotSelected?.Invoke(this, (_selectedDate, hour));
             };
@@ -531,7 +514,6 @@ namespace Airport_Airplane_management_system.View.UserControls
             }
         }
 
-        // Flight card like your screenshot: code+route left, time right
         private sealed class FlightCard : UserControl
         {
             public event EventHandler? Clicked;
@@ -584,7 +566,6 @@ namespace Airport_Airplane_management_system.View.UserControls
                 };
 
                 string rightText;
-                // show 24:00 at end-of-day for nicer UI
                 if (displayEnd == displayStart.Date.AddDays(1))
                     rightText = $"{displayStart:HH:mm} - 24:00";
                 else
@@ -707,29 +688,20 @@ namespace Airport_Airplane_management_system.View.UserControls
 
             return path;
         }
+
         private void LayoutHeaderButtons()
         {
-            // Use the container that REALLY reaches the right edge
-            Control host = pnlHeader.Parent ?? pnlHeader;   // usually the main content panel
+            Control host = pnlHeader.Parent ?? pnlHeader;
 
-            int rightPad = 18;   // tweak if you want closer/farther from edge
+            int rightPad = 18;
             int topPad = 12;
-            int gap = 10;
 
-            // y position relative to pnlHeader (so it sits in the header area)
             int y = pnlHeader.Top + topPad;
-
-            // right edge in the same coordinate system as pnlHeader
             int rightEdge = host.ClientSize.Width - rightPad;
 
             // Close at far right
             btnClose.Location = new Point(rightEdge - btnClose.Width, y);
-
-            // Add Flight just left of close
-            btnAddFlight.Location = new Point(btnClose.Left - gap - btnAddFlight.Width, y);
-
             btnClose.BringToFront();
-            btnAddFlight.BringToFront();
         }
 
         private void MakeButtonRounded(Button btn, int radius = 14)

@@ -477,6 +477,18 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             panelScheduleHost.Controls.Clear();
             panelScheduleHost.Visible = false;
         }
+        // Used when user picks an "Available" slot from PlaneScheduleControl
+        public void PrepareNewFlight(int planeId, DateTime dep, DateTime arr)
+        {
+            // pre-select the plane
+            SelectPlaneInDropdown(planeId);
+
+            // pre-fill times
+            SetTimes(dep, arr);
+
+            // optional: ensure the add/edit side is visible/focused if you have such UI
+            // (leave it like this for now; we'll wire it if you tell me the add-panel method name)
+        }
 
     }
 }

@@ -17,5 +17,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         bool Confirm(string message);
 
         void HighlightPlane(int planeId); // used when jumping from FlightManagement later
+        bool TryGetNewPlaneInput(out string type, out string status);
+
     }
 }
