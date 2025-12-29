@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 namespace Airport_Airplane_management_system.Model.Core.Classes
 {
     public class FlightSeats
@@ -8,10 +7,9 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
         public int Id { get; set; }               // FlightSeat ID in DB
         public int FlightId { get; set; }         // Associated flight
         public int PlaneSeatIndex { get; set; }   // Index in plane's seat list
-        public int? UserId { get; private set; }  // Nullable passenger ID
 
         public bool IsBooked { get; private set; }
-        public User Passenger { get; private set; }
+        public int? PassengerId { get; private set; }
 
         public string SeatNumber { get; private set; }
         public string ClassType { get; private set; }
@@ -23,11 +21,11 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
             ClassType = planeSeat.ClassType;
             PlaneSeatIndex = planeSeatIndex;
             IsBooked = false;
-            UserId = null;
+            PassengerId = null;
         }
 
         // Constructor for loading from DB
-        public FlightSeats(int id, int flightId, int planeSeatIndex, string seatNumber, string classType, bool isBooked, int? userId)
+        public FlightSeats(int id, int flightId, int planeSeatIndex, string seatNumber, string classType, bool isBooked, int? passengerId)
         {
             Id = id;
             FlightId = flightId;
@@ -35,23 +33,38 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
             SeatNumber = seatNumber;
             ClassType = classType;
             IsBooked = isBooked;
-            UserId = userId;
+            PassengerId = passengerId;
         }
 
-        // Assign a passenger to the seat
-        public void AssignPassenger(User user)
+        // -----------------------------
+        // ASSIGN PASSENGER
+        // -----------------------------
+        public void AssignPassenger(User passenger)
         {
-            Passenger = user;
+            if (passenger == null) throw new ArgumentNullException(nameof(passenger));
+
+            PassengerId = passenger.UserID;
             IsBooked = true;
-            UserId = user?.UserID;
+        }
+        public void Book(User user)
+        {
+            
+            AssignPassenger(user);
         }
 
-        // Release the seat
-        public void ReleaseSeat()
+        // -----------------------------
+        // REMOVE PASSENGER / RELEASE SEAT
+        // -----------------------------
+        public void RemovePassenger()
         {
-            Passenger = null;
+            PassengerId = null;
             IsBooked = false;
-            UserId = null;
+        }
+
+        // Optional: helper to check if seat belongs to a passenger
+        public bool IsPassenger(int userId)
+        {
+            return PassengerId.HasValue && PassengerId.Value == userId;
         }
     }
 }

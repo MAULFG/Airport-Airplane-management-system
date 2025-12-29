@@ -1,9 +1,11 @@
-﻿using Airport_Airplane_management_system.Model.Repositories;
+﻿using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter.LoginPagesPresenters;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
 using Airport_Airplane_management_system.View.Interfaces;
-using Airport_Airplane_management_system.Model.Interfaces.Views;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -14,37 +16,32 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
     {
         private readonly LoginPresenter _presenter;
 
-        public LoginPage(INavigationService navigationService)
+        public LoginPage(
+        INavigationService navigationService,
+        UserService userService,
+        FlightService flightService,
+        IAppSession session) // optional if needed by presenter
         {
             InitializeComponent();
 
-            // Enter key triggers login
+            // Initialize UI events
             UsernameTB.KeyDown += TextBox_KeyDown;
             PasswordTB.KeyDown += TextBox_KeyDown;
 
-            // Reset borders on typing
             UsernameTB.TextChanged += (s, e) => UsernameTB.BorderColor = Color.DarkGray;
             PasswordTB.TextChanged += (s, e) => PasswordTB.BorderColor = Color.DarkGray;
 
-            // Connect events to MVP
             loginbtn.Click += (s, e) => LoginClicked?.Invoke(this, EventArgs.Empty);
             guna2HtmlLabel2.Click += (s, e) => SignUpClicked?.Invoke(this, EventArgs.Empty);
             lb2.Click += (s, e) => ForgotPasswordClicked?.Invoke(this, EventArgs.Empty);
 
-            // Initialize repository and service
-            var userRepo = new MySqlUserRepository(
-                "server=localhost;port=3306;database=user;user=root;password=2006"
-            );
-            var userService = new UserService(userRepo);
+            // Initialize presenter properly
+            _presenter = new LoginPresenter(this, userService, flightService, navigationService);
 
-            // Initialize presenter
-            _presenter = new LoginPresenter(this, userService, navigationService);
-            // Center the panel horizontally initially
             CenterGradientPanelVertically();
-
-            // Re-center when panel2 resizes horizontally
             panel2.Resize += (s, e) => CenterGradientPanelVertically();
         }
+
         private void CenterGradientPanelVertically()
         {
             if (guna2CustomGradientPanel1 != null && panel2 != null)

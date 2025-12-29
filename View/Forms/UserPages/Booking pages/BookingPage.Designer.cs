@@ -18,9 +18,19 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private Guna2ShadowPanel panelSummary;
         private Guna2GroupBox grpSelectedSeat;
         private Guna2GroupBox grpPrice;
-        private Guna2HtmlLabel lblSeatDetails;
-        private Guna2HtmlLabel lblPriceDetails;
         private Guna2Button btnConfirm;
+        private Guna2HtmlLabel lblSeatKey;
+        private Guna2HtmlLabel lblSeatValue;
+
+        private Guna2HtmlLabel lblClassKey;
+        private Guna2HtmlLabel lblClassValue;
+
+        private Guna2HtmlLabel lblStatusKey;
+        private Guna2HtmlLabel lblStatusValue;
+        private Guna2HtmlLabel lblBasePriceValue;
+        private Guna2HtmlLabel lblTaxValue;
+        private Guna2HtmlLabel lblDivider;
+        private Guna2HtmlLabel lblTotalValue;
 
         protected override void Dispose(bool disposing)
         {
@@ -43,10 +53,19 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelSummary = new Guna2ShadowPanel();
             btnConfirm = new Guna2Button();
             grpPrice = new Guna2GroupBox();
-            lblPriceDetails = new Guna2HtmlLabel();
+            lblBasePriceValue = new Guna2HtmlLabel();
+            lblTaxValue = new Guna2HtmlLabel();
+            lblDivider = new Guna2HtmlLabel();
+            lblTotalValue = new Guna2HtmlLabel();
             grpSelectedSeat = new Guna2GroupBox();
-            lblSeatDetails = new Guna2HtmlLabel();
+            lblSeatKey = new Guna2HtmlLabel();
+            lblSeatValue = new Guna2HtmlLabel();
+            lblClassKey = new Guna2HtmlLabel();
+            lblClassValue = new Guna2HtmlLabel();
+            lblStatusKey = new Guna2HtmlLabel();
+            lblStatusValue = new Guna2HtmlLabel();
             flowSeats = new FlowLayoutPanel();
+            passengerDetails1 = new Airport_Airplane_management_system.View.Forms.UserPages.Booking_pages.PassengerDetails();
             panelHeader.SuspendLayout();
             panelMain.SuspendLayout();
             panelSummary.SuspendLayout();
@@ -65,7 +84,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelHeader.Padding = new Padding(20);
             panelHeader.Radius = 10;
             panelHeader.ShadowColor = Color.Black;
-            panelHeader.Size = new Size(947, 70);
+            panelHeader.Size = new Size(1000, 70);
             panelHeader.TabIndex = 1;
             // 
             // lblFlightInfo
@@ -92,7 +111,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.Padding = new Padding(20);
             panelMain.Radius = 10;
             panelMain.ShadowColor = Color.Black;
-            panelMain.Size = new Size(947, 574);
+            panelMain.Size = new Size(1000, 680);
             panelMain.TabIndex = 0;
             // 
             // panelSummary
@@ -103,12 +122,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelSummary.Controls.Add(grpSelectedSeat);
             panelSummary.Dock = DockStyle.Right;
             panelSummary.FillColor = Color.FromArgb(245, 245, 245);
-            panelSummary.Location = new Point(618, 20);
+            panelSummary.Location = new Point(671, 20);
             panelSummary.Name = "panelSummary";
             panelSummary.Padding = new Padding(20);
             panelSummary.Radius = 10;
             panelSummary.ShadowColor = Color.Black;
-            panelSummary.Size = new Size(309, 534);
+            panelSummary.Size = new Size(309, 640);
             panelSummary.TabIndex = 0;
             panelSummary.Paint += panelSummary_Paint;
             // 
@@ -120,21 +139,27 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnConfirm.FillColor = Color.DarkCyan;
             btnConfirm.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnConfirm.ForeColor = Color.White;
-            btnConfirm.Location = new Point(20, 469);
+            btnConfirm.ImageAlign = HorizontalAlignment.Right;
+            btnConfirm.ImageOffset = new Point(65, 2);
+            btnConfirm.Location = new Point(20, 575);
             btnConfirm.Name = "btnConfirm";
             btnConfirm.ShadowDecoration.CustomizableEdges = customizableEdges2;
             btnConfirm.Size = new Size(269, 45);
             btnConfirm.TabIndex = 0;
-            btnConfirm.Text = "Confirm Booking";
+            btnConfirm.Text = "Continue";
+            btnConfirm.Click += btnConfirm_Click;
             // 
             // grpPrice
             // 
             grpPrice.BorderRadius = 10;
-            grpPrice.Controls.Add(lblPriceDetails);
+            grpPrice.Controls.Add(lblBasePriceValue);
+            grpPrice.Controls.Add(lblTaxValue);
+            grpPrice.Controls.Add(lblDivider);
+            grpPrice.Controls.Add(lblTotalValue);
             grpPrice.CustomizableEdges = customizableEdges3;
             grpPrice.Font = new Font("Segoe UI", 9F);
             grpPrice.ForeColor = Color.FromArgb(125, 137, 149);
-            grpPrice.Location = new Point(20, 146);
+            grpPrice.Location = new Point(23, 173);
             grpPrice.Name = "grpPrice";
             grpPrice.Padding = new Padding(5);
             grpPrice.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -142,20 +167,53 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             grpPrice.TabIndex = 1;
             grpPrice.Text = "Price Summary";
             // 
-            // lblPriceDetails
+            // lblBasePriceValue
             // 
-            lblPriceDetails.BackColor = Color.Transparent;
-            lblPriceDetails.Font = new Font("Segoe UI", 10F);
-            lblPriceDetails.Location = new Point(5, 45);
-            lblPriceDetails.Name = "lblPriceDetails";
-            lblPriceDetails.Size = new Size(3, 2);
-            lblPriceDetails.TabIndex = 0;
-            lblPriceDetails.Text = null;
+            lblBasePriceValue.BackColor = Color.Transparent;
+            lblBasePriceValue.Location = new Point(10, 40);
+            lblBasePriceValue.Name = "lblBasePriceValue";
+            lblBasePriceValue.Size = new Size(60, 17);
+            lblBasePriceValue.TabIndex = 0;
+            lblBasePriceValue.Text = "Base: $0.00";
+            // 
+            // lblTaxValue
+            // 
+            lblTaxValue.BackColor = Color.Transparent;
+            lblTaxValue.Location = new Point(10, 65);
+            lblTaxValue.Name = "lblTaxValue";
+            lblTaxValue.Size = new Size(54, 17);
+            lblTaxValue.TabIndex = 1;
+            lblTaxValue.Text = "Tax: $0.00";
+            // 
+            // lblDivider
+            // 
+            lblDivider.BackColor = Color.Transparent;
+            lblDivider.Location = new Point(10, 85);
+            lblDivider.Name = "lblDivider";
+            lblDivider.Size = new Size(87, 17);
+            lblDivider.TabIndex = 2;
+            lblDivider.Text = "──────────────";
+            // 
+            // lblTotalValue
+            // 
+            lblTotalValue.BackColor = Color.Transparent;
+            lblTotalValue.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblTotalValue.ForeColor = Color.DarkCyan;
+            lblTotalValue.Location = new Point(10, 105);
+            lblTotalValue.Name = "lblTotalValue";
+            lblTotalValue.Size = new Size(75, 19);
+            lblTotalValue.TabIndex = 3;
+            lblTotalValue.Text = "Total: $0.00";
             // 
             // grpSelectedSeat
             // 
             grpSelectedSeat.BorderRadius = 10;
-            grpSelectedSeat.Controls.Add(lblSeatDetails);
+            grpSelectedSeat.Controls.Add(lblSeatKey);
+            grpSelectedSeat.Controls.Add(lblSeatValue);
+            grpSelectedSeat.Controls.Add(lblClassKey);
+            grpSelectedSeat.Controls.Add(lblClassValue);
+            grpSelectedSeat.Controls.Add(lblStatusKey);
+            grpSelectedSeat.Controls.Add(lblStatusValue);
             grpSelectedSeat.CustomizableEdges = customizableEdges5;
             grpSelectedSeat.Font = new Font("Segoe UI", 9F);
             grpSelectedSeat.ForeColor = Color.FromArgb(125, 137, 149);
@@ -163,19 +221,67 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             grpSelectedSeat.Name = "grpSelectedSeat";
             grpSelectedSeat.Padding = new Padding(5);
             grpSelectedSeat.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            grpSelectedSeat.Size = new Size(269, 120);
+            grpSelectedSeat.Size = new Size(269, 140);
             grpSelectedSeat.TabIndex = 2;
             grpSelectedSeat.Text = "Selected Seat";
             // 
-            // lblSeatDetails
+            // lblSeatKey
             // 
-            lblSeatDetails.BackColor = Color.Transparent;
-            lblSeatDetails.Font = new Font("Segoe UI", 10F);
-            lblSeatDetails.Location = new Point(5, 45);
-            lblSeatDetails.Name = "lblSeatDetails";
-            lblSeatDetails.Size = new Size(3, 2);
-            lblSeatDetails.TabIndex = 0;
-            lblSeatDetails.Text = null;
+            lblSeatKey.BackColor = Color.Transparent;
+            lblSeatKey.Font = new Font("Segoe UI", 9F);
+            lblSeatKey.Location = new Point(10, 40);
+            lblSeatKey.Name = "lblSeatKey";
+            lblSeatKey.Size = new Size(28, 17);
+            lblSeatKey.TabIndex = 0;
+            lblSeatKey.Text = "Seat:";
+            // 
+            // lblSeatValue
+            // 
+            lblSeatValue.BackColor = Color.Transparent;
+            lblSeatValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblSeatValue.Location = new Point(100, 40);
+            lblSeatValue.Name = "lblSeatValue";
+            lblSeatValue.Size = new Size(8, 17);
+            lblSeatValue.TabIndex = 1;
+            lblSeatValue.Text = "-";
+            // 
+            // lblClassKey
+            // 
+            lblClassKey.BackColor = Color.Transparent;
+            lblClassKey.Location = new Point(10, 65);
+            lblClassKey.Name = "lblClassKey";
+            lblClassKey.Size = new Size(33, 17);
+            lblClassKey.TabIndex = 2;
+            lblClassKey.Text = "Class:";
+            // 
+            // lblClassValue
+            // 
+            lblClassValue.BackColor = Color.Transparent;
+            lblClassValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblClassValue.Location = new Point(100, 65);
+            lblClassValue.Name = "lblClassValue";
+            lblClassValue.Size = new Size(8, 17);
+            lblClassValue.TabIndex = 3;
+            lblClassValue.Text = "-";
+            // 
+            // lblStatusKey
+            // 
+            lblStatusKey.BackColor = Color.Transparent;
+            lblStatusKey.Location = new Point(10, 90);
+            lblStatusKey.Name = "lblStatusKey";
+            lblStatusKey.Size = new Size(38, 17);
+            lblStatusKey.TabIndex = 4;
+            lblStatusKey.Text = "Status:";
+            // 
+            // lblStatusValue
+            // 
+            lblStatusValue.BackColor = Color.Transparent;
+            lblStatusValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblStatusValue.Location = new Point(100, 90);
+            lblStatusValue.Name = "lblStatusValue";
+            lblStatusValue.Size = new Size(8, 17);
+            lblStatusValue.TabIndex = 5;
+            lblStatusValue.Text = "-";
             // 
             // flowSeats
             // 
@@ -185,18 +291,29 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowSeats.Location = new Point(20, 20);
             flowSeats.Margin = new Padding(20);
             flowSeats.Name = "flowSeats";
-            flowSeats.Size = new Size(907, 534);
+            flowSeats.Size = new Size(960, 640);
             flowSeats.TabIndex = 1;
             flowSeats.WrapContents = false;
             flowSeats.Paint += flowSeats_Paint;
             // 
+            // passengerDetails1
+            // 
+            passengerDetails1.Dock = DockStyle.Fill;
+            passengerDetails1.Location = new Point(0, 70);
+            passengerDetails1.Name = "passengerDetails1";
+            passengerDetails1.Size = new Size(1000, 680);
+            passengerDetails1.TabIndex = 0;
+            // 
             // BookingPage
             // 
             BackColor = Color.White;
-            ClientSize = new Size(947, 644);
+            ClientSize = new Size(1000, 750);
             Controls.Add(panelMain);
+            Controls.Add(passengerDetails1);
             Controls.Add(panelHeader);
+            MaximizeBox = false;
             Name = "BookingPage";
+            Load += BookingPage_Load;
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
             panelMain.ResumeLayout(false);
@@ -207,5 +324,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             grpSelectedSeat.PerformLayout();
             ResumeLayout(false);
         }
+
+        private Booking_pages.PassengerDetails passengerDetails1;
     }
 }

@@ -1,9 +1,12 @@
-﻿using Airport_Airplane_management_system.Model.Repositories;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter;
 using Airport_Airplane_management_system.Presenter.UserPagesPresenters;
 using Airport_Airplane_management_system.View.Interfaces;
 using Guna.UI2.WinForms;
+using MySqlX.XDevAPI;
 using System;
 using System.Windows.Forms;
 
@@ -19,44 +22,51 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public event EventHandler AccountClicked;
         public event EventHandler LogoutClicked;
         public event EventHandler UserMainClicked;
-        private readonly IBookingView _bookView;
+        
         private  BookingPage _bookForm;
         private readonly INavigationService _navigation;
         private readonly UserDashboardPresenter _presenter;
         private readonly FlightService _flightService;
+        private readonly PassengerService _passengerService;
         private readonly BookingService _bookingService;
         private UpcomingFlightsPresenter _upcomingFlightsPresenter;
         private SearchAndBookingPresenter _searchandbookingpresenter;
+        private MainUserPagePresenter _mainUserPagePresenter;
+
         private BookingPresenter _bookingpresenter;
         private Panel panelMain;
-
-        public UserDashboard(INavigationService navigation)
+        private readonly IAppSession _session;
+        public UserDashboard(INavigationService navigation, FlightService flightService, BookingService bookingService, PassengerService passengerService, IAppSession session)
         {
             InitializeComponent();
+
             _navigation = navigation;
-            _presenter = new UserDashboardPresenter(this, navigation);
+            _flightService = flightService;
+            _bookingService = bookingService;
+            _passengerService = passengerService ?? throw new ArgumentNullException(nameof(passengerService));
+            _session = session ?? throw new ArgumentNullException(nameof(session));
 
-            // Create a main panel to hold the content panels
-            panelMain = new Panel { Dock = DockStyle.Fill };
-            Controls.Add(panelMain);       // add main panel first
-            Controls.Add(guna2Panel1);     // side menu added after
+            // Initialize main panel
+            panelMain = new Panel();
+            panelMain.Dock = DockStyle.Fill;
+
+            // Side menu panel
+            guna2Panel1.Dock = DockStyle.Left;
+
+            // Add in correct order
+            Controls.Add(panelMain);
+            Controls.Add(guna2Panel1); // buttons panel on top
+            _presenter = new UserDashboardPresenter(this, _navigation);
 
 
-            // Initialize repositories & service
-            var flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            var userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            var bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            var planeRepo =new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-           
-            _flightService = new FlightService(flightRepo, userRepo, bookingRepo,planeRepo);
+
             
-            _upcomingFlightsPresenter =
-                new UpcomingFlightsPresenter(upcomingFlights1, _flightService);
-            _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1,_flightService,_navigation,_presenter);
+ 
 
-            // Initialize the designer panel at runtime
+            _mainUserPagePresenter =new MainUserPagePresenter(mainUserPage1, _session, _flightService,_bookingService);
 
-
+            _upcomingFlightsPresenter = new UpcomingFlightsPresenter(upcomingFlights1, _flightService,_presenter);
+            _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1, _flightService, _navigation, _presenter);
 
             // Add all designer panels to panelMain
             panelMain.Controls.Add(mainUserPage1);
@@ -67,23 +77,19 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.Controls.Add(userSettings1);
             panelMain.Controls.Add(userAccount1);
 
-
-            // Hide all panels initially
             HideAllPanels();
             ShowMainUser();
-
-            // Set up button click events
             InitializeButtonEvents();
-       
-
         }
+
+
         public void OpenBooking(int flightId)
         {
-            var bookingForm = new BookingPage(flightId);
-            _bookForm = bookingForm; // Assign the created form
-            _bookingpresenter = new BookingPresenter(_bookView, _flightService, flightId);
+            var bookingForm = new BookingPage(flightId, _bookingService, _passengerService, _session);
+            _bookingpresenter = new BookingPresenter(bookingForm, _flightService, flightId);
             bookingForm.ShowDialog();
         }
+
         private void InitializeButtonEvents()
         {
             guna2Button1.Click += (s, e) => UserMainClicked?.Invoke(this, EventArgs.Empty);

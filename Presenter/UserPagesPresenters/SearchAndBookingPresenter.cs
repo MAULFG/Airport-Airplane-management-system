@@ -34,13 +34,14 @@ namespace Airport_Airplane_management_system.Presenter
             _view.DisplayFlights(new List<Flight>()); // clear existing cards
 
             // Call the service to search flights
-            var flights = _flightService.SearchFlights(
-                from: _view.From,
-                to: _view.To,
-                year: _view.IsDateSelected ? _view.DepartureDate?.Year : null,
-                month: _view.IsDateSelected ? _view.DepartureDate?.Month : null,
-                day: _view.IsDateSelected ? _view.DepartureDate?.Day : null
-            );
+            var flights = _flightService?.SearchFlights(
+             from: _view?.From ?? "",
+               to: _view?.To ?? "",
+                year: (_view?.IsDateSelected == true && _view.DepartureDate.HasValue) ? _view.DepartureDate.Value.Year : (int?)null,
+               month: (_view?.IsDateSelected == true && _view.DepartureDate.HasValue) ? _view.DepartureDate.Value.Month : (int?)null,
+                day: (_view?.IsDateSelected == true && _view.DepartureDate.HasValue) ? _view.DepartureDate.Value.Day : (int?)null
+                 );
+
 
             // Optional: filter by class + passengers
             if (!string.IsNullOrWhiteSpace(_view.Class))

@@ -1,6 +1,7 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI;
 using System;
 
 namespace Airport_Airplane_management_system.Model.Repositories
@@ -15,27 +16,28 @@ namespace Airport_Airplane_management_system.Model.Repositories
         }
 
         public bool CreateBooking(
-            int userId,
-            int flightId,
-            int flightSeatId,
-            string category,
-            out int bookingId,
-            out string error)
+     int userId,
+     int flightId,
+     int flightSeatId,
+     string category,
+     int passengerId,
+     out int bookingId,
+     out string error)
         {
             bookingId = 0;
             error = "";
 
             const string lockSeat = @"
-SELECT id FROM flight_seats
+SELECT id, passenger_id FROM flight_seats
 WHERE id=@sid AND flight_id=@fid AND is_booked=0
 FOR UPDATE;";
 
             const string insertBooking = @"
-INSERT INTO bookings (user_id, flight_id, flight_seat_id, category, status)
-VALUES (@uid, @fid, @sid, @cat, 'Confirmed');";
+INSERT INTO bookings (user_id, flight_id, seat_id, flight_seat_id, passenger_id, status)
+VALUES (@uid, @fid, @sid, @sid, @pid, 'Confirmed');";
 
             const string bookSeat = @"
-UPDATE flight_seats SET is_booked=1, user_id=@uid WHERE id=@sid;";
+UPDATE flight_seats SET is_booked=1, passenger_id=@pid WHERE id=@sid;";
 
             try
             {
@@ -43,33 +45,37 @@ UPDATE flight_seats SET is_booked=1, user_id=@uid WHERE id=@sid;";
                 conn.Open();
                 using var tx = conn.BeginTransaction();
 
+                // 1️⃣ Lock seat
                 using (var cmd = new MySqlCommand(lockSeat, conn, tx))
                 {
                     cmd.Parameters.AddWithValue("@sid", flightSeatId);
                     cmd.Parameters.AddWithValue("@fid", flightId);
 
-                    if (cmd.ExecuteScalar() == null)
+                    var result = cmd.ExecuteScalar();
+                    if (result == null)
                     {
                         tx.Rollback();
-                        error = "Seat not available.";
+                        error = "Seat is already booked.";
                         return false;
                     }
                 }
 
+                // 2️⃣ Insert booking
                 using (var cmd = new MySqlCommand(insertBooking, conn, tx))
                 {
                     cmd.Parameters.AddWithValue("@uid", userId);
                     cmd.Parameters.AddWithValue("@fid", flightId);
                     cmd.Parameters.AddWithValue("@sid", flightSeatId);
-                    cmd.Parameters.AddWithValue("@cat", category);
+                    cmd.Parameters.AddWithValue("@pid", passengerId);
                     cmd.ExecuteNonQuery();
                     bookingId = (int)cmd.LastInsertedId;
                 }
 
+                // 3️⃣ Mark seat as booked
                 using (var cmd = new MySqlCommand(bookSeat, conn, tx))
                 {
-                    cmd.Parameters.AddWithValue("@uid", userId);
                     cmd.Parameters.AddWithValue("@sid", flightSeatId);
+                    cmd.Parameters.AddWithValue("@pid", passengerId);
                     cmd.ExecuteNonQuery();
                 }
 
@@ -83,6 +89,72 @@ UPDATE flight_seats SET is_booked=1, user_id=@uid WHERE id=@sid;";
             }
         }
 
+        public List<Booking> GetBookingsForUser(User user)
+        {
+            var list = new List<Booking>();
+
+            const string sql = @"
+SELECT 
+    b.id AS booking_id,    -- ← change this if the column is 'id'
+    b.status,
+    f.id AS flight_id,
+    f.from_city,
+    f.to_city,
+    f.departure,
+    f.arrival,
+    fs.id AS seat_id,
+    fs.seat_number,
+    fs.class_type
+FROM bookings b
+JOIN flights f ON f.id = b.flight_id
+JOIN flight_seats fs ON fs.id = b.flight_seat_id
+WHERE b.user_id = @uid;
+";
+
+
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@uid", user.UserID);
+
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+            {
+                var flight = new Flight(
+                    r.GetInt32("flight_id"),
+                    null,
+                    r.GetString("from_city"),
+                    r.GetString("to_city"),
+                    r.GetDateTime("departure"),
+                    r.GetDateTime("arrival"),
+                    new Dictionary<string, decimal>()
+                );
+
+                var seat = new FlightSeats(
+                    r.GetInt32("seat_id"),
+                    flight.FlightID,
+                    0,
+                    r.GetString("seat_number"),
+                    r.GetString("class_type"),
+                    true,
+                    user.UserID
+                );
+
+                var booking = new Booking(
+                    r.GetInt32("booking_id"),
+                    user,          // ✅ injected properly
+                    flight,
+                    seat,
+                    seat.ClassType,
+                    r.GetString("status")
+                );
+
+                list.Add(booking);
+            }
+
+            return list;
+        }
+
         public bool CancelBooking(int bookingId, out string error)
         {
             error = "";
@@ -94,7 +166,8 @@ SELECT flight_seat_id FROM bookings WHERE booking_id=@bid FOR UPDATE;";
 UPDATE bookings SET status='Cancelled' WHERE booking_id=@bid;";
 
             const string freeSeat = @"
-UPDATE flight_seats SET is_booked=0, user_id=NULL WHERE id=@sid;";
+UPDATE flight_seats SET is_booked=0, passenger_id=NULL WHERE id=@sid;";
+
 
             try
             {

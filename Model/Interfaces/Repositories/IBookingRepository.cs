@@ -8,14 +8,16 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
     public interface IBookingRepository
     {
         bool CreateBooking(
-            int userId,
-            int flightId,
-            int flightSeatId,
-            string category,
-            out int bookingId,
-            out string error);
+    int userId,
+    int flightId,
+    int flightSeatId,
+    string category,
+    int passengerId,
+    out int bookingId,
+    out string error);
 
         bool CancelBooking(int bookingId, out string error);
+        List<Booking> GetBookingsForUser(User user);
 
         List<int> GetActiveBookingIdsForFlight(int flightId); 
     }

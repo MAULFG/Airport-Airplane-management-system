@@ -53,7 +53,7 @@ namespace Airport_Airplane_management_system.Model.Repositories
             using var conn = new MySqlConnection(_connStr);
             conn.Open();
 
-            string query = @"SELECT id, flight_id, plane_seat_index, seat_number, class_type, is_booked, user_id
+            string query = @"SELECT id, flight_id, plane_seat_index, seat_number, class_type, is_booked, passenger_id
                          FROM flight_seats
                          WHERE flight_id = @fid
                          ORDER BY plane_seat_index";
@@ -68,9 +68,9 @@ namespace Airport_Airplane_management_system.Model.Repositories
                 string seatNum = reader.GetString("seat_number");
                 string classType = reader.GetString("class_type");
                 bool isBooked = reader.GetBoolean("is_booked");
-                int? userId = reader.IsDBNull(reader.GetOrdinal("user_id")) ? null : reader.GetInt32("user_id");
+                int? passengerId = reader.IsDBNull(reader.GetOrdinal("passenger_id")) ? null : reader.GetInt32("passenger_id");
 
-                seats.Add(new FlightSeats(seatId, flightId, planeSeatIndex, seatNum, classType, isBooked, userId));
+                seats.Add(new FlightSeats(seatId, flightId, planeSeatIndex, seatNum, classType, isBooked, passengerId));
             }
 
             return seats;

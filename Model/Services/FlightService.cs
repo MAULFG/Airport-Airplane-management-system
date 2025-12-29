@@ -1,5 +1,7 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +14,26 @@ namespace Airport_Airplane_management_system.Model.Services
         private readonly IUserRepository _userRepo;
         private readonly IBookingRepository _bookingRepo;
         private readonly IPlaneRepository _planeRepo;
-        public FlightService(
-            IFlightRepository flightRepo,
-            IUserRepository userRepo,
-            IBookingRepository bookingRepo, IPlaneRepository planeRepo)
+        private readonly IAppSession _session;
+        public FlightService(IFlightRepository flightRepo, IUserRepository userRepo,IBookingRepository bookingRepo,IPlaneRepository planeRepo, IAppSession session) 
         {
             _flightRepo = flightRepo;
             _userRepo = userRepo;
             _bookingRepo = bookingRepo;
             _planeRepo = planeRepo;
+            _session = session; 
+        }
+
+        public void Preload()
+        {
+            if (_session.Flights != null)
+                return;
+
+            var planes = _planeRepo.GetAllPlanesf();
+            var flights = LoadFlightsWithSeats();
+
+            _session.SetPlanes(planes);
+            _session.SetFlights(flights);
         }
 
         // -----------------------------
@@ -28,41 +41,38 @@ namespace Airport_Airplane_management_system.Model.Services
         // -----------------------------
         public List<Flight> LoadFlightsWithSeats()
         {
-            // 1️⃣ Load all planes from repository
+            if (_session.Flights != null)
+                return _session.Flights;
+
             var planes = _planeRepo.GetAllPlanesf();
-
-            // 2️⃣ Load all flights
             var flights = _flightRepo.GetAllFlights();
-
-            // 3️⃣ Load all users (for seat assignment)
             var users = _userRepo.GetAllUsers();
 
             foreach (var flight in flights)
             {
-                // --- Assign the correct Plane object ---
-                // Make sure Flight class has a property PlaneIDFromDb that holds the plane_id from DB
                 flight.Plane = planes.FirstOrDefault(p => p.PlaneID == flight.PlaneIDFromDb);
-
-                // --- Load seats for this flight ---
                 flight.FlightSeats.Clear();
                 var seats = _flightRepo.GetSeatsForFlight(flight.FlightID);
 
                 foreach (var seat in seats)
                 {
-                    // Assign passenger if booked
-                    if (seat.UserId.HasValue)
+                    if (seat.PassengerId.HasValue)
                     {
-                        var passenger = users.FirstOrDefault(u => u.UserID == seat.UserId.Value);
+                        var passenger = users.FirstOrDefault(u => u.UserID == seat.PassengerId.Value);
                         if (passenger != null)
                             seat.AssignPassenger(passenger);
                     }
-
                     flight.FlightSeats.Add(seat);
                 }
             }
 
+            _session.SetPlanes(planes);
+            _session.SetFlights(flights);
+
             return flights;
         }
+
+
 
         public List<Flight> GetFlights()
         {
@@ -80,9 +90,9 @@ namespace Airport_Airplane_management_system.Model.Services
 
             foreach (var seat in seats)
             {
-                if (seat.UserId.HasValue)
+                if (seat.PassengerId.HasValue)
                 {
-                    var passenger = users.FirstOrDefault(u => u.UserID == seat.UserId.Value);
+                    var passenger = users.FirstOrDefault(u => u.UserID == seat.PassengerId.Value);
                     if (passenger != null)
                         seat.AssignPassenger(passenger);
                 }
@@ -164,33 +174,7 @@ namespace Airport_Airplane_management_system.Model.Services
 
             return true;
         }
-        public bool BookSeat(User user, Flight flight, FlightSeats seat, out string error, out int bookingId)
-        {
-            error = "";
-            bookingId = 0;
-
-            if (seat.IsBooked)
-            {
-                error = "Seat already booked.";
-                return false;
-            }
-
-            bool success = _bookingRepo.CreateBooking(
-                user.UserID,
-                flight.FlightID,
-                seat.Id,
-                seat.ClassType,
-                out bookingId,
-                out error
-            );
-
-            if (success)
-            {
-                seat.AssignPassenger(user); // update in memory
-            }
-
-            return success;
-        }
+        
 
 
     }

@@ -1,14 +1,17 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter;
+using Airport_Airplane_management_system.View.Forms.UserPages.Booking_pages;
 using Airport_Airplane_management_system.View.Interfaces;
 using Guna.UI2.WinForms;
 using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace Airport_Airplane_management_system.View.Forms.UserPages
@@ -17,55 +20,41 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
     {
         public event Action<FlightSeats> SeatSelected;
         public event Action ConfirmBookingClicked;
-         
-        public BookingPage(int flightId)
+        private readonly BookingService bookingService;
+        private readonly PassengerService passengerService;
+        private readonly IAppSession session;
+        public BookingPage(int flightId,BookingService bookingService,PassengerService passengerService,IAppSession session)
         {
             InitializeComponent();
-             int id = flightId;
-        btnConfirm.Click += (_, _) => ConfirmBookingClicked?.Invoke();
+
+            this.bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
+            this.passengerService = passengerService ?? throw new ArgumentNullException(nameof(passengerService));
+            this.session = session ?? throw new ArgumentNullException(nameof(session));
+            passengerDetails1.Hide();
+            btnConfirm.Click += (_, _) => ConfirmBookingClicked?.Invoke();
         }
-        
-        // A320neo
-        int[] A320_FULL = { 1, 1, 0, 1, 1, 0, 1, 1 }; // economy
-        int[] A320_BUS_ADJ = { 1, 0, 0, 1, 1, 0, 0, 1 }; // business aligned
-       
 
-        // Boeing 777-300
-        int[] B777_FULL = { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1 }; // economy
-        int[] B777_BUS_ADJ = { 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0 };
-        int[] B777_FST_ADJ = { 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0 };
+        private Flight _currentFlight;
 
-
-        private TableLayoutPanel CreateSeatTable(int rows, int[] layoutPattern)
+        public void ShowPassengerDetails(Flight flight, FlightSeats seat, decimal price)
         {
-            var table = new TableLayoutPanel
+            passengerDetails1.Show();
+            passengerDetails1.BringToFront();
+
+            // Attach the presenter to the existing control
+            var presenter = new PassengerDetailsPresenter(passengerDetails1, passengerService, bookingService, session, flight, seat, price);
+            presenter.PassengerDetailsClosed += () =>
             {
-                RowCount = rows,
-                ColumnCount = layoutPattern.Length,
-                AutoSize = true,
-                CellBorderStyle = TableLayoutPanelCellBorderStyle.None
+                passengerDetails1.Hide();
+                ShowSeats(flight); // refresh the seat map
             };
-            var centerPanel = new Panel
-            {
-                AutoSize = true,
-                Margin = new Padding((flowSeats.Width - table.Width) / 2,10,10,10)
-            };
-            centerPanel.Controls.Add(table);
-            flowSeats.Controls.Add(centerPanel);
+
             
-            foreach (var col in layoutPattern)
-            {
-                if (col == 0) 
-                    table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 30));
-                else // seat
-                    table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 65));
-            }
-
-            for (int r = 0; r < rows; r++)
-                table.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
-
-            return table;
         }
+
+
+
+
         public void ShowFlightInfo(Flight flight)
         {
             lblFlightInfo.Text =
@@ -73,120 +62,126 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 $"Departure: {flight.Departure:g} | " +
                 $"Arrival: {flight.Arrival:g}";
         }
-        private void FillSeats(TableLayoutPanel table,List<FlightSeats> orderedSeats,int startRow,int rows,int[] pattern,ref int seatIndex)
-        {
-            for (int r = 0; r < rows; r++)
-            {
-                for (int c = 0; c < pattern.Length; c++)
-                {
-                    if (pattern[c] == 0)
-                    {
-                        table.Controls.Add(new Panel { Width = 30 }, c, startRow + r);
-                        continue;
-                    }
 
-                    if (seatIndex >= orderedSeats.Count)
-                        return;
-
-                    var seat = orderedSeats[seatIndex++];
-
-                    table.Controls.Add(
-                        CreateSeatButton(
-                            orderedSeats.ToDictionary(s => s.SeatNumber),
-                            seat.SeatNumber
-                        ),
-                        c,
-                        startRow + r
-                    );
-                }
-            }
-        }
         public void ShowSeats(Flight flight)
         {
-            MessageBox.Show($"Plane: {flight.Plane.Model}\nSeats count: {flight.FlightSeats.Count}");
-
             flowSeats.Controls.Clear();
-            if (flight?.Plane == null || flight.FlightSeats == null) return;
-            var orderedSeats = flight.FlightSeats.OrderBy(s => s.SeatNumber).ToList();
 
-            var seatDict = flight.FlightSeats.Where(s => !string.IsNullOrEmpty(s.SeatNumber)).GroupBy(s => s.SeatNumber).Select(g => g.First()).ToDictionary(s => s.SeatNumber);
+            if (flight?.FlightSeats == null || flight.FlightSeats.Count == 0)
+            {
+                ShowMessage("No seats available for this flight.");
+                return;
+            }
 
+            var seatDict = flight.FlightSeats.ToDictionary(s => s.SeatNumber);
 
-            // 1️⃣ Get plane-specific layout
-            var layout = GetSeatLayout(flight.Plane.Model);
+            Dictionary<int, string> firstMap = null;
+            Dictionary<int, string> businessMap = null;
+            Dictionary<int, string> economyMap = null;
+            int totalColumns = 0;
 
-            // 2️⃣ Create table
+            string model = flight.Plane.Model.ToLower();
+
+            if (model.Contains("a320"))
+            {
+                totalColumns = 9;
+                firstMap = null;
+                businessMap = new Dictionary<int, string> { { 2, "A" }, { 3, "B" }, { 5, "C" }, { 6, "D" } };
+                economyMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, { 3, "C" }, { 5, "D" }, { 6, "E" }, { 7, "F" } };
+            }
+            else if (model.Contains("777"))
+            {
+                totalColumns = 11;
+                firstMap = new Dictionary<int, string> { { 2, "A" }, { 4, "B" }, { 6, "C" }, { 8, "D" } };
+                businessMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, { 4, "C" }, { 6, "D" }, { 8, "E" }, { 9, "F" } };
+                economyMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" }, { 2, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" }, { 8, "G" }, { 9, "H" }, { 10, "J" } };
+            }
+            else if (model.Contains("g650"))
+            {
+                // G650 is a private jet, usually 1-1 or 2-2 seating
+                totalColumns = 4; // simple layout
+                firstMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" } };
+                businessMap = null;
+                economyMap = null; // usually not used
+            }
+            _currentFlight = flight;
+            // Create table
             var table = new TableLayoutPanel
             {
-                RowCount = layout.Rows,
-                ColumnCount = layout.Columns.Length,
-                AutoSize = true,
-                CellBorderStyle = TableLayoutPanelCellBorderStyle.None
+                RowCount = model.Contains("g650") ? 6 : 43,
+                ColumnCount = totalColumns,
+                AutoSize = true
             };
 
-            // Set column widths (0 = aisle, 1 = seat)
-            foreach (var col in layout.Columns)
-                table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, col == 0 ? 30 : 65));
+            for (int c = 0; c < totalColumns; c++)
+                table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 65));
 
-            // Set row heights
-            for (int r = 0; r < layout.Rows; r++)
+            for (int r = 0; r < 43; r++)
                 table.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
-            // 3️⃣ Fill seats
-            int seatIndex = 0;
+            // Track which row is used in table
+            int currentRow = 0;
 
-            for (int r = 0; r < layout.Rows; r++)
+            void FillClass(Dictionary<int, string> map, string classType)
             {
-                for (int c = 0; c < layout.Columns.Length; c++)
+                if (map == null || map.Count == 0) return;
+
+                // Only seats of this class
+                var seats = flight.FlightSeats
+                                  .Where(s => s.ClassType.Equals(classType, StringComparison.OrdinalIgnoreCase))
+                                  .OrderBy(s => s.SeatNumber)
+                                  .ToList();
+
+                if (!seats.Any()) return;
+
+                // Group seats by row number (digits part of seatNumber)
+                var groupedRows = new Dictionary<int, List<FlightSeats>>();
+                foreach (var seat in seats)
                 {
-                    if (layout.Columns[c] == 0)
+                    int rowNum = int.Parse(new string(seat.SeatNumber.TakeWhile(char.IsDigit).ToArray()));
+                    if (!groupedRows.ContainsKey(rowNum))
+                        groupedRows[rowNum] = new List<FlightSeats>();
+                    groupedRows[rowNum].Add(seat);
+                }
+
+                // Fill each row that has seats
+                foreach (var rowNum in groupedRows.Keys.OrderBy(x => x))
+                {
+                    foreach (var kv in map)
                     {
-                        table.Controls.Add(new Panel { Width = 30 }, c, r);
-                        continue;
+                        string seatNumber = $"{rowNum}{kv.Value}";
+                        AddSeatOrPlaceholder(table, seatDict, seatNumber, currentRow, kv.Key);
                     }
-
-                    if (seatIndex >= orderedSeats.Count)
-                        break;
-
-                    var seat = orderedSeats[seatIndex++];
-                    table.Controls.Add(
-                        CreateSeatButton(seatDict, seat.SeatNumber),
-                        c,
-                        r
-                    );
+                    currentRow++;
                 }
             }
 
+            // Fill only classes that exist
+            FillClass(firstMap, "First");
+            FillClass(businessMap, "Business");
+            FillClass(economyMap, "Economy");
 
-            // 4️⃣ Center the table inside flow panel
-            var centerPanel = new Panel
-            {
-                AutoSize = true,
-                Dock = DockStyle.Top
-            };
-            centerPanel.Controls.Add(table);
-
-            flowSeats.Controls.Add(centerPanel);
+            var wrapper = new Panel { AutoSize = true };
+            wrapper.Controls.Add(table);
+            wrapper.Margin = new Padding((flowSeats.Width - table.PreferredSize.Width) / 2 - 200, 10, 10, 10);
+            flowSeats.Controls.Add(wrapper);
         }
-        private (int Rows, int[] Columns) GetSeatLayout(string planeModel)
+
+
+
+
+
+        // Helper function
+        private void AddSeatOrPlaceholder(TableLayoutPanel table, Dictionary<string, FlightSeats> seatDict, string seatNumber, int row, int col)
         {
-            if (string.IsNullOrWhiteSpace(planeModel))
-                return (20, new int[] { 1, 1, 1, 1 });
-
-            planeModel = planeModel.ToLower().Trim();
-
-            if (planeModel.Contains("a320"))
+            if (seatDict.TryGetValue(seatNumber, out var seat))
             {
-                return (31, new int[] { 1, 0, 1, 1, 0, 1, 1 });
+                table.Controls.Add(CreateSeatButton(seatDict, seatNumber), col, row);
             }
-
-            if (planeModel.Contains("777"))
+            else
             {
-                return (41, new int[] { 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1 });
+                table.Controls.Add(new Panel { Width = 65, Height = 45 }, col, row); // empty placeholder
             }
-
-            // fallback
-            return (20, new int[] { 1, 1, 1, 1 });
         }
 
         private Control CreateSeatButton(Dictionary<string, FlightSeats> seatDict, string seatNumber)
@@ -209,21 +204,61 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btn.Click += (_, _) => SeatSelected?.Invoke(seat);
             return btn;
         }
-        public void ShowSelectedSeat(FlightSeats seat, decimal price)
+        public void ShowSelectedSeat(FlightSeats seat, decimal basePrice)
         {
-            lblSeatDetails.Text =
-                $"Seat: {seat.SeatNumber}\n" +
-                $"Class: {seat.ClassType}\n" +
-                $"Price: ${price}";
+
+            lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
+            lblSeatValue.Text = seat.SeatNumber;
+            lblClassValue.Text = seat.ClassType;
+            lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
+            decimal tax = basePrice * 0.10m;
+            decimal total = basePrice + tax;
+            decimal finalPrice = basePrice;
+            if (IsWindowSeat(seat, _currentFlight))
+            {
+                finalPrice += basePrice * 0.20m;
+            }
+
+
+            lblBasePriceValue.Text = $"Base: ${basePrice:0.00}";
+            lblTaxValue.Text = $"Tax: ${tax:0.00}";
+            lblTotalValue.Text = $"Total: ${(finalPrice):0.00}";
         }
 
-        public void ShowPrice(decimal price)
+
+        private bool IsWindowSeat(FlightSeats seat, Flight flight)
         {
-            lblPriceDetails.Text =
-                $"Base Price: ${price}\n" +
-                $"Taxes: ${(price * 0.1m):0.00}\n" +
-                $"Total: ${(price * 1.1m):0.00}";
+            string seatLetter = new string(seat.SeatNumber
+                                            .SkipWhile(char.IsDigit)
+                                            .ToArray())
+                                            .ToUpper();
+
+            string model = flight.Plane.Model.ToLower();
+
+            if (model.Contains("a320"))
+            {
+                return seatLetter == "A" || seatLetter == "F";
+            }
+            else if (model.Contains("777"))
+            {
+                return seat.ClassType switch
+                {
+                    "First" => seatLetter == "A" || seatLetter == "D",
+                    "Business" => seatLetter == "A" || seatLetter == "F",
+                    "Economy" => seatLetter == "A" || seatLetter == "J",
+                    _ => false
+                };
+            }
+            else if (model.Contains("g650"))
+            {
+                return seatLetter == "A" || seatLetter == "B";
+            }
+
+            return false;
         }
+
+
+
 
         public void ShowMessage(string message)
         {
@@ -246,6 +281,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         private void flowSeats_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void BookingPage_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnConfirm_Click(object sender, EventArgs e)
         {
 
         }

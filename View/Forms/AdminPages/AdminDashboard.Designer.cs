@@ -63,7 +63,7 @@
             notrificationsa1 = new NotrificationsA();
             maina1 = new MainA();
             passengerMangement1 = new PassengerMangement();
-            mainUserPage1 = new Airport_Airplane_management_system.View.Forms.UserPages.MainUserPage();
+
             guna2Panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -327,16 +327,7 @@
             passengerMangement1.Size = new Size(1386, 911);
             passengerMangement1.TabIndex = 11;
             passengerMangement1.Load += passengerMangement1_Load;
-            // 
-            // mainUserPage1
-            // 
-            mainUserPage1.Dock = DockStyle.Fill;
-            mainUserPage1.Location = new Point(250, 0);
-            mainUserPage1.Margin = new Padding(3, 4, 3, 4);
-            mainUserPage1.Name = "mainUserPage1";
-            mainUserPage1.Size = new Size(963, 683);
-            mainUserPage1.TabIndex = 12;
-            // 
+         
             // AdminDashboard
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);

@@ -56,7 +56,7 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
                 return false;
             }
 
-            Seat.AssignPassenger(User);
+            
             Status = "Confirmed";
             return true;
         }
@@ -66,7 +66,7 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
         {
             if (Status == "Confirmed")
             {
-                Seat.ReleaseSeat();
+                Seat.RemovePassenger();
                 Status = "Cancelled";
             }
         }

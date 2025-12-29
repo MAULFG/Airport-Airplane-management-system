@@ -153,6 +153,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right
             };
             details.Controls.Add(btnBook);
+            btnBook.Click += (s, e) => {
+                int flightId = f.FlightID;
+                BookFlightRequested?.Invoke(flightId);
+            };
 
             // ===== PLANE INFO =====
             var lblPlaneID = new Guna2HtmlLabel
@@ -240,7 +244,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             card.Click += (s, e) => Toggle();
             foreach (Control c in card.Controls)
-                c.Click += (s, e) => Toggle();
+            {
+                if (c != btnBook) // <-- exclude the button
+                    c.Click += (s, e) => Toggle();
+            }
 
             // ===== POSITION ELEMENTS =====
             void PositionElements()
@@ -284,7 +291,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             return card;
         }
-
+        public event Action<int> BookFlightRequested;
 
         // ===== CREATE ROW =====
         private Guna2Panel CreateRow(string title, DateTime date, int panelWidth)

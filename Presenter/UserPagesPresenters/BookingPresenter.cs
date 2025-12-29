@@ -16,17 +16,17 @@ namespace Airport_Airplane_management_system.Presenter
         private Flight _flight;
         private FlightSeats _selectedSeat;
 
-        public BookingPresenter(IBookingView view,FlightService flightService,int flightId)
+        public BookingPresenter(IBookingView view, FlightService flightService, int flightId)
         {
-            _view = view;
-           
-            _flightService = flightService;
+            _view = view ?? throw new ArgumentNullException(nameof(view));
+            _flightService = flightService ?? throw new ArgumentNullException(nameof(flightService));
 
             _view.SeatSelected += OnSeatSelected;
             _view.ConfirmBookingClicked += OnConfirmBooking;
 
             LoadFlight(flightId);
         }
+
 
         private void LoadFlight(int flightId)
         {
@@ -61,7 +61,7 @@ namespace Airport_Airplane_management_system.Presenter
             decimal price = _flight.GetSeatPrice(seat.ClassType);
 
             _view.ShowSelectedSeat(seat, price);
-            _view.ShowPrice(price);
+           
         }
 
         private void OnConfirmBooking()
@@ -72,8 +72,9 @@ namespace Airport_Airplane_management_system.Presenter
                 return;
             }
 
+            decimal price = _flight.GetSeatPrice(_selectedSeat.ClassType);
 
-            _view.ShowMessage($"Booking confirmed! ID:");
+            _view.ShowPassengerDetails(_flight, _selectedSeat, price);
 
             // Reload seats after booking
             LoadFlight(_flight.FlightID);

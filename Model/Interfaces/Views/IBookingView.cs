@@ -9,9 +9,10 @@ namespace Airport_Airplane_management_system.View.Interfaces
         // Display
         void ShowSeats(Flight flight);
         void ShowFlightInfo(Flight flight);
-        
+        void ShowPassengerDetails(Flight flight, FlightSeats seat, decimal price);
+
         void ShowSelectedSeat(FlightSeats seat, decimal price);
-        void ShowPrice(decimal price);
+
         void ShowMessage(string message);
 
         // Events (View → Presenter)

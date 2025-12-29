@@ -1,9 +1,12 @@
-﻿using System.Security.Principal;
+﻿using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using System.Security.Principal;
 
 namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
+
     partial class UserDashboard
     {
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -23,7 +26,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         #region Component Designer generated code
-
+       
         /// <summary> 
         /// Required method for Designer support - do not modify 
         /// the contents of  method with the code editor.

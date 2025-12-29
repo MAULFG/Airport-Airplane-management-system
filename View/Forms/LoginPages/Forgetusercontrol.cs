@@ -1,4 +1,5 @@
-﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+﻿using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
@@ -12,6 +13,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
 {
     public partial class ForgetUserControl : UserControl, IForgetPasswordView
     {
+        private readonly IAppSession session;
         private readonly ForgetPasswordPresenter _presenter;
         private readonly INavigationService _navigation;
         public ForgetUserControl(INavigationService navigation)
@@ -35,7 +37,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             IUserRepository userRepo = new MySqlUserRepository(
                 "server=localhost;port=3306;database=user;user=root;password=2006"
             );
-            UserService userService = new UserService(userRepo);
+            UserService userService = new UserService(userRepo,session);
 
             _presenter = new ForgetPasswordPresenter(this, userService,navigation);
             

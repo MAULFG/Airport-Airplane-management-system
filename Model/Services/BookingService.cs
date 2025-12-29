@@ -1,6 +1,7 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
-
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using MySqlX.XDevAPI;
 using System.Linq;
 
 namespace Airport_Airplane_management_system.Model.Services
@@ -8,48 +9,56 @@ namespace Airport_Airplane_management_system.Model.Services
     public class BookingService
     {
         private readonly IBookingRepository _repo;
+        private readonly IAppSession _session;
 
-        public BookingService(IBookingRepository repo)
+        public BookingService(IBookingRepository repo, IAppSession session)
         {
             _repo = repo;
+            _session = session;
+        }
+        public void LoadBookingsForCurrentUser()
+        {
+            var user = _session.CurrentUser;
+            if (user == null) return;
+
+            var bookings = _repo.GetBookingsForUser(user);
+
+            user.BookedFlights.Clear();
+            foreach (var booking in bookings)
+                user.AddBooking(booking);
         }
 
-        public bool MakeBooking(
-            User user,
-            Flight flight,
-            string category,
-            string seatNumber,
-            out Booking booking,
-            out string error)
+
+        public bool MakeBooking(User user, int passengerId, Flight flight, FlightSeats seat, out Booking booking, out string error)
         {
             booking = null;
             error = "";
 
-            var seat = flight.GetAvailableSeats(category)
-                             .FirstOrDefault(s => s.SeatNumber == seatNumber);
-
-            if (seat == null)
+            if (seat.IsBooked)
             {
-                error = "Seat not available.";
+                error = "Seat already booked.";
                 return false;
             }
 
-            if (!_repo.CreateBooking(
+            bool success = _repo.CreateBooking(
                 user.UserID,
                 flight.FlightID,
                 seat.Id,
-                category,
+                seat.ClassType,
+                passengerId,
                 out int bookingId,
-                out error))
+                out error);
+
+            if (success)
             {
-                return false;
+                seat.AssignPassenger(user); // mark seat as booked in memory
+                seat.Book(user);
+                booking = new Booking(user, flight, seat, seat.ClassType);
+                booking.SetDbId(bookingId);
+                booking.Confirm();
             }
 
-            booking = new Booking(user, flight, seat, category);
-            booking.SetDbId(bookingId);
-            booking.Confirm();
-
-            return true;
+            return success;
         }
 
         public bool CancelBooking(Booking booking, out string error)
@@ -60,6 +69,16 @@ namespace Airport_Airplane_management_system.Model.Services
                 return false;
 
             booking.Cancel();
+
+            // update cached flight
+            var cachedFlight = _session.Flights?.FirstOrDefault(f => f.FlightID == booking.Flight.FlightID);
+            if (cachedFlight != null)
+            {
+                var cachedSeat = cachedFlight.FlightSeats.FirstOrDefault(s => s.Id == booking.Seat.Id);
+                if (cachedSeat != null)
+                    cachedSeat.RemovePassenger();
+            }
+
             return true;
         }
     }

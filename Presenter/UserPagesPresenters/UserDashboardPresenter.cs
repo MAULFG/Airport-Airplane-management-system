@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.View.Interfaces;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using MySqlX.XDevAPI;
+using System;
 
 namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 {
@@ -7,11 +10,12 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
     {
         private readonly IUserDashboardView _view;
         private readonly INavigationService _navigationService;
+        private readonly IAppSession _session;
         public UserDashboardPresenter(IUserDashboardView view, INavigationService navigationService)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
-
+            
             // Subscribe to view events
             _view.UserMainClicked += OnMainClicked;
             _view.UpcomingFlightsClicked += OnUpcomingFlightsClicked;
@@ -64,6 +68,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
         private void OnLogoutClicked(object sender, EventArgs e)
         {
+            _session.Clear();
             // Optional: any session cleanup here
             _view.Logout(); // clear UI
             _navigationService.NavigateToLogin(); // redirect to login page

@@ -8,12 +8,13 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
     {
         private readonly UpcomingFlights _view;
         private readonly FlightService _service;
-
-        public UpcomingFlightsPresenter(UpcomingFlights view, FlightService service)
+        private readonly UserDashboardPresenter _userdashpresenter;
+        public UpcomingFlightsPresenter(UpcomingFlights view, FlightService service, UserDashboardPresenter userDashboardPresenter)
         {
             _view = view;
             _service = service;
-
+            _userdashpresenter = userDashboardPresenter;
+            _view.BookFlightRequested += OpenBookingPage;
             _view.LoadFlightsRequested += OnLoadFlights;
         }
 
@@ -21,6 +22,10 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
         {
             var flights = _service.LoadFlightsWithSeats();
             _view.LoadFlights(flights);
+        }
+        private void OpenBookingPage(int flightId)
+        {
+            _userdashpresenter.OpenBookingp(flightId);
         }
     }
 }

@@ -63,6 +63,16 @@ namespace Airport_Airplane_management_system.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _20251207_1546_Bright_Aircraft_Projection_remix_01kbwgxc06e188phq5btzm9v2n__1_ {
+            get {
+                object obj = ResourceManager.GetObject("20251207_1546_Bright Aircraft Projection_remix_01kbwgxc06e188phq5btzm9v2n (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap airplane {
             get {
                 object obj = ResourceManager.GetObject("airplane", resourceCulture);
@@ -93,6 +103,16 @@ namespace Airport_Airplane_management_system.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap alternate_email_24dp_707070_FILL0_wght400_GRAD0_opsz24 {
+            get {
+                object obj = ResourceManager.GetObject("alternate_email_24dp_707070_FILL0_wght400_GRAD0_opsz24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap analytics {
             get {
                 object obj = ResourceManager.GetObject("analytics", resourceCulture);
@@ -106,6 +126,16 @@ namespace Airport_Airplane_management_system.Properties {
         internal static System.Drawing.Bitmap analytics1 {
             get {
                 object obj = ResourceManager.GetObject("analytics1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_forward_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_forward_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -246,6 +276,26 @@ namespace Airport_Airplane_management_system.Properties {
         internal static System.Drawing.Bitmap password_48px {
             get {
                 object obj = ResourceManager.GetObject("password_48px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap person_24dp_707070_FILL0_wght400_GRAD0_opsz24 {
+            get {
+                object obj = ResourceManager.GetObject("person_24dp_707070_FILL0_wght400_GRAD0_opsz24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap phone_enabled_24dp_707070_FILL0_wght400_GRAD0_opsz24 {
+            get {
+                object obj = ResourceManager.GetObject("phone_enabled_24dp_707070_FILL0_wght400_GRAD0_opsz24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

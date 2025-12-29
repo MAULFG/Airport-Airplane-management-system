@@ -6,7 +6,7 @@ public interface IUpcomingFlightsView
 {
     event EventHandler LoadFlightsRequested;
     event EventHandler<FlightEventArgs> FlightGoClicked;
-
+   event Action<int> BookFlightRequested;
     void DisplayFlights(IEnumerable<Flight> flights);
     void ShowError(string message);
 }

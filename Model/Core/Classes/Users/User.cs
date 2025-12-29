@@ -58,31 +58,6 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
             BookedFlights.Remove(booking);
         }
 
-        // DTOs for reporting
-        public class PassengerSummaryRow
-        {
-            public int UserId { get; set; }
-            public string FullName { get; set; } = string.Empty;
-            public string Email { get; set; } = string.Empty;
-         
-            public DateTime? MemberSince { get; set; }
-            public int UpcomingCount { get; set; }
-            public int PastCount { get; set; }
-            public int TotalCount { get; set; }
-        }
-
-        public class PassengerBookingRow
-        {
-            public int BookingId { get; set; }
-            public int UserId { get; set; }
-            public int FlightId { get; set; }
-            public string FromCity { get; set; } = string.Empty;
-            public string ToCity { get; set; } = string.Empty;
-            public DateTime Departure { get; set; }
-            public DateTime Arrival { get; set; }
-            public string SeatNumber { get; set; } = string.Empty;
-            public string ClassType { get; set; } = string.Empty;
-            public string Status { get; set; } = string.Empty;
-        }
+        
     }
 }
