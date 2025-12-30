@@ -1,487 +1,587 @@
-﻿using Guna.UI2.WinForms;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
 namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
     public class AddPlaneDockedControl : UserControl
     {
-        public event Action<string, string>? Confirmed;
+        // (planeName, type, status)
+        public event Action<string, string, string, int, int, int, int>? Confirmed;
         public event Action? Cancelled;
 
-        // ---- Config model (Figma numbers) ----
-        private sealed class Config
-        {
-            public string Key = "";      // what Presenter expects: "A320", "HighLevel", "PrivateJet"
-            public string Title = "";
-            public string Subtitle = "";
-            public int Economy;
-            public int Business;
-            public int First;
-            public int Total => Economy + Business + First;
-        }
+        private readonly Color Border = Color.FromArgb(230, 230, 230);
+        private readonly Color Blue = Color.FromArgb(47, 111, 237);
 
-        // You can tune these to match your real plane models later.
-        // For now I’m matching the Figma example:
-        // Economy: 162/27/0 => 189
-        // Business: 120/24/6 => 150
-        // First: 80/40/16 => 136
-        private readonly Config[] _configs =
-        {
-            new Config{ Key="A320",       Title="Economy Configuration",  Subtitle="High-capacity, economy-focused seating", Economy=162, Business=27, First=0 },
-            new Config{ Key="HighLevel",  Title="Business Configuration", Subtitle="Balanced mix of business and economy",     Economy=120, Business=24, First=6 },
-            new Config{ Key="PrivateJet", Title="First Class Configuration", Subtitle="Premium seating with first-class cabins", Economy=80, Business=40, First=16 },
-        };
+        private readonly Color RowEco = Color.FromArgb(234, 243, 255);
+        private readonly Color RowBiz = Color.FromArgb(244, 238, 255);
+        private readonly Color RowFirst = Color.FromArgb(252, 246, 230);
 
-        // ---- UI ----
-        private readonly Panel dim;
-        private readonly Guna2Panel sheet;
-        private readonly Panel scrollHost;
-        private readonly Guna2TextBox txtPlaneName;
-        private readonly Guna2RadioButton[] radios;
-        private readonly Guna2Panel[] cards;
-        private readonly Label lblSumTotal;
-        private readonly Label lblSumEco;
-        private readonly Label lblSumBus;
-        private readonly Label lblSumFirst;
+        private Guna2Panel root;
+        private Label lblTitle;
+        private Guna2Button btnClose;
 
-        private readonly Guna2Button btnCancel;
-        private readonly Guna2Button btnAdd;
-        private readonly Guna2Button btnClose;
+        private Label lblPlaneName;
+        private Guna2TextBox txtPlaneName;
 
-        private readonly string _defaultStatus = "Available"; // map to your domain later if you want
+        private Label lblSection;
+        private Panel line;
+
+        private Guna2Panel scrollHost;
+        private Panel listPanel;
+
+        // 3 planes only
+        private ConfigCard cardB777;
+        private ConfigCard cardA320;
+        private ConfigCard cardJet;
+
+        private Guna2Panel summaryBox;
+        private Label lblSumTitle;
+        private Label lblTotalSeats;
+        private Label lblEcoSeats;
+        private Label lblBizSeats;
+        private Label lblFirstSeats;
+
+        private Guna2Button btnCancel;
+        private Guna2Button btnAdd;
+
+        private string _selectedType = "HighLevel";
+        private int _total, _eco, _biz, _first;
 
         public AddPlaneDockedControl()
         {
-            // Full-screen overlay (dim background)
-            Dock = DockStyle.Fill;
-            BackColor = Color.Transparent;
+            DoubleBuffered = true;
+            BackColor = Color.White;
+            BuildUI();
+            SelectCard(cardB777);
+        }
 
-            dim = new Panel
+        private void BuildUI()
+        {
+            SuspendLayout();
+
+            root = new Guna2Panel
             {
+                BackColor = Color.White,
+                BorderColor = Border,
+                BorderRadius = 14,
+                BorderThickness = 1,
                 Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(80, 0, 0, 0) // dim
-            };
-            Controls.Add(dim);
-
-            // Right sheet
-            sheet = new Guna2Panel
-            {
-                Dock = DockStyle.Right,
-                Width = 440,
-                FillColor = Color.White,
-                Padding = new Padding(18, 16, 18, 14),
+                Padding = new Padding(18, 14, 18, 14),
                 ShadowDecoration =
                 {
                     Enabled = true,
-                    Depth = 25,
-                    Shadow = new Padding(0, 0, 10, 0),
+                    Depth = 8,
+                    Shadow = new Padding(0, 3, 0, 6),
+                    BorderRadius = 14
                 }
             };
-            dim.Controls.Add(sheet);
+            Controls.Add(root);
 
-            // Clicking dim outside closes (Figma-like)
-            dim.MouseDown += (_, e) =>
+            lblTitle = new Label
             {
-                // if click not inside sheet
-                if (!sheet.Bounds.Contains(e.Location))
-                    Cancelled?.Invoke();
-            };
-
-            // Header row
-            var hdr = new Panel { Dock = DockStyle.Top, Height = 42, BackColor = Color.Transparent };
-            sheet.Controls.Add(hdr);
-
-            var lblTitle = new Label
-            {
-                Text = "Add New Plane Plan",
                 AutoSize = true,
-                Font = new Font("Segoe UI", 12.5f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(25, 25, 25),
-                Location = new Point(0, 6)
+                ForeColor = Color.Black,
+                Font = new Font("Segoe UI", 14f, FontStyle.Bold),
+                Text = "Add New Plane Plan",
+                Location = new Point(2, 8)
             };
-            hdr.Controls.Add(lblTitle);
+            root.Controls.Add(lblTitle);
 
             btnClose = new Guna2Button
             {
-                Text = "✕",
+                Text = "×",
+                Font = new Font("Segoe UI", 12f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80),
                 Size = new Size(34, 30),
                 BorderRadius = 8,
-                FillColor = Color.FromArgb(240, 240, 240),
-                ForeColor = Color.FromArgb(80, 80, 80),
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(hdr.Width - 34, 4)
+                FillColor = Color.FromArgb(245, 245, 245),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             btnClose.Click += (_, __) => Cancelled?.Invoke();
-            hdr.Controls.Add(btnClose);
+            root.Controls.Add(btnClose);
 
-            hdr.SizeChanged += (_, __) => btnClose.Location = new Point(hdr.Width - btnClose.Width, 4);
-
-            // Subtitle
-            var lblSub = new Label
+            // Plane name
+            lblPlaneName = new Label
             {
-                Text = "Configure a new plane with your preferred seating arrangement",
-                AutoSize = false,
-                Height = 34,
-                Dock = DockStyle.Top,
-                Font = new Font("Segoe UI", 9.2f),
-                ForeColor = Color.FromArgb(110, 110, 110),
-                Padding = new Padding(0, 0, 0, 8)
+                AutoSize = true,
+                ForeColor = Color.Black,
+                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+                Text = "Plane Name"
             };
-            sheet.Controls.Add(lblSub);
+            root.Controls.Add(lblPlaneName);
 
-            // Scroll area
-            scrollHost = new Panel
+            txtPlaneName = new Guna2TextBox
+            {
+                BorderRadius = 10,
+                BorderColor = Border,
+                PlaceholderText = "e.g., Boeing 777, Airbus A320",
+                Font = new Font("Segoe UI", 9.5f),
+                Height = 36,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                FillColor = Color.White
+            };
+            root.Controls.Add(txtPlaneName);
+
+            // Divider
+            line = new Panel
+            {
+                Height = 1,
+                BackColor = Border,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+            };
+            root.Controls.Add(line);
+
+            lblSection = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Text = "Plane Configuration Type"
+            };
+            root.Controls.Add(lblSection);
+
+            // Scroll list container (✅ no padding so first card can go higher)
+            scrollHost = new Guna2Panel
+            {
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom,
+                Padding = new Padding(0) // ✅ was 2
+            };
+            root.Controls.Add(scrollHost);
+
+            listPanel = new Panel
             {
                 Dock = DockStyle.Fill,
                 AutoScroll = true,
                 BackColor = Color.Transparent
             };
-            sheet.Controls.Add(scrollHost);
+            scrollHost.Controls.Add(listPanel);
 
-            // Bottom buttons (fixed)
-            var bottom = new Panel { Dock = DockStyle.Bottom, Height = 60, BackColor = Color.White };
-            sheet.Controls.Add(bottom);
+            // 1) Boeing 777 High: total 316, eco 252, biz 48, first 16
+            cardB777 = new ConfigCard(
+                title: "Boeing 777 (High)",
+                desc: "4×4 First, 8×6 Business, 28×9 Economy",
+                total: 316, eco: 252, biz: 48, first: 16,
+                rowEco: RowEco, rowBiz: RowBiz, rowFirst: RowFirst);
 
+            // 2) A320 Med: total 170, eco 138, biz 32, first 0
+            cardA320 = new ConfigCard(
+                title: "Airbus A320 (Med)",
+                desc: "8×4 Business, 23×6 Economy",
+                total: 170, eco: 138, biz: 32, first: 0,
+                rowEco: RowEco, rowBiz: RowBiz, rowFirst: RowFirst);
+
+            // 3) Private Jet: total 7, first 7 (VIP)
+            cardJet = new ConfigCard(
+                title: "Private Jet",
+                desc: "VIP cabin seating",
+                total: 7, eco: 0, biz: 0, first: 7,
+                rowEco: RowEco, rowBiz: RowBiz, rowFirst: RowFirst);
+
+            foreach (var c in new[] { cardB777, cardA320, cardJet })
+            {
+                c.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                c.Width = 10;
+                c.Clicked += () => SelectCard(c);
+                listPanel.Controls.Add(c);
+            }
+
+            // Summary
+            summaryBox = new Guna2Panel
+            {
+                BackColor = Color.White,
+                BorderColor = Border,
+                BorderRadius = 12,
+                BorderThickness = 1,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom,
+                Padding = new Padding(14, 10, 14, 10)
+            };
+            root.Controls.Add(summaryBox);
+
+            lblSumTitle = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
+                Text = "Configuration Summary",
+                Location = new Point(2, 2)
+            };
+            summaryBox.Controls.Add(lblSumTitle);
+
+            lblTotalSeats = MakeSumRow(28);
+            lblEcoSeats = MakeSumRow(48);
+            lblBizSeats = MakeSumRow(68);
+            lblFirstSeats = MakeSumRow(88);
+
+            summaryBox.Controls.Add(lblTotalSeats);
+            summaryBox.Controls.Add(lblEcoSeats);
+            summaryBox.Controls.Add(lblBizSeats);
+            summaryBox.Controls.Add(lblFirstSeats);
+
+            // Footer buttons
             btnCancel = new Guna2Button
             {
                 Text = "Cancel",
-                Size = new Size(180, 40),
-                BorderRadius = 10,
+                BorderRadius = 12,
                 FillColor = Color.White,
-                ForeColor = Color.FromArgb(60, 60, 60),
-                BorderColor = Color.FromArgb(220, 220, 220),
+                ForeColor = Color.Black,
+                BorderColor = Border,
                 BorderThickness = 1,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Location = new Point(0, 10)
+                Size = new Size(120, 40),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left
             };
             btnCancel.Click += (_, __) => Cancelled?.Invoke();
-            bottom.Controls.Add(btnCancel);
+            root.Controls.Add(btnCancel);
 
             btnAdd = new Guna2Button
             {
-                Text = "Add Plan",
-                Size = new Size(180, 40),
-                BorderRadius = 10,
-                FillColor = Color.FromArgb(45, 93, 220),
+                Text = "Add Plane",
+                BorderRadius = 12,
+                FillColor = Blue,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(bottom.Width - 180, 10)
+                Size = new Size(140, 40),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
             };
             btnAdd.Click += (_, __) =>
             {
-                var cfg = GetSelectedConfig();
-                // send the Key (A320 / HighLevel / PrivateJet) because Presenter switch depends on that
-                Confirmed?.Invoke(cfg.Key, _defaultStatus);
+                var planeName = txtPlaneName.Text.Trim();
+                Confirmed?.Invoke(planeName, _selectedType, "Active",
+                  _total, _eco, _biz, _first);
+                // fixed status
             };
-            bottom.Controls.Add(btnAdd);
+            root.Controls.Add(btnAdd);
 
-            bottom.SizeChanged += (_, __) =>
+            root.Resize += (_, __) =>
             {
-                btnAdd.Location = new Point(bottom.Width - btnAdd.Width, 10);
+                Relayout();
+                ReflowCards();
             };
 
-            // ---- Content inside scrollHost ----
-            int y = 8;
-
-            // Plane Name label + textbox
-            scrollHost.Controls.Add(MakeLabel("Plane Name", y));
-            y += 22;
-
-            txtPlaneName = new Guna2TextBox
+            scrollHost.Resize += (_, __) =>
             {
-                PlaceholderText = "e.g., Boeing 737, Airbus A320",
-                BorderRadius = 10,
-                BorderColor = Color.FromArgb(220, 220, 220),
-                FillColor = Color.White,
-                Font = new Font("Segoe UI", 9.5f),
-                Size = new Size(sheet.Width - 36 - 20, 36),
-                Location = new Point(0, y),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                foreach (Control ctrl in listPanel.Controls)
+                    if (ctrl is ConfigCard cc)
+                        cc.Width = scrollHost.Width - 18;
+
+                ReflowCards();
             };
-            scrollHost.Controls.Add(txtPlaneName);
-            y += 50;
 
-            // Section title
-            scrollHost.Controls.Add(MakeLabel("Plane Configuration Type", y));
-            y += 26;
+            Relayout();
+            ReflowCards();
 
-            radios = new Guna2RadioButton[_configs.Length];
-            cards = new Guna2Panel[_configs.Length];
-
-            for (int i = 0; i < _configs.Length; i++)
-            {
-                var cfg = _configs[i];
-
-                var card = new Guna2Panel
-                {
-                    BorderRadius = 12,
-                    FillColor = Color.White,
-                    BorderThickness = 1,
-                    BorderColor = Color.FromArgb(230, 230, 230),
-                    Size = new Size(sheet.Width - 36 - 20, 170),
-                    Location = new Point(0, y),
-                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
-                };
-                scrollHost.Controls.Add(card);
-                cards[i] = card;
-
-                // top row: icon placeholder + titles + radio
-                var top = new Panel { Location = new Point(12, 10), Size = new Size(card.Width - 24, 44), Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                card.Controls.Add(top);
-
-                var icon = new Panel
-                {
-                    BackColor = Color.FromArgb(245, 247, 252),
-                    Size = new Size(34, 34),
-                    Location = new Point(0, 4)
-                };
-                icon.Paint += (_, e) =>
-                {
-                    // simple "X" like figma icon placeholder
-                    using var p = new Pen(Color.FromArgb(160, 160, 160), 2);
-                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    e.Graphics.DrawLine(p, 10, 10, 24, 24);
-                    e.Graphics.DrawLine(p, 24, 10, 10, 24);
-                };
-                top.Controls.Add(icon);
-
-                var t1 = new Label
-                {
-                    Text = cfg.Title,
-                    AutoSize = true,
-                    Font = new Font("Segoe UI", 9.8f, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(30, 30, 30),
-                    Location = new Point(44, 2)
-                };
-                top.Controls.Add(t1);
-
-                var t2 = new Label
-                {
-                    Text = cfg.Subtitle,
-                    AutoSize = true,
-                    Font = new Font("Segoe UI", 8.6f),
-                    ForeColor = Color.FromArgb(120, 120, 120),
-                    Location = new Point(44, 22)
-                };
-                top.Controls.Add(t2);
-
-                var rb = new Guna2RadioButton
-                {
-                    Checked = i == 0,
-                    Location = new Point(top.Width - 18, 14),
-                    Anchor = AnchorStyles.Top | AnchorStyles.Right
-                };
-                radios[i] = rb;
-                top.Controls.Add(rb);
-
-                top.SizeChanged += (_, __) => rb.Location = new Point(top.Width - 18, 14);
-
-                // total capacity row
-                var capLeft = new Label
-                {
-                    Text = "Total Capacity",
-                    AutoSize = true,
-                    Font = new Font("Segoe UI", 9f),
-                    ForeColor = Color.FromArgb(90, 90, 90),
-                    Location = new Point(12, 60)
-                };
-                card.Controls.Add(capLeft);
-
-                var capRight = new Label
-                {
-                    Text = $"{cfg.Total} seats",
-                    AutoSize = true,
-                    Font = new Font("Segoe UI", 9f, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(30, 30, 30),
-                    Location = new Point(card.Width - 120, 60),
-                    Anchor = AnchorStyles.Top | AnchorStyles.Right
-                };
-                card.Controls.Add(capRight);
-
-                // Seat distribution label
-                var distLbl = new Label
-                {
-                    Text = "Seat Distribution",
-                    AutoSize = true,
-                    Font = new Font("Segoe UI", 9f),
-                    ForeColor = Color.FromArgb(90, 90, 90),
-                    Location = new Point(12, 86)
-                };
-                card.Controls.Add(distLbl);
-
-                // distribution chips like Figma lines
-                var lineEco = DistLine("Economy", cfg.Economy.ToString(), Color.FromArgb(238, 246, 255), y: 108);
-                var lineBus = DistLine("Business", cfg.Business.ToString(), Color.FromArgb(246, 240, 255), y: 134);
-                var lineFirst = DistLine("First Class", cfg.First.ToString(), Color.FromArgb(255, 248, 235), y: 160);
-
-                card.Controls.Add(lineEco);
-                card.Controls.Add(lineBus);
-                card.Controls.Add(lineFirst);
-
-                // Click anywhere selects
-                void SelectThis()
-                {
-                    for (int k = 0; k < radios.Length; k++)
-                        radios[k].Checked = (k == i);
-                    ApplySelectedStyles();
-                    UpdateSummary();
-                }
-
-                rb.CheckedChanged += (_, __) =>
-                {
-                    if (rb.Checked)
-                    {
-                        ApplySelectedStyles();
-                        UpdateSummary();
-                    }
-                };
-
-                card.Click += (_, __) => SelectThis();
-                foreach (Control cc in card.Controls)
-                    cc.Click += (_, __) => SelectThis();
-
-                y += 182;
-            }
-
-            // Summary card
-            var sumCard = new Guna2Panel
-            {
-                BorderRadius = 12,
-                FillColor = Color.White,
-                BorderThickness = 1,
-                BorderColor = Color.FromArgb(230, 230, 230),
-                Size = new Size(sheet.Width - 36 - 20, 110),
-                Location = new Point(0, y),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
-            };
-            scrollHost.Controls.Add(sumCard);
-
-            var sumTitle = new Label
-            {
-                Text = "Configuration Summary",
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9.8f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(30, 30, 30),
-                Location = new Point(12, 12)
-            };
-            sumCard.Controls.Add(sumTitle);
-
-            lblSumTotal = SumLine(sumCard, "Total seats:", "0", 38);
-            lblSumEco = SumLine(sumCard, "Economy seats:", "0", 58);
-            lblSumBus = SumLine(sumCard, "Business seats:", "0", 78);
-            lblSumFirst = SumLine(sumCard, "First class seats:", "0", 98);
-
-            y += 130;
-
-            scrollHost.Height = sheet.Height - bottom.Height - hdr.Height - lblSub.Height - 18;
-
-            ApplySelectedStyles();
-            UpdateSummary();
+            ResumeLayout();
         }
 
-        private Label MakeLabel(string text, int y)
+        private void Relayout()
+        {
+            btnClose.Location = new Point(root.Width - root.Padding.Right - btnClose.Width, 6);
+
+            lblPlaneName.Location = new Point(2, 54);
+
+            txtPlaneName.Location = new Point(2, 76);
+            txtPlaneName.Width = root.Width - root.Padding.Left - root.Padding.Right;
+
+            int dividerY = 142;
+            line.Location = new Point(0, dividerY);
+            line.Width = root.Width;
+
+            lblSection.Location = new Point(2, dividerY + 12);
+
+            int scrollTop = dividerY + 40;
+            int footerH = 46;
+            int summaryH = 108;
+            int summaryGap = 12;
+            int bottomPad = root.Padding.Bottom;
+
+            summaryBox.Size = new Size(root.Width - 4, summaryH);
+            summaryBox.Location = new Point(2, root.Height - bottomPad - footerH - summaryGap - summaryH);
+
+            btnCancel.Location = new Point(2, root.Height - bottomPad - footerH);
+            btnAdd.Location = new Point(root.Width - 2 - btnAdd.Width, root.Height - bottomPad - footerH);
+
+            int scrollBottom = summaryBox.Top - 10;
+            scrollHost.Location = new Point(0, scrollTop);
+            scrollHost.Size = new Size(root.Width, Math.Max(80, scrollBottom - scrollTop));
+        }
+
+        private void ReflowCards()
+        {
+            int y = 0; // ✅ was 6 (shifts first card up)
+
+            foreach (var c in new[] { cardB777, cardA320, cardJet })
+            {
+                c.Width = scrollHost.Width - 18; // ✅ tighter
+                c.Location = new Point(0, y);    // ✅ start at top-left
+                y += c.Height + 12;
+            }
+
+            // ✅ refresh scrollbars (hide when not needed)
+            listPanel.AutoScroll = false;
+            listPanel.AutoScroll = true;
+        }
+
+        private Label MakeSumRow(int y)
         {
             return new Label
             {
-                Text = text,
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9.2f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(45, 45, 45),
-                Location = new Point(0, y)
+                AutoSize = false,
+                Height = 18,
+                Location = new Point(2, y),
+                Font = new Font("Segoe UI", 9.5f),
+                ForeColor = Color.FromArgb(70, 70, 70),
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
+                Width = 10
             };
         }
 
-        private Panel DistLine(string left, string right, Color back, int y)
+        private void SelectCard(ConfigCard card)
         {
-            var p = new Panel
-            {
-                BackColor = back,
-                Location = new Point(12, y),
-                Size = new Size(sheet.Width - 36 - 44, 22),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
-            };
+            cardB777.SetSelected(false, Blue, Border);
+            cardA320.SetSelected(false, Blue, Border);
+            cardJet.SetSelected(false, Blue, Border);
 
-            var l = new Label
-            {
-                Text = left,
-                AutoSize = true,
-                Font = new Font("Segoe UI", 8.7f),
-                ForeColor = Color.FromArgb(40, 40, 40),
-                Location = new Point(8, 3)
-            };
-            p.Controls.Add(l);
+            card.SetSelected(true, Blue, Border);
 
-            var r = new Label
-            {
-                Text = right,
-                AutoSize = true,
-                Font = new Font("Segoe UI", 8.7f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(40, 40, 40),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(p.Width - 20, 3)
-            };
-            p.Controls.Add(r);
+            if (card == cardB777) _selectedType = "HighLevel";
+            else if (card == cardA320) _selectedType = "A320";
+            else _selectedType = "PrivateJet";
 
-            p.SizeChanged += (_, __) => r.Location = new Point(p.Width - r.Width - 8, 3);
+            _total = card.Total;
+            _eco = card.Economy;
+            _biz = card.Business;
+            _first = card.First;
 
-            return p;
-        }
-
-        private Label SumLine(Control parent, string key, string val, int y)
-        {
-            var k = new Label
-            {
-                Text = key,
-                AutoSize = true,
-                Font = new Font("Segoe UI", 8.8f),
-                ForeColor = Color.FromArgb(90, 90, 90),
-                Location = new Point(12, y)
-            };
-            parent.Controls.Add(k);
-
-            var v = new Label
-            {
-                Text = val,
-                AutoSize = true,
-                Font = new Font("Segoe UI", 8.8f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(30, 30, 30),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(parent.Width - 40, y)
-            };
-            parent.Controls.Add(v);
-
-            parent.SizeChanged += (_, __) => v.Location = new Point(parent.Width - v.Width - 12, y);
-
-            return v;
-        }
-
-        private Config GetSelectedConfig()
-        {
-            for (int i = 0; i < radios.Length; i++)
-                if (radios[i].Checked) return _configs[i];
-            return _configs[0];
+            UpdateSummary();
         }
 
         private void UpdateSummary()
         {
-            var c = GetSelectedConfig();
-            lblSumTotal.Text = c.Total.ToString();
-            lblSumEco.Text = c.Economy.ToString();
-            lblSumBus.Text = c.Business.ToString();
-            lblSumFirst.Text = c.First.ToString();
+            lblTotalSeats.Text = $"Total seats:  {_total}";
+            lblEcoSeats.Text = $"Economy seats:  {_eco}";
+            lblBizSeats.Text = $"Business seats:  {_biz}";
+            lblFirstSeats.Text = $"First class seats:  {_first}";
         }
 
-        private void ApplySelectedStyles()
+        // ==========================
+        // ConfigCard (Figma style)
+        // ==========================
+        private class ConfigCard : Guna2Panel
         {
-            for (int i = 0; i < cards.Length; i++)
+            public int Total { get; }
+            public int Economy { get; }
+            public int Business { get; }
+            public int First { get; }
+
+            public event Action? Clicked;
+
+            private readonly Color RowEco;
+            private readonly Color RowBiz;
+            private readonly Color RowFirst;
+
+            private Label capRight;
+            private Guna2CircleButton radio;
+
+            private Guna2Panel rowEcoPanel;
+            private Guna2Panel rowBizPanel;
+            private Guna2Panel rowFirstPanel;
+
+            public ConfigCard(string title, string desc, int total, int eco, int biz, int first,
+                              Color rowEco, Color rowBiz, Color rowFirst)
             {
-                bool sel = radios[i].Checked;
-                cards[i].BorderColor = sel ? Color.FromArgb(45, 93, 220) : Color.FromArgb(230, 230, 230);
-                cards[i].BorderThickness = sel ? 2 : 1;
+                Total = total;
+                Economy = eco;
+                Business = biz;
+                First = first;
+
+                RowEco = rowEco;
+                RowBiz = rowBiz;
+                RowFirst = rowFirst;
+
+                BorderRadius = 12;
+                BorderThickness = 1;
+                BorderColor = Color.FromArgb(230, 230, 230);
+                FillColor = Color.White;
+                Padding = new Padding(14, 12, 14, 12);
+
+                var iconBadge = new Guna2Panel
+                {
+                    Size = new Size(28, 28),
+                    Location = new Point(12, 12),
+                    BorderRadius = 8,
+                    FillColor = Color.FromArgb(242, 247, 255)
+                };
+                Controls.Add(iconBadge);
+
+                var icon = new Label
+                {
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Font = new Font("Segoe UI", 11f, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(47, 111, 237),
+                    Text = "✈"
+                };
+                iconBadge.Controls.Add(icon);
+
+                var lblTitle = new Label
+                {
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(20, 20, 20),
+                    Text = title,
+                    Location = new Point(46, 12)
+                };
+                Controls.Add(lblTitle);
+
+                var lblDesc = new Label
+                {
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 9f),
+                    ForeColor = Color.FromArgb(120, 120, 120),
+                    Text = desc,
+                    Location = new Point(46, 34)
+                };
+                Controls.Add(lblDesc);
+
+                radio = new Guna2CircleButton
+                {
+                    Size = new Size(16, 16),
+                    FillColor = Color.White,
+                    BorderColor = Color.FromArgb(170, 170, 170),
+                    BorderThickness = 2,
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                    ShadowDecoration = { Enabled = false },
+                    Text = ""
+                };
+                Controls.Add(radio);
+
+                var lblCap = new Label
+                {
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 9f),
+                    ForeColor = Color.FromArgb(90, 90, 90),
+                    Text = "Total Capacity",
+                    Location = new Point(12, 70)
+                };
+                Controls.Add(lblCap);
+
+                capRight = new Label
+                {
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 9f, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(20, 20, 20),
+                    Text = $"{total} seats",
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right
+                };
+                Controls.Add(capRight);
+
+                var lblDist = new Label
+                {
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 9f),
+                    ForeColor = Color.FromArgb(90, 90, 90),
+                    Text = "Seat Distribution",
+                    Location = new Point(12, 94)
+                };
+                Controls.Add(lblDist);
+
+                rowEcoPanel = MakeRow("Economy", eco, RowEco, 118);
+                rowBizPanel = MakeRow("Business", biz, RowBiz, 146);
+                rowFirstPanel = MakeRow("First Class", first, RowFirst, 174);
+
+                Controls.Add(rowEcoPanel);
+                Controls.Add(rowBizPanel);
+                Controls.Add(rowFirstPanel);
+
+                rowEcoPanel.Visible = eco > 0;
+                rowBizPanel.Visible = biz > 0;
+                rowFirstPanel.Visible = first > 0;
+
+                void Hook(Control c)
+                {
+                    c.Cursor = Cursors.Hand;
+                    c.Click += (_, __) => Clicked?.Invoke();
+                    foreach (Control child in c.Controls) Hook(child);
+                }
+                Hook(this);
+
+                SizeChanged += (_, __) => LayoutRightAndSize();
+                LayoutRightAndSize();
+            }
+
+            private void LayoutRightAndSize()
+            {
+                radio.Location = new Point(Width - 14 - radio.Width, 18);
+                capRight.Location = new Point(Width - 14 - capRight.Width, 70);
+
+                int rowW = Width - 28;
+                rowEcoPanel.Width = rowW;
+                rowBizPanel.Width = rowW;
+                rowFirstPanel.Width = rowW;
+
+                int bottom = 118;
+                if (rowFirstPanel.Visible) bottom = rowFirstPanel.Bottom;
+                else if (rowBizPanel.Visible) bottom = rowBizPanel.Bottom;
+                else if (rowEcoPanel.Visible) bottom = rowEcoPanel.Bottom;
+
+                Height = bottom + 12;
+            }
+
+            private Guna2Panel MakeRow(string left, int value, Color bg, int y)
+            {
+                var p = new Guna2Panel
+                {
+                    Height = 22,
+                    FillColor = bg,
+                    BorderRadius = 6,
+                    Location = new Point(12, y),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                    Padding = new Padding(8, 3, 8, 3)
+                };
+
+                var l = new Label
+                {
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 9f),
+                    ForeColor = Color.FromArgb(25, 25, 25),
+                    Text = left,
+                    Location = new Point(8, 3)
+                };
+
+                var r = new Label
+                {
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 9f, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(25, 25, 25),
+                    Text = value.ToString(),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right
+                };
+
+                p.Controls.Add(l);
+                p.Controls.Add(r);
+
+                p.SizeChanged += (_, __) => r.Location = new Point(p.Width - r.Width - 10, 3);
+                r.Location = new Point(p.Width - r.Width - 10, 3);
+
+                return p;
+            }
+
+            public void SetSelected(bool on, Color blue, Color border)
+            {
+                BorderColor = on ? blue : border;
+                BorderThickness = on ? 2 : 1;
+
+                if (on)
+                {
+                    radio.FillColor = blue;
+                    radio.BorderThickness = 0;
+                }
+                else
+                {
+                    radio.FillColor = Color.White;
+                    radio.BorderColor = Color.FromArgb(170, 170, 170);
+                    radio.BorderThickness = 2;
+                }
             }
         }
     }

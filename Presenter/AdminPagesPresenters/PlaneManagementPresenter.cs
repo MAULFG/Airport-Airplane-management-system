@@ -15,12 +15,10 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _view = view;
             _repo = repo;
 
-            _view.ViewLoaded += OnLoad;
-            _view.DeleteRequested += OnDelete;
+            _view.ViewLoaded += (_, __) => LoadPlanes();
             _view.AddPlaneClicked += OnAddPlane;
+            _view.DeleteRequested += OnDeletePlane;
         }
-
-        private void OnLoad(object? sender, EventArgs e) => LoadPlanes();
 
         private void LoadPlanes()
         {
@@ -28,10 +26,9 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _view.SetPlanes(planes);
         }
 
-        private void OnDelete(int planeId)
+        private void OnDeletePlane(int planeId)
         {
-            if (!_view.Confirm("Delete this plane?"))
-                return;
+            if (!_view.Confirm("Delete this plane?")) return;
 
             if (!_repo.SetPlaneStatus(planeId, "Deleted", out string error))
             {
@@ -44,34 +41,30 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         private void OnAddPlane(object? sender, EventArgs e)
         {
-            // View provides selected model + status (from docked panel or dialog)
-            if (!_view.TryGetNewPlaneInput(out string type, out string status))
+            if (!_view.TryGetNewPlaneInput(out string planeName, out string type, out string status))
                 return;
 
-            // 1) Insert plane
-            int planeId = _repo.AddPlane(type, status, out string error);
+            // 1) Insert plane row (model+type+status)
+            int planeId = _repo.AddPlane(planeName, type, status, out string error);
             if (planeId <= 0)
             {
                 _view.ShowError(error);
                 return;
             }
 
-            // 2) Create plane object in Presenter (MVP: business logic here)
+            // 2) Create plane object in memory (so we can generate seats)
             Plane plane = type switch
             {
                 "HighLevel" => new HighLevel(planeId, status),
                 "A320" => new MidRangeA320(planeId, status),
                 "PrivateJet" => new PrivateJet(planeId, status),
-                _ => null
+                _ => new MidRangeA320(planeId, status)
             };
 
-            if (plane == null)
-            {
-                _view.ShowError("Unknown plane type.");
-                return;
-            }
+            // Persist chosen model name
+            plane.Model = planeName;
 
-            // 3) Generate seats in memory, then persist
+            // 3) Generate seats then persist
             plane.GenerateSeats();
 
             if (!_repo.InsertSeats(planeId, plane.Seats, out error))

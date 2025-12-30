@@ -17,11 +17,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event EventHandler AddPlaneClicked;
         public event Action<int> DeleteRequested;
         public event Action<int>? PlaneSelected;
+
+        private AddPlaneDockedControl? _addPlanePanel;
+        private List<Plane> _planes = new();
+
+        private string _pendingPlaneName = "";
         private string _pendingPlaneType = "";
         private string _pendingPlaneStatus = "";
-        private AddPlaneDockedControl? _addPlaneOverlay;
-
-        private List<Plane> _planes = new();
+        private int _pendingTotal, _pendingEco, _pendingBiz, _pendingFirst;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -32,20 +35,22 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             InitializeComponent();
 
             Load += (_, __) => ViewLoaded?.Invoke(this, EventArgs.Empty);
+
             btnAddPlane.Click += (_, __) => ShowAddPlaneOverlay();
 
-
-            header.SizeChanged += (_, __) =>
-                btnAddPlane.Location = new Point(header.Width - 18 - btnAddPlane.Width, 28);
-
-            btnAddPlane.Location = new Point(header.Width - 18 - btnAddPlane.Width, 28);
-
-            flow.SizeChanged += (_, __) => RefreshCardsWidth();
+            Resize += (_, __) =>
+            {
+                LayoutContentAreas();
+                RefreshCardsWidth();
+            };
         }
 
+        // =======================
+        // IPlaneManagementView
+        // =======================
         public void SetPlanes(List<Plane> planes)
         {
-            _planes = planes ?? new List<Plane>();
+            _planes = planes ?? new();
             RenderCards();
         }
 
@@ -64,19 +69,42 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             RenderCards();
         }
 
+        public bool TryGetNewPlaneInput(out string model, out string type, out string status,
+                                       out int total, out int eco, out int biz, out int first)
+        {
+            model = _pendingPlaneName;
+            type = _pendingPlaneType;
+            status = _pendingPlaneStatus;
+
+            total = _pendingTotal;
+            eco = _pendingEco;
+            biz = _pendingBiz;
+            first = _pendingFirst;
+
+            if (string.IsNullOrWhiteSpace(model))
+            {
+                ShowError("Please enter a plane name.");
+                return false;
+            }
+
+            return true;
+        }
+
+
+        // =======================
+        // Rendering
+        // =======================
         private void RenderCards()
         {
-            if (flow == null) return;
-
             flow.SuspendLayout();
             flow.Controls.Clear();
 
-            foreach (var p in _planes.OrderBy(x => x.PlaneID))
+            foreach (var p in _planes.OrderBy(p => p.PlaneID))
                 flow.Controls.Add(CreatePlaneCard(p));
 
-            flow.Controls.Add(new Panel { Height = 40, Width = 1, Margin = new Padding(0), BackColor = Color.Transparent });
-
             flow.ResumeLayout();
+
+            LayoutContentAreas();
             RefreshCardsWidth();
         }
 
@@ -120,7 +148,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 card.ShadowDepth = 18;
             }
 
-            // Header row
             var title = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
@@ -141,7 +168,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             stBadge.Location = new Point(modelBadge.Right + 10, 12);
             card.Controls.Add(stBadge);
 
-            // Right buttons (words)
             var btnSchedule = MakeTopButton("See Schedule");
             btnSchedule.Click += (_, __) => PlaneSelected?.Invoke(p.PlaneID);
 
@@ -152,11 +178,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             card.Controls.Add(btnSchedule);
             card.Controls.Add(btnDelete);
 
-            // Body (more realistic spacing)
             card.Controls.Add(InfoLine("Type:", typeText, 16, 60));
             card.Controls.Add(InfoLine("Total Seats:", total.ToString(), 16, 86));
 
-            // Right side: seat classes horizontally
             Control rightRow;
             if (vip > 0 && first == 0 && business == 0 && economy == 0)
             {
@@ -177,14 +201,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             }
             card.Controls.Add(rightRow);
 
-            // Make whole card open schedule too
             void Open() => PlaneSelected?.Invoke(p.PlaneID);
             card.Click += (_, __) => Open();
             title.Click += (_, __) => Open();
             modelBadge.Click += (_, __) => Open();
             stBadge.Click += (_, __) => Open();
 
-            // Reposition on resize
             card.SizeChanged += (_, __) =>
             {
                 btnDelete.Location = new Point(card.Width - 16 - btnDelete.Width, 10);
@@ -359,61 +381,102 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 return (Color.FromArgb(235, 235, 235), Color.FromArgb(90, 90, 90));
             return (Color.FromArgb(222, 235, 255), Color.FromArgb(35, 93, 220));
         }
-        public bool TryGetNewPlaneInput(out string type, out string status)
-        {
-            type = _pendingPlaneType;
-            status = _pendingPlaneStatus;
 
-            _pendingPlaneType = "";
-            _pendingPlaneStatus = "";
-
-            return !string.IsNullOrWhiteSpace(type);
-        }
-
-
-        /// <summary>
-        /// Temporary modal until you wire the docked Figma sheet.
-        /// Keeps MVP contract stable: Presenter calls TryGetNewPlaneInput().
-        /// </summary>
+        // ============================
+        // AddPlane Right Panel (TOP)
+        // ============================
         private void ShowAddPlaneOverlay()
         {
+            if (_addPlanePanel != null) return;
+
             btnAddPlane.Enabled = false;
-            if (_addPlaneOverlay != null)
-                return;
 
-            _addPlaneOverlay = new AddPlaneDockedControl();
-            _addPlaneOverlay.Dock = DockStyle.Fill;
-
-            _addPlaneOverlay.Confirmed += (type, status) =>
+            _addPlanePanel = new AddPlaneDockedControl
             {
+                Width = 430,
+                Dock = DockStyle.None, // we position manually
+                BackColor = Color.White,
+                Margin = Padding.Empty
+            };
+
+            // ✅ START FROM TOP (y=0) and full height
+            _addPlanePanel.Height = root.ClientSize.Height;
+            _addPlanePanel.Location = new Point(root.ClientSize.Width - _addPlanePanel.Width, 0);
+
+            root.SizeChanged += Root_SizeChanged;
+
+            _addPlanePanel.Confirmed += (planeName, type, status, total, eco, biz, first) =>
+            {
+                _pendingPlaneName = planeName;
                 _pendingPlaneType = type;
                 _pendingPlaneStatus = status;
 
-                CloseAddPlaneOverlay();
+                _pendingTotal = total;
+                _pendingEco = eco;
+                _pendingBiz = biz;
+                _pendingFirst = first;
 
-                // NOW notify presenter
+                CloseAddPlaneOverlay();
                 AddPlaneClicked?.Invoke(this, EventArgs.Empty);
             };
 
-            _addPlaneOverlay.Cancelled += () =>
-            {
-                CloseAddPlaneOverlay();
-            };
 
-            Controls.Add(_addPlaneOverlay);
-            _addPlaneOverlay.BringToFront();
+            _addPlanePanel.Cancelled += CloseAddPlaneOverlay;
+
+            root.Controls.Add(_addPlanePanel);
+            root.Controls.SetChildIndex(_addPlanePanel, 0);
+
+            LayoutContentAreas();
+            RefreshCardsWidth();
+        }
+
+        private void Root_SizeChanged(object? sender, EventArgs e)
+        {
+            if (_addPlanePanel == null) return;
+
+            // ✅ keep it from top and full height
+            _addPlanePanel.Height = root.ClientSize.Height;
+            _addPlanePanel.Location = new Point(root.ClientSize.Width - _addPlanePanel.Width, 0);
+
+            LayoutContentAreas();
+            RefreshCardsWidth();
         }
 
         private void CloseAddPlaneOverlay()
         {
             btnAddPlane.Enabled = true;
-            if (_addPlaneOverlay == null)
-                return;
 
-            Controls.Remove(_addPlaneOverlay);
-            _addPlaneOverlay.Dispose();
-            _addPlaneOverlay = null;
+            if (_addPlanePanel == null) return;
+
+            root.SizeChanged -= Root_SizeChanged;
+
+            root.Controls.Remove(_addPlanePanel);
+            _addPlanePanel.Dispose();
+            _addPlanePanel = null;
+
+            LayoutContentAreas();
+            RefreshCardsWidth();
         }
 
+        private void LayoutContentAreas()
+        {
+            if (flow == null || header == null || root == null) return;
+
+            int shadowFix = 12;
+
+            // Keep cards starting under header (nice layout)
+            int top = header.Bottom + shadowFix;
+            int rightGap = 16;
+
+            flow.Location = new Point(0, top);
+            flow.Height = root.ClientSize.Height - top;
+
+            if (_addPlanePanel == null)
+                flow.Width = root.ClientSize.Width;
+            else
+                flow.Width = root.ClientSize.Width - _addPlanePanel.Width - rightGap;
+
+            flow.BringToFront();
+        }
     }
 }
