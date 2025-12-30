@@ -1,84 +1,96 @@
-﻿using System;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using System;
 using System.Collections.Generic;
-using Airport_Airplane_management_system.Model.Core.Classes;
+using System.Linq;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPages
 {
     public static class SeatGenerator
     {
-        public static List<Seat> BuildSeats(string type)
+        public static void GetFixedCounts(string type, out int total, out int eco, out int biz, out int first)
         {
-            return type switch
+            total = eco = biz = first = 0;
+
+            string t = (type ?? "").Trim().ToLowerInvariant();
+
+            if (t.Contains("highlevel") || t.Contains("boeing") || t.Contains("777"))
             {
-                "HighLevel" => Boeing777High(),
-                "A320" => AirbusA320Med(),
-                "PrivateJet" => PrivateJet(),
-                _ => AirbusA320Med()
-            };
-        }
+                first = 16; biz = 48; eco = 252;
+                total = first + biz + eco;
+                return;
+            }
 
-        private static List<Seat> Boeing777High()
-        {
-            var list = new List<Seat>();
-            int row = 1;
-
-            AddRows(list, startRow: row, rowCount: 4, seatsPerRow: 4, classType: "First");
-            row += 4;
-
-            AddRows(list, startRow: row, rowCount: 8, seatsPerRow: 6, classType: "Business");
-            row += 8;
-
-            AddRows(list, startRow: row, rowCount: 28, seatsPerRow: 9, classType: "Economy");
-
-            return list;
-        }
-
-        private static List<Seat> AirbusA320Med()
-        {
-            var list = new List<Seat>();
-            int row = 1;
-
-            AddRows(list, startRow: row, rowCount: 8, seatsPerRow: 4, classType: "Business");
-            row += 8;
-
-            AddRows(list, startRow: row, rowCount: 23, seatsPerRow: 6, classType: "Economy");
-
-            return list;
-        }
-
-        private static List<Seat> PrivateJet()
-        {
-            var list = new List<Seat>();
-            foreach (var L in LettersFor(7))
-                list.Add(new Seat($"1{L}", "First"));
-            return list;
-        }
-
-        private static void AddRows(List<Seat> list, int startRow, int rowCount, int seatsPerRow, string classType)
-        {
-            var letters = LettersFor(seatsPerRow);
-
-            for (int r = 0; r < rowCount; r++)
+            if (t.Contains("a320") || t.Contains("midrange"))
             {
-                int rowNum = startRow + r;
-                foreach (var L in letters)
-                {
-                    // ✅ use constructor (immutable Seat)
-                    list.Add(new Seat($"{rowNum}{L}", classType));
-                }
+                first = 0; biz = 32; eco = 138;
+                total = first + biz + eco; // 170
+                return;
+            }
+
+            if (t.Contains("private"))
+            {
+                first = 7; biz = 0; eco = 0;
+                total = 7;
+                return;
             }
         }
 
-        private static char[] LettersFor(int seatsPerRow)
+        public static List<Seat> BuildSeats(string type)
         {
-            return seatsPerRow switch
+            var seats = new List<Seat>();
+            string t = (type ?? "").Trim().ToLowerInvariant();
+
+            if (t.Contains("highlevel") || t.Contains("boeing") || t.Contains("777"))
             {
-                4 => new[] { 'A', 'B', 'C', 'D' },
-                6 => new[] { 'A', 'B', 'C', 'D', 'E', 'F' },
-                7 => new[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' },
-                9 => new[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J' }, // skip I
-                _ => throw new ArgumentException("Unsupported seatsPerRow: " + seatsPerRow)
-            };
+                // First: rows 1-4, A-D
+                AddRows(seats, startRow: 1, rowCount: 4, letters: "ABCD", classType: "First Class");
+
+                // Business: rows 5-12, A-F
+                AddRows(seats, startRow: 5, rowCount: 8, letters: "ABCDEF", classType: "Business");
+
+                // Economy: rows 13-40, A-I
+                AddRows(seats, startRow: 13, rowCount: 28, letters: "ABCDEFGHI", classType: "Economy");
+
+                return seats;
+            }
+
+            if (t.Contains("a320") || t.Contains("midrange"))
+            {
+                // Business: rows 1-8, A-D
+                AddRows(seats, startRow: 1, rowCount: 8, letters: "ABCD", classType: "Business");
+
+                // Economy: rows 9-31, A-F
+                AddRows(seats, startRow: 9, rowCount: 23, letters: "ABCDEF", classType: "Economy");
+
+                return seats;
+            }
+
+            if (t.Contains("private"))
+            {
+                // VIP: 7 seats on row 1: A-G
+                foreach (char c in "ABCDEFG")
+                {
+                    string seatNum = $"1{c}";
+                    seats.Add(new Seat(seatNum, "VIP"));
+                }
+                return seats;
+            }
+
+            // fallback: empty (or you can throw)
+            return seats;
+        }
+
+        private static void AddRows(List<Seat> seats, int startRow, int rowCount, string letters, string classType)
+        {
+            for (int r = 0; r < rowCount; r++)
+            {
+                int rowNumber = startRow + r;
+                foreach (char c in letters)
+                {
+                    string seatNum = $"{rowNumber}{c}";
+                    seats.Add(new Seat(seatNum, classType));
+                }
+            }
         }
     }
 }

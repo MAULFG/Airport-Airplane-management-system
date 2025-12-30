@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
-
+using Airport_Airplane_management_system.Presenter.AdminPages;
 namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
     public partial class PlaneManagements : UserControl, IPlaneManagementView
@@ -69,27 +69,37 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             RenderCards();
         }
 
-        public bool TryGetNewPlaneInput(out string model, out string type, out string status,
-                                       out int total, out int eco, out int biz, out int first)
+        public bool TryGetNewPlaneInput(out string model,
+                                        out string type,
+                                        out string status,
+                                        out int total,
+                                        out int eco,
+                                        out int biz,
+                                        out int first)
         {
-            model = _pendingPlaneName;
-            type = _pendingPlaneType;
-            status = _pendingPlaneStatus;
+            model = _pendingPlaneName ?? "";
+            type = _pendingPlaneType ?? "";
+            status = _pendingPlaneStatus ?? "Available";
 
-            total = _pendingTotal;
-            eco = _pendingEco;
-            biz = _pendingBiz;
-            first = _pendingFirst;
+            total = eco = biz = first = 0;
 
             if (string.IsNullOrWhiteSpace(model))
             {
-                ShowError("Please enter a plane name.");
+                ShowError("Enter plane name.");
                 return false;
             }
 
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                ShowError("Select plane configuration.");
+                return false;
+            }
+
+            // we can still compute here (not required, but harmless)
+            SeatGenerator.GetFixedCounts(type, out total, out eco, out biz, out first);
+
             return true;
         }
-
 
         // =======================
         // Rendering
@@ -119,17 +129,24 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private Control CreatePlaneCard(Plane p)
         {
-            if (p.Seats == null || p.Seats.Count == 0)
-                p.GenerateSeats();
+            // ✅ Always show distribution from FIXED mapping (do NOT rely on p.Seats)
+            int total, eco, biz, first;
+            int vip = 0;
 
-            int total = p.Seats.Count;
-            int first = p.Seats.Count(s => Eq(s.ClassType, "First"));
-            int business = p.Seats.Count(s => Eq(s.ClassType, "Business"));
-            int economy = p.Seats.Count(s => Eq(s.ClassType, "Economy"));
-            int vip = p.Seats.Count(s => Eq(s.ClassType, "VIP"));
+            string typeText = (p.Model ?? "").Trim();
+            string typeKey = typeText.ToLowerInvariant();
 
-            string modelText = p.Model ?? p.GetType().Name;
-            string typeText = p.GetType().Name;
+            if (typeKey.Contains("private"))
+            {
+                // PrivateJet -> show VIP
+                total = 7; vip = 7; eco = 0; biz = 0; first = 0;
+            }
+            else
+            {
+                SeatGenerator.GetFixedCounts(typeText, out total, out eco, out biz, out first);
+            }
+
+            string modelText = p.Model ?? "-";
             string statusText = NormalizePlaneStatus(p.Status);
 
             var card = new Guna2ShadowPanel
@@ -178,26 +195,31 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             card.Controls.Add(btnSchedule);
             card.Controls.Add(btnDelete);
 
+            // ✅ Use the DB type text directly (HighLevel / MidRangeA320 / PrivateJet)
             card.Controls.Add(InfoLine("Type:", typeText, 16, 60));
             card.Controls.Add(InfoLine("Total Seats:", total.ToString(), 16, 86));
 
+            // ✅ FIX: shift this row a bit right so VIP label doesn't clip
+            int rightRowX = 380;   // was 360
+            int rightRowY = 64;
+
             Control rightRow;
-            if (vip > 0 && first == 0 && business == 0 && economy == 0)
+            if (vip > 0)
             {
                 rightRow = HorizontalRow(new[]
                 {
                     ("VIP", vip.ToString()),
                     ("Status", statusText)
-                }, 330, 64);
+                }, rightRowX, rightRowY);
             }
             else
             {
                 rightRow = HorizontalRow(new[]
                 {
                     ("First", first.ToString()),
-                    ("Business", business.ToString()),
-                    ("Economy", economy.ToString())
-                }, 330, 64);
+                    ("Business", biz.ToString()),
+                    ("Economy", eco.ToString())
+                }, rightRowX, rightRowY);
             }
             card.Controls.Add(rightRow);
 
@@ -207,6 +229,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             modelBadge.Click += (_, __) => Open();
             stBadge.Click += (_, __) => Open();
 
+            // keep header buttons positioned
             card.SizeChanged += (_, __) =>
             {
                 btnDelete.Location = new Point(card.Width - 16 - btnDelete.Width, 10);
@@ -214,10 +237,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
                 modelBadge.Location = new Point(title.Right + 14, 12);
                 stBadge.Location = new Point(modelBadge.Right + 10, 12);
+
+                rightRow.Width = Math.Max(200, card.Width - rightRow.Left - 16);
             };
 
             btnDelete.Location = new Point(card.Width - 16 - btnDelete.Width, 10);
             btnSchedule.Location = new Point(btnDelete.Left - 10 - btnSchedule.Width, 10);
+
+            rightRow.Width = Math.Max(200, card.Width - rightRow.Left - 16);
 
             return card;
         }
@@ -360,9 +387,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             return b;
         }
 
-        private static bool Eq(string? a, string b) =>
-            string.Equals(a?.Trim(), b, StringComparison.OrdinalIgnoreCase);
-
         private static string NormalizePlaneStatus(string? st)
         {
             if (string.IsNullOrWhiteSpace(st)) return "active";
@@ -394,12 +418,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _addPlanePanel = new AddPlaneDockedControl
             {
                 Width = 430,
-                Dock = DockStyle.None, // we position manually
+                Dock = DockStyle.None,
                 BackColor = Color.White,
                 Margin = Padding.Empty
             };
 
-            // ✅ START FROM TOP (y=0) and full height
             _addPlanePanel.Height = root.ClientSize.Height;
             _addPlanePanel.Location = new Point(root.ClientSize.Width - _addPlanePanel.Width, 0);
 
@@ -420,7 +443,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 AddPlaneClicked?.Invoke(this, EventArgs.Empty);
             };
 
-
             _addPlanePanel.Cancelled += CloseAddPlaneOverlay;
 
             root.Controls.Add(_addPlanePanel);
@@ -434,7 +456,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             if (_addPlanePanel == null) return;
 
-            // ✅ keep it from top and full height
             _addPlanePanel.Height = root.ClientSize.Height;
             _addPlanePanel.Location = new Point(root.ClientSize.Width - _addPlanePanel.Width, 0);
 
@@ -463,8 +484,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (flow == null || header == null || root == null) return;
 
             int shadowFix = 12;
-
-            // Keep cards starting under header (nice layout)
             int top = header.Bottom + shadowFix;
             int rightGap = 16;
 
@@ -478,5 +497,30 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             flow.BringToFront();
         }
+        private static void GetCountsByType(string type, out int total, out int eco, out int biz, out int first, out int vip)
+        {
+            total = eco = biz = first = vip = 0;
+
+            type = (type ?? "").Trim();
+
+            if (type == "HighLevel")
+            {
+                first = 16; biz = 48; eco = 252; total = first + biz + eco;
+                return;
+            }
+
+            if (type == "A320")
+            {
+                first = 0; biz = 32; eco = 138; total = biz + eco;
+                return;
+            }
+
+            if (type == "PrivateJet")
+            {
+                vip = 7; total = 7;
+                return;
+            }
+        }
+
     }
 }

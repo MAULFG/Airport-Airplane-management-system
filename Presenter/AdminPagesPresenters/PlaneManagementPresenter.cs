@@ -2,6 +2,7 @@
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using System;
+using System.Collections.Generic;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPages
 {
@@ -41,33 +42,27 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         private void OnAddPlane(object? sender, EventArgs e)
         {
-            if (!_view.TryGetNewPlaneInput(out string planeName, out string type, out string status))
+            // We only need: model + type + status (seat counts are fixed by type)
+            if (!_view.TryGetNewPlaneInput(out string model,
+                                          out string type,
+                                          out string status,
+                                          out int _total,
+                                          out int _eco,
+                                          out int _biz,
+                                          out int _first))
                 return;
 
-            // 1) Insert plane row (model+type+status)
-            int planeId = _repo.AddPlane(planeName, type, status, out string error);
+            int planeId = _repo.AddPlane(model, type, status, out string error);
             if (planeId <= 0)
             {
                 _view.ShowError(error);
                 return;
             }
 
-            // 2) Create plane object in memory (so we can generate seats)
-            Plane plane = type switch
-            {
-                "HighLevel" => new HighLevel(planeId, status),
-                "A320" => new MidRangeA320(planeId, status),
-                "PrivateJet" => new PrivateJet(planeId, status),
-                _ => new MidRangeA320(planeId, status)
-            };
+            // ✅ FIXED: Generate seats based ONLY on type (fixed mapping)
+            List<Seat> seats = SeatGenerator.BuildSeats(type);
 
-            // Persist chosen model name
-            plane.Model = planeName;
-
-            // 3) Generate seats then persist
-            plane.GenerateSeats();
-
-            if (!_repo.InsertSeats(planeId, plane.Seats, out error))
+            if (!_repo.InsertSeats(planeId, seats, out error))
             {
                 _view.ShowError(error);
                 return;
