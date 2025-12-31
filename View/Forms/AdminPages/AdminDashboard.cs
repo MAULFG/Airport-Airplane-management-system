@@ -52,6 +52,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private PassengerManagementPresenter _passengerPresenter;
         private PlaneManagementPresenter _planePresenter;
 
+        // ✅ MainA MVP Presenter
+        private MainAPresenter _mainAPresenter;
+
         // ===== Docked schedule refs =====
         private PlaneScheduleControl _dockedScheduleOnPlanePage;
         private PlaneScheduleControl _dockedScheduleOnFlightPage;
@@ -116,8 +119,17 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 planeManagements1.PlaneSelected += OpenPlaneScheduleDockedOnPlanePage;
             }
 
-            // ✅ Bind repos to main dashboard page (MainA)
-            maina1.BindRepositories(_flightRepo, _planeRepo, _crewRepo, _passengerRepo, _bookingRepo);
+            // =========================
+            // ✅ MainA MVP: Presenter owns repos + data logic
+            // =========================
+            _mainAPresenter = new MainAPresenter(
+                maina1,
+                _flightRepo,
+                _planeRepo,
+                _crewRepo,
+                _passengerRepo,
+                _bookingRepo
+            );
 
             // ✅ KPI click navigation
             maina1.GoToFlightsRequested += () => FlightMangement();

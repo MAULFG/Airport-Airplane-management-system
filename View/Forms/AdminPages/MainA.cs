@@ -1,25 +1,18 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
-using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Guna.UI2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
-    public partial class MainA : UserControl
+    public partial class MainA : UserControl, IMainAView
     {
-        private IBookingRepository _bookingRepo;
-        private IFlightRepository _flightRepo;
-        private IPlaneRepository _planeRepo;
-        private ICrewRepository _crewRepo;
-        private IPassengerRepository _passengerRepo;
-
-        // KPI value labels (real data updates)
+        // KPI value labels (Presenter updates)
         private Label _kpiFlightsBig, _kpiPlanesBig, _kpiCrewBig, _kpiPassengersBig, _kpiAlertsBig, _kpiOpsBig;
         private Label _kpiFlightsInAir, _kpiFlightsUpcoming, _kpiFlightsPast;
         private Label _kpiPlanesActive, _kpiPlanesInactive;
@@ -39,43 +32,138 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             InitializeComponent();
 
-            // These MUST exist in Designer:
-            // kpiGrid (TableLayoutPanel), flightsList (FlowLayoutPanel), alertsList (FlowLayoutPanel), lblAlertsRight (Label)
-
+            // Ensure list layout behaves like Figma
             flightsList.WrapContents = false;
             flightsList.FlowDirection = FlowDirection.TopDown;
             flightsList.AutoScroll = true;
+            flightsList.HorizontalScroll.Enabled = false;
+            flightsList.HorizontalScroll.Visible = false;
 
             alertsList.WrapContents = false;
             alertsList.FlowDirection = FlowDirection.TopDown;
             alertsList.AutoScroll = true;
+            alertsList.HorizontalScroll.Enabled = false;
+            alertsList.HorizontalScroll.Visible = false;
 
             flightsList.SizeChanged += (_, __) => ForceRowsFullWidth(flightsList);
             alertsList.SizeChanged += (_, __) => ForceRowsFullWidth(alertsList);
-        }
 
-        /// <summary>Call this from AdminDashboard after repos are created.</summary>
-        public void BindRepositories(
-            IFlightRepository flightRepo,
-            IPlaneRepository planeRepo,
-            ICrewRepository crewRepo,
-            IPassengerRepository passengerRepo,
-            IBookingRepository bookingRepo
-        )
-        {
-            _flightRepo = flightRepo;
-            _planeRepo = planeRepo;
-            _crewRepo = crewRepo;
-            _passengerRepo = passengerRepo;
-            _bookingRepo = bookingRepo;
-
+            // Build UI once (View responsibility)
             if (!_built)
             {
                 BuildFigmaUI();
                 _built = true;
             }
 
-            LoadRealData();
+            // ✅ Make the TOP (yellow) "View all flights →" clickable
+            WireTopViewAllFlightsLink();
+        }
+
+        // =========================
+        //  IMainAView methods (Presenter calls these)
+        // =========================
+        public void ShowKpis(MainAKpiDto dto)
+        {
+            if (!_built)
+            {
+                BuildFigmaUI();
+                _built = true;
+            }
+
+            _kpiFlightsBig.Text = dto.TotalFlights.ToString();
+            _kpiFlightsInAir.Text = dto.FlightsInAir.ToString();
+            _kpiFlightsUpcoming.Text = dto.FlightsUpcoming.ToString();
+            _kpiFlightsPast.Text = dto.FlightsPast.ToString();
+
+            _kpiPlanesBig.Text = dto.TotalPlanes.ToString();
+            _kpiPlanesActive.Text = dto.ActivePlanes.ToString();
+            _kpiPlanesInactive.Text = dto.InactivePlanes.ToString();
+
+            _kpiCrewBig.Text = dto.TotalCrew.ToString();
+            _kpiCrewAssigned.Text = dto.CrewAssigned.ToString();
+            _kpiCrewUnassigned.Text = dto.CrewUnassigned.ToString();
+
+            _kpiPassengersBig.Text = dto.TotalPassengers.ToString();
+            _kpiPassengersUpcoming.Text = dto.PassengersUpcoming.ToString();
+            _kpiPassengersPast.Text = dto.PassengersPast.ToString();
+
+            _kpiAlertsBig.Text = dto.ActiveAlerts.ToString();
+            _kpiOpsBig.Text = dto.OpsText ?? "0.0%";
+        }
+
+        public void ShowFlights(MainAFlightsDto dto)
+        {
+            if (dto == null) return;
+
+            flightsList.SuspendLayout();
+            flightsList.Controls.Clear();
+
+            // ✅ NO showViewAll here => removes the duplicate red-circle link
+            AddSectionHeader(
+                flightsList,
+                $"In Air ({dto.InAir?.Count ?? 0})",
+                Color.FromArgb(28, 140, 60)
+            );
+
+            foreach (var f in dto.InAir ?? new List<Flight>())
+                flightsList.Controls.Add(MakeFlightRow(f, "In Air", Color.FromArgb(220, 245, 228), Color.FromArgb(28, 140, 60)));
+
+            AddSectionHeader(flightsList, $"Upcoming (Next 48h) ({dto.Upcoming48h?.Count ?? 0})", Color.FromArgb(35, 93, 220));
+            foreach (var f in dto.Upcoming48h ?? new List<Flight>())
+                flightsList.Controls.Add(MakeFlightRow(f, "Upcoming", Color.FromArgb(222, 235, 255), Color.FromArgb(35, 93, 220)));
+
+            AddSectionHeader(flightsList, $"Past ({dto.Past?.Count ?? 0})", Color.FromArgb(160, 160, 160));
+            foreach (var f in dto.Past ?? new List<Flight>())
+                flightsList.Controls.Add(MakeFlightRow(f, "Completed", Color.FromArgb(235, 235, 235), Color.FromArgb(90, 90, 90)));
+
+            flightsList.ResumeLayout(true);
+            ForceRowsFullWidth(flightsList);
+        }
+
+        public void ShowAlerts(MainAAlertsDto dto)
+        {
+            if (dto == null) return;
+
+            alertsList.SuspendLayout();
+            alertsList.Controls.Clear();
+
+            int active = 0;
+
+            if (dto.UnassignedCrew > 0)
+            {
+                alertsList.Controls.Add(MakeAlertRow(
+                    $"{dto.UnassignedCrew} Crew members unassigned",
+                    "Some crew members need flight assignments",
+                    back: Color.FromArgb(255, 240, 240),
+                    border: Color.FromArgb(255, 210, 210),
+                    fore: Color.FromArgb(220, 60, 60),
+                    icon: "👥"
+                ));
+                active++;
+            }
+
+            if (dto.InactivePlanes > 0)
+            {
+                alertsList.Controls.Add(MakeAlertRow(
+                    $"{dto.InactivePlanes} Planes inactive",
+                    "Some planes are inactive and may need maintenance/status update",
+                    back: Color.FromArgb(255, 248, 232),
+                    border: Color.FromArgb(255, 230, 170),
+                    fore: Color.FromArgb(190, 120, 0),
+                    icon: "✈"
+                ));
+                active++;
+            }
+
+            lblAlertsRight.Text = $"{active} Active";
+
+            alertsList.ResumeLayout(true);
+            ForceRowsFullWidth(alertsList);
+
+            // hard-disable horizontal scroll
+            alertsList.HorizontalScroll.Enabled = false;
+            alertsList.HorizontalScroll.Visible = false;
+            alertsList.AutoScrollMinSize = new Size(0, 0);
         }
 
         // =========================
@@ -86,14 +174,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             kpiGrid.SuspendLayout();
             kpiGrid.Controls.Clear();
 
-            // 🔥 CHANGE THIS to increase card height
             const int CARD_HEIGHT = 165;
 
-            // IMPORTANT: In TableLayoutPanel, RowStyle controls card height (Dock=Fill)
-            // Make rows absolute so the cards become taller like Figma.
             EnsureKpiGridLayout(rowHeight: CARD_HEIGHT + 18);
 
-            // 6 KPI cards (3x2)
             kpiGrid.Controls.Add(MakeKpiCard(
                 iconText: "✈",
                 iconBack: Color.FromArgb(232, 248, 245),
@@ -180,7 +264,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 subtitleSmall: "On-time performance",
                 cardHeight: CARD_HEIGHT,
                 breakdown: Array.Empty<(string, Label, Color)>(),
-                onClick: () => GoToFlightsRequested?.Invoke() // choose where to go
+                onClick: () => GoToFlightsRequested?.Invoke()
             ), 2, 1);
 
             kpiGrid.ResumeLayout(true);
@@ -188,8 +272,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private void EnsureKpiGridLayout(int rowHeight)
         {
-            // Keep whatever columns you already have, but force 2 rows to Absolute height.
             kpiGrid.RowCount = 2;
+
             if (kpiGrid.RowStyles.Count < 2)
             {
                 kpiGrid.RowStyles.Clear();
@@ -205,7 +289,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 kpiGrid.RowStyles[1].Height = rowHeight;
             }
 
-            // Prevent auto-shrinking
             kpiGrid.AutoSize = false;
             kpiGrid.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
         }
@@ -233,6 +316,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             Action onClick
         )
         {
+            const int PAD = 18;
+
             var card = new Guna2ShadowPanel
             {
                 BackColor = Color.Transparent,
@@ -242,22 +327,43 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 ShadowDepth = 18,
                 ShadowShift = 2,
                 Margin = new Padding(10),
-                Padding = new Padding(18, 16, 18, 16),
+                Padding = new Padding(PAD, 16, PAD, 16),
                 Dock = DockStyle.Fill,
                 Cursor = Cursors.Hand,
-
-                // Height is controlled by TableLayoutPanel row height, but keep a minimum.
                 MinimumSize = new Size(0, cardHeight)
             };
 
-            // icon box
+            // Bottom area where breakdown goes (ABOVE divider)
+            int bottomHeight = breakdown != null && breakdown.Length > 0
+                ? (breakdown.Length * 16 + 6)
+                : 0;
+
+            var bottomPanel = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = bottomHeight,
+                BackColor = Color.Transparent
+            };
+
+            var divider = new Panel
+            {
+                Height = 1,
+                BackColor = Color.FromArgb(238, 238, 238),
+                Dock = DockStyle.Bottom
+            };
+
+            // (Add divider first, then bottomPanel => divider sits ABOVE bottomPanel)
+            card.Controls.Add(bottomPanel);
+            card.Controls.Add(divider);
+
             var iconBox = new Guna2Panel
             {
                 Size = new Size(40, 40),
                 BorderRadius = 12,
                 FillColor = iconBack,
-                Location = new Point(18, 16)
+                Location = new Point(PAD, 16)
             };
+
             var iconLbl = new Label
             {
                 Dock = DockStyle.Fill,
@@ -275,7 +381,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Text = title,
                 Font = new Font("Segoe UI", 9.5f),
                 ForeColor = Color.FromArgb(110, 110, 110),
-                Location = new Point(66, 16),
+                Location = new Point(PAD + 48, 16),
                 BackColor = Color.Transparent
             };
 
@@ -285,7 +391,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Text = "0",
                 Font = new Font("Segoe UI", 16f, FontStyle.Bold),
                 ForeColor = Color.FromArgb(30, 30, 30),
-                Location = new Point(66, 36),
+                Location = new Point(PAD + 48, 36),
                 BackColor = Color.Transparent
             };
 
@@ -295,59 +401,65 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Text = subtitleSmall ?? "",
                 Font = new Font("Segoe UI", 8.7f),
                 ForeColor = Color.FromArgb(140, 140, 140),
-                Location = new Point(66, 66),
                 BackColor = Color.Transparent
-            };
-
-            // Divider
-            var divider = new Panel
-            {
-                Height = 1,
-                BackColor = Color.FromArgb(238, 238, 238),
-                Dock = DockStyle.Bottom
             };
 
             card.Controls.Add(iconBox);
             card.Controls.Add(lblTitle);
             card.Controls.Add(bigOut);
             card.Controls.Add(lblSub);
-            card.Controls.Add(divider);
 
-            // Breakdown lines (bottom)
-            int y0 = cardHeight - 52;
-            int line = 0;
-
-            foreach (var (label, value, valueColor) in breakdown)
+            // -------- Breakdown (now ABOVE the divider) --------
+            if (breakdown != null && breakdown.Length > 0)
             {
-                value.ForeColor = valueColor;
-
-                var left = new Label
+                for (int line = 0; line < breakdown.Length; line++)
                 {
-                    AutoSize = true,
-                    Text = label,
-                    Font = new Font("Segoe UI", 8.7f),
-                    ForeColor = Color.FromArgb(120, 120, 120),
-                    BackColor = Color.Transparent,
-                    Location = new Point(18, y0 + line * 16)
-                };
+                    var (label, value, valueColor) = breakdown[line];
+                    value.ForeColor = valueColor;
+                    value.BackColor = Color.Transparent;
 
-                value.BackColor = Color.Transparent;
-                value.Location = new Point(card.Width - 60, y0 + line * 16);
+                    var left = new Label
+                    {
+                        AutoSize = true,
+                        Text = label,
+                        Font = new Font("Segoe UI", 8.7f),
+                        ForeColor = Color.FromArgb(120, 120, 120),
+                        BackColor = Color.Transparent,
+                        Location = new Point(PAD, 3 + line * 16)
+                    };
 
-                card.Controls.Add(left);
-                card.Controls.Add(value);
+                    value.Location = new Point(bottomPanel.Width - value.Width - PAD, 3 + line * 16);
 
-                card.SizeChanged += (_, __) =>
+                    bottomPanel.Controls.Add(left);
+                    bottomPanel.Controls.Add(value);
+
+                    bottomPanel.SizeChanged += (_, __) =>
+                    {
+                        value.Left = bottomPanel.Width - value.Width - PAD;
+                    };
+                }
+
+                // keep subtitle where it was for breakdown cards (usually empty anyway)
+                lblSub.Location = new Point(PAD + 48, 66);
+            }
+            else
+            {
+                // -------- Cards without breakdown: subtitle should sit JUST ABOVE divider --------
+                lblSub.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+
+                void PositionSub()
                 {
-                    value.Left = card.Width - value.Width - 18;
-                };
+                    // place directly above divider with a small gap
+                    int y = divider.Top - lblSub.Height - 10;
+                    if (y < 70) y = 70; // safety
+                    lblSub.Location = new Point(PAD + 48, y);
+                }
 
-                line++;
+                card.SizeChanged += (_, __) => PositionSub();
+                card.HandleCreated += (_, __) => PositionSub();
             }
 
-            // ✅ Make EVERYTHING clickable (root + children)
             WireCardClick(card, onClick);
-
             return card;
         }
 
@@ -363,191 +475,41 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         }
 
         // =========================
-        //  REAL DATA
+        //  LIST RENDER HELPERS
         // =========================
-        private void LoadRealData()
-        {
-            if (_flightRepo == null || _planeRepo == null || _crewRepo == null || _passengerRepo == null)
-                return;
-
-            var flights = InvokeList<Flight>(_flightRepo, "GetAllFlights", "GetFlights", "GetAll") ?? new List<Flight>();
-            var planes = InvokeList<Plane>(_planeRepo, "GetAllPlanes", "GetPlanes", "GetAll") ?? new List<Plane>();
-            var crew = InvokeList<Crew>(_crewRepo, "GetAllCrew", "GetAllCrewMembers", "GetCrew", "GetAll") ?? new List<Crew>();
-
-            var passengerSummary = _passengerRepo.GetPassengersSummary();
-            int totalPassengers = passengerSummary?.Count ?? 0;
-
-            var now = DateTime.Now;
-            int inAir = flights.Count(f => f.Departure <= now && now < f.Arrival);
-            int upcoming = flights.Count(f => f.Departure > now);
-            int past = flights.Count(f => f.Arrival <= now);
-
-            _kpiFlightsBig.Text = flights.Count.ToString();
-            _kpiFlightsInAir.Text = inAir.ToString();
-            _kpiFlightsUpcoming.Text = upcoming.ToString();
-            _kpiFlightsPast.Text = past.ToString();
-
-            int activePlanes = planes.Count(p => ReadBool(p, "IsActive", "Active") == true);
-            int inactivePlanes = planes.Count - activePlanes;
-
-            _kpiPlanesBig.Text = activePlanes.ToString();
-            _kpiPlanesActive.Text = activePlanes.ToString();
-            _kpiPlanesInactive.Text = inactivePlanes.ToString();
-
-            int assigned = crew.Count(c => c.FlightId.HasValue);
-            int unassigned = crew.Count - assigned;
-
-            _kpiCrewBig.Text = crew.Count.ToString();
-            _kpiCrewAssigned.Text = assigned.ToString();
-            _kpiCrewUnassigned.Text = unassigned.ToString();
-
-            _kpiPassengersBig.Text = totalPassengers.ToString();
-
-            _kpiPassengersUpcoming.Text = passengerSummary?.Sum(p => p.UpcomingCount).ToString() ?? "0";
-            _kpiPassengersPast.Text = passengerSummary?.Sum(p => p.PastCount).ToString() ?? "0";
-
-            int alertsCount = 0;
-            if (unassigned > 0) alertsCount++;
-            if (inactivePlanes > 0) alertsCount++;
-
-            _kpiAlertsBig.Text = alertsCount.ToString();
-
-            double ops = flights.Count == 0 ? 0 : 100.0;
-            _kpiOpsBig.Text = $"{ops:0.0}%";
-
-            RenderFlightsList(flights, now);
-            RenderAlertsList(unassigned, inactivePlanes);
-        }
-
-        // =========================
-        //  REPO HELPERS
-        // =========================
-        private static List<T> InvokeList<T>(object repo, params string[] methods)
-        {
-            if (repo == null) return null;
-
-            foreach (var m in methods)
-            {
-                var mi = repo.GetType().GetMethod(m, BindingFlags.Public | BindingFlags.Instance);
-                if (mi == null) continue;
-
-                var res = mi.Invoke(repo, null);
-                if (res is List<T> list) return list;
-                if (res is IEnumerable<T> en) return en.ToList();
-            }
-            return null;
-        }
-
-        private static bool? ReadBool(object obj, params string[] props)
-        {
-            if (obj == null) return null;
-
-            foreach (var p in props)
-            {
-                var pi = obj.GetType().GetProperty(p, BindingFlags.Public | BindingFlags.Instance);
-                if (pi == null) continue;
-
-                var v = pi.GetValue(obj);
-                if (v is bool b) return b;
-
-                if (v is string s)
-                {
-                    var t = s.Trim().ToLowerInvariant();
-                    if (t == "active" || t == "available" || t == "true") return true;
-                    if (t == "inactive" || t == "unavailable" || t == "false") return false;
-                }
-            }
-            return null;
-        }
-
-        // =========================
-        //  LIST RENDER
-        // =========================
-        private void RenderFlightsList(List<Flight> flights, DateTime now)
-        {
-            flightsList.SuspendLayout();
-            flightsList.Controls.Clear();
-
-            var inAir = flights.Where(f => f.Departure <= now && now < f.Arrival)
-                               .OrderBy(f => f.Departure).Take(3).ToList();
-
-            var upcoming = flights.Where(f => f.Departure > now && f.Departure <= now.AddHours(48))
-                                  .OrderBy(f => f.Departure).Take(8).ToList();
-
-            var past = flights.Where(f => f.Arrival <= now)
-                              .OrderByDescending(f => f.Arrival).Take(5).ToList();
-
-            AddSectionHeader(flightsList, $"In Air ({inAir.Count})", Color.FromArgb(28, 140, 60));
-            foreach (var f in inAir)
-                flightsList.Controls.Add(MakeFlightRow(f, "In Air", Color.FromArgb(220, 245, 228), Color.FromArgb(28, 140, 60)));
-
-            AddSectionHeader(flightsList, $"Upcoming (Next 48h) ({upcoming.Count})", Color.FromArgb(35, 93, 220));
-            foreach (var f in upcoming)
-                flightsList.Controls.Add(MakeFlightRow(f, "Upcoming", Color.FromArgb(222, 235, 255), Color.FromArgb(35, 93, 220)));
-
-            AddSectionHeader(flightsList, $"Past ({past.Count})", Color.FromArgb(160, 160, 160));
-            foreach (var f in past)
-                flightsList.Controls.Add(MakeFlightRow(f, "Completed", Color.FromArgb(235, 235, 235), Color.FromArgb(90, 90, 90)));
-
-            flightsList.ResumeLayout(true);
-            ForceRowsFullWidth(flightsList);
-        }
-
-        private void RenderAlertsList(int unassignedCrew, int inactivePlanes)
-        {
-            alertsList.SuspendLayout();
-            alertsList.Controls.Clear();
-
-            int active = 0;
-
-            if (unassignedCrew > 0)
-            {
-                alertsList.Controls.Add(MakeAlertRow(
-                    $"{unassignedCrew} Crew members unassigned",
-                    "Some crew members need flight assignments",
-                    back: Color.FromArgb(255, 240, 240),
-                    border: Color.FromArgb(255, 210, 210),
-                    fore: Color.FromArgb(220, 60, 60),
-                    icon: "👥"
-                ));
-                active++;
-            }
-
-            if (inactivePlanes > 0)
-            {
-                alertsList.Controls.Add(MakeAlertRow(
-                    $"{inactivePlanes} Planes inactive",
-                    "Some planes are inactive and may need maintenance/status update",
-                    back: Color.FromArgb(255, 248, 232),
-                    border: Color.FromArgb(255, 230, 170),
-                    fore: Color.FromArgb(190, 120, 0),
-                    icon: "✈"
-                ));
-                active++;
-            }
-
-            lblAlertsRight.Text = $"{active} Active";
-
-            alertsList.ResumeLayout(true);
-            ForceRowsFullWidth(alertsList);
-        }
-
         private void ForceRowsFullWidth(FlowLayoutPanel host)
         {
-            int w = host.ClientSize.Width - host.Padding.Horizontal - SystemInformation.VerticalScrollBarWidth - 4;
+            int w = host.ClientSize.Width - host.Padding.Horizontal;
+
+            if (host.VerticalScroll.Visible)
+                w -= SystemInformation.VerticalScrollBarWidth;
+
+            // extra safety to kill horizontal scroll
+            w -= 18;
             if (w < 50) return;
 
             foreach (Control c in host.Controls)
+            {
                 c.Width = w;
+            }
+
+            host.HorizontalScroll.Enabled = false;
+            host.HorizontalScroll.Visible = false;
+            host.AutoScrollMinSize = new Size(0, 0);
         }
 
-        private void AddSectionHeader(FlowLayoutPanel host, string text, Color dotColor)
+        private void AddSectionHeader(
+            FlowLayoutPanel host,
+            string text,
+            Color dotColor
+        )
         {
             var row = new Panel
             {
                 Height = 28,
                 BackColor = Color.Transparent,
-                Margin = new Padding(0, 8, 0, 6)
+                Margin = new Padding(0, 8, 0, 6),
+                Width = host.ClientSize.Width
             };
 
             var dot = new Panel { Size = new Size(8, 8), Location = new Point(2, 10) };
@@ -581,8 +543,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 BackColor = Color.Transparent
             };
 
-            string from = f.From ?? "";
-            string to = f.To ?? "";
+            string from = f?.From ?? "";
+            string to = f?.To ?? "";
 
             var lblRoute = new Label
             {
@@ -610,7 +572,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             var planeCode = new Label
             {
                 AutoSize = true,
-                Text = f.PlaneIDFromDb > 0 ? $"#{f.PlaneIDFromDb}" : "",
+                Text = (f != null && f.PlaneIDFromDb > 0) ? $"#{f.PlaneIDFromDb}" : "",
                 Font = new Font("Segoe UI", 9.5f),
                 ForeColor = Color.FromArgb(140, 140, 140)
             };
@@ -640,10 +602,29 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 BorderThickness = 1,
                 BorderColor = border,
                 FillColor = back,
-                Height = 76,
                 Margin = new Padding(0, 0, 0, 10),
-                Padding = new Padding(14, 12, 14, 12)
+                Padding = new Padding(14, 12, 14, 12),
+
+                // allow growth to fit wrapped text
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                MinimumSize = new Size(0, 78)
             };
+
+            var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                ColumnCount = 2,
+                RowCount = 2,
+                BackColor = Color.Transparent
+            };
+
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 30));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             var ico = new Label
             {
@@ -651,7 +632,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Text = icon,
                 Font = new Font("Segoe UI", 12f, FontStyle.Bold),
                 ForeColor = fore,
-                Location = new Point(14, 16)
+                Margin = new Padding(0, 2, 0, 0)
             };
 
             var t = new Label
@@ -660,7 +641,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Text = title,
                 Font = new Font("Segoe UI", 10f, FontStyle.Bold),
                 ForeColor = fore,
-                Location = new Point(44, 12)
+                Margin = new Padding(0, 0, 0, 2),
+                MaximumSize = new Size(1000, 0)
             };
 
             var s = new Label
@@ -669,12 +651,18 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Text = sub,
                 Font = new Font("Segoe UI", 9.3f),
                 ForeColor = Color.FromArgb(90, 90, 90),
-                Location = new Point(44, 36)
+                Margin = new Padding(0, 0, 0, 0),
+                MaximumSize = new Size(1000, 0)
             };
 
-            card.Controls.Add(ico);
-            card.Controls.Add(t);
-            card.Controls.Add(s);
+            layout.Controls.Add(ico, 0, 0);
+            layout.SetRowSpan(ico, 2);
+
+            layout.Controls.Add(t, 1, 0);
+            layout.Controls.Add(s, 1, 1);
+
+            card.Controls.Add(layout);
+
             return card;
         }
 
@@ -711,6 +699,44 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
             path.CloseFigure();
             return new Region(path);
+        }
+
+        // =========================
+        //  TOP "View all flights →" (yellow) click hook
+        // =========================
+        private void WireTopViewAllFlightsLink()
+        {
+            // We don't assume the designer name.
+            // We find the first Label/LinkLabel that matches the header text.
+            var target = FindByText(this, "View all flights →");
+
+            if (target != null)
+            {
+                target.Cursor = Cursors.Hand;
+                target.Click -= TopViewAll_Click; // avoid double hook if constructor runs again
+                target.Click += TopViewAll_Click;
+            }
+        }
+
+        private void TopViewAll_Click(object sender, EventArgs e)
+        {
+            GoToFlightsRequested?.Invoke();
+        }
+
+        private static Control FindByText(Control root, string text)
+        {
+            foreach (Control child in root.Controls)
+            {
+                if (child is Label || child is LinkLabel)
+                {
+                    var t = (child.Text ?? "").Trim();
+                    if (t == text.Trim()) return child;
+                }
+
+                var found = FindByText(child, text);
+                if (found != null) return found;
+            }
+            return null;
         }
     }
 }
