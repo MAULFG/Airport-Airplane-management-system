@@ -102,8 +102,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowTickets.Margin = new Padding(0); // add new
             flowTickets.AutoSize = false;          // VERY IMPORTANT
             flowTickets.Margin = new Padding(0);
-            flowTickets.Padding = new Padding(6, 6, 24, 60); // it was only one 6
+            flowTickets.Padding = new Padding(6, 6, 24, 20); // it was only one 6
             flowTickets.BackColor = Color.Transparent;
+            
+
 
             // 
             // pnlEmpty
