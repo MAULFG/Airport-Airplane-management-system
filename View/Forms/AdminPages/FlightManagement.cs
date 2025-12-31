@@ -15,6 +15,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
     public partial class FlightManagement : UserControl, IFlightManagementView
     {
         // MVP events
+        public event Action<int>? PlaneScheduleRequested;
+
         public event EventHandler ViewLoaded;
         public event EventHandler AddClicked;
         public event EventHandler UpdateClicked;
@@ -23,6 +25,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event Action<int> DeleteRequested;
         public event Action<int>? ViewCrewRequested;
         public event EventHandler FilterChanged;
+
+        // ✅ REQUIRED by IFlightManagementView
+        public event Action<int> PlaneChanged;
+
+        private Guna2Panel panelScheduleHost;
 
         private readonly ToolTip _tip = new ToolTip();
 
@@ -36,6 +43,17 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int? EditingFlightId { get; set; }
+
+        // ✅ REQUIRED by IFlightManagementView
+        public decimal EconomyPrice => ParsePrice(txtEconomyPrice?.Text);
+        public decimal BusinessPrice => ParsePrice(txtBusinessPrice?.Text);
+        public decimal FirstPrice => ParsePrice(txtFirstPrice?.Text);
+
+        private decimal ParsePrice(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return 0m;
+            return decimal.TryParse(s.Trim(), out var v) ? v : 0m;
+        }
 
         private sealed class PlaneItem
         {
@@ -51,6 +69,15 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             // MVP load
             Load += (_, __) => ViewLoaded?.Invoke(this, EventArgs.Empty);
+
+            panelScheduleHost = new Guna2Panel
+            {
+                Dock = DockStyle.Fill,
+                Visible = false,
+                BackColor = Color.Transparent
+            };
+            Controls.Add(panelScheduleHost);
+            panelScheduleHost.BringToFront();
 
             // Add / Update
             btnAddOrUpdate.Click += (_, __) =>
@@ -81,6 +108,16 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             // resize card width
             flow.SizeChanged += (_, __) => RefreshCardsWidth();
+
+            // ✅ Plane changed -> keep schedule feature + notify pricing availability
+            cmbPlane.SelectionChangeCommitted += (_, __) =>
+            {
+                if (cmbPlane.SelectedItem is PlaneItem pi)
+                {
+                    PlaneScheduleRequested?.Invoke(pi.PlaneId);
+                    PlaneChanged?.Invoke(pi.PlaneId);
+                }
+            };
         }
 
         // ========= IFlightManagementView inputs =========
@@ -111,6 +148,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 cmbPlane.SelectedIndex = 0;
 
             RefreshFilterItems();
+
+            // ✅ trigger PlaneChanged once so presenter can hide/show price rows at startup
+            if (cmbPlane.SelectedItem is PlaneItem pi0)
+                PlaneChanged?.Invoke(pi0.PlaneId);
         }
 
         public void SetFlights(List<Flight> flights)
@@ -136,10 +177,19 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtTo.Clear();
             dtDeparture.Value = DateTime.Now.AddHours(2);
             dtArrival.Value = DateTime.Now.AddHours(4);
+
+            // ✅ clear prices too
+            if (txtEconomyPrice != null) txtEconomyPrice.Text = "";
+            if (txtBusinessPrice != null) txtBusinessPrice.Text = "";
+            if (txtFirstPrice != null) txtFirstPrice.Text = "";
+
             if (cmbPlane.Items.Count > 0) cmbPlane.SelectedIndex = 0;
         }
 
-        public void EnterEditMode(Flight f)
+        public void EnterEditMode(
+    Flight f,
+    Dictionary<string, decimal> seatPrices
+)
         {
             IsEditMode = true;
             EditingFlightId = f.FlightID;
@@ -154,7 +204,29 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnAddOrUpdate.Text = "Update Flight";
             btnCancelEdit.Visible = true;
             btnCancelEdit.Enabled = true;
+
+            // -------------------------------
+            // ✅ Load previous prices
+            // -------------------------------
+            txtEconomyPrice.Text =
+                seatPrices.TryGetValue("economy", out var eco)
+                    ? eco.ToString("0.00")
+                    : "";
+
+            txtBusinessPrice.Text =
+                seatPrices.TryGetValue("business", out var bus)
+                    ? bus.ToString("0.00")
+                    : "";
+
+            // VIP OR First share same textbox
+            if (seatPrices.TryGetValue("vip", out var vip))
+                txtFirstPrice.Text = vip.ToString("0.00");
+            else if (seatPrices.TryGetValue("first", out var first))
+                txtFirstPrice.Text = first.ToString("0.00");
+            else
+                txtFirstPrice.Text = "";
         }
+
 
         public void ExitEditMode()
         {
@@ -170,6 +242,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             dtDeparture.Value = DateTime.Now;
             dtArrival.Value = DateTime.Now.AddHours(1);
+
+            // ✅ clear prices too
+            if (txtEconomyPrice != null) txtEconomyPrice.Text = "";
+            if (txtBusinessPrice != null) txtBusinessPrice.Text = "";
+            if (txtFirstPrice != null) txtFirstPrice.Text = "";
 
             if (cmbPlane.Items.Count > 0)
                 cmbPlane.SelectedIndex = 0;
@@ -207,7 +284,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             foreach (var f in _flights)
                 flow.Controls.Add(CreateFlightCard(f));
 
-            flow.Controls.Add(new Panel
+            flow.Controls.Add(new Guna2Panel
             {
                 Height = 52,
                 Width = 1,
@@ -439,5 +516,72 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (cmbPlane.Items.Count > 0)
                 cmbPlane.SelectedIndex = 0;
         }
+
+        // allow schedule form to set times back
+        public void SetTimes(DateTime dep, DateTime arr)
+        {
+            dtDeparture.Value = dep;
+            dtArrival.Value = arr;
+        }
+
+        public void ShowDockedSchedule(Control schedule)
+        {
+            panelScheduleHost.Controls.Clear();
+            schedule.Dock = DockStyle.Fill;
+            panelScheduleHost.Controls.Add(schedule);
+            panelScheduleHost.Visible = true;
+            panelScheduleHost.BringToFront();
+        }
+
+        public void HideDockedSchedule()
+        {
+            panelScheduleHost.Controls.Clear();
+            panelScheduleHost.Visible = false;
+        }
+
+        // Used when user picks an "Available" slot from PlaneScheduleControl
+        public void PrepareNewFlight(int planeId, DateTime dep, DateTime arr)
+        {
+            // pre-select the plane
+            SelectPlaneInDropdown(planeId);
+
+            // pre-fill times
+            SetTimes(dep, arr);
+        }
+
+        // ✅ REQUIRED by IFlightManagementView
+        public void SetSeatClassAvailability(HashSet<string> classesLower)
+        {
+            classesLower ??= new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            bool hasEco = classesLower.Contains("economy");
+            bool hasBus = classesLower.Contains("business");
+
+            bool hasVip = classesLower.Contains("vip");
+            bool hasFirst = classesLower.Contains("first") || classesLower.Contains("first class");
+
+            // show/hide rows
+            rowEconomy.Visible = hasEco;
+            rowBusiness.Visible = hasBus;
+            rowFirst.Visible = hasVip || hasFirst;
+
+            // ✅ label logic: VIP for private jet, otherwise First
+            if (hasVip) SetFirstLabel("VIP");
+            else SetFirstLabel("First");
+
+            // clear hidden values
+            if (!hasEco) txtEconomyPrice.Text = "";
+            if (!hasBus) txtBusinessPrice.Text = "";
+            if (!(hasVip || hasFirst)) txtFirstPrice.Text = "";
+        }
+
+
+        public void SetFirstLabel(string text)
+        {
+            // lblFirst must exist in the designer (the label that currently shows "First")
+            lblFirst.Text = text;
+        }
+
+
     }
 }

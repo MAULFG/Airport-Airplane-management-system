@@ -38,6 +38,22 @@
             this.dtArrival = new System.Windows.Forms.DateTimePicker();
 
             this.cmbPlane = new Guna.UI2.WinForms.Guna2ComboBox();
+
+            // ===== NEW: Seat prices =====
+            this.lblSeatPrices = new System.Windows.Forms.Label();
+            this.rowEconomy = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblEconomy = new System.Windows.Forms.Label();
+            this.txtEconomyPrice = new Guna.UI2.WinForms.Guna2TextBox();
+
+            this.rowBusiness = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblBusiness = new System.Windows.Forms.Label();
+            this.txtBusinessPrice = new Guna.UI2.WinForms.Guna2TextBox();
+
+            this.rowFirst = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblFirst = new System.Windows.Forms.Label();
+            this.txtFirstPrice = new Guna.UI2.WinForms.Guna2TextBox();
+            // ===== END NEW =====
+
             this.btnAddOrUpdate = new Guna.UI2.WinForms.Guna2Button();
             this.btnCancelEdit = new Guna.UI2.WinForms.Guna2Button();
 
@@ -187,8 +203,87 @@
             this.cmbPlane.Location = new System.Drawing.Point(x, y);
             this.cmbPlane.Size = new System.Drawing.Size(w, 42);
             this.cmbPlane.FocusedState.BorderColor = System.Drawing.Color.FromArgb(35, 93, 220);
-            y += 76;
+            y += 64;
 
+            // ===================== NEW: Seat Prices =====================
+            this.lblSeatPrices.AutoSize = true;
+            this.lblSeatPrices.Text = "Seat Prices (per seat)";
+            this.lblSeatPrices.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblSeatPrices.ForeColor = System.Drawing.Color.FromArgb(70, 70, 70);
+            this.lblSeatPrices.Location = new System.Drawing.Point(x, y);
+            y += 22;
+
+            // Economy row
+            this.rowEconomy.BackColor = System.Drawing.Color.Transparent;
+            this.rowEconomy.Location = new System.Drawing.Point(x, y);
+            this.rowEconomy.Size = new System.Drawing.Size(w, 42);
+
+            this.lblEconomy.AutoSize = true;
+            this.lblEconomy.Text = "Economy";
+            this.lblEconomy.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblEconomy.ForeColor = System.Drawing.Color.FromArgb(70, 70, 70);
+            this.lblEconomy.Location = new System.Drawing.Point(0, 12);
+
+            this.txtEconomyPrice.BorderRadius = 10;
+            this.txtEconomyPrice.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtEconomyPrice.PlaceholderText = "0.00";
+            this.txtEconomyPrice.Location = new System.Drawing.Point(w - 140, 0);
+            this.txtEconomyPrice.Size = new System.Drawing.Size(140, 42);
+            this.txtEconomyPrice.FocusedState.BorderColor = System.Drawing.Color.FromArgb(35, 93, 220);
+            this.txtEconomyPrice.HoverState.BorderColor = System.Drawing.Color.FromArgb(35, 93, 220);
+
+            this.rowEconomy.Controls.Add(this.lblEconomy);
+            this.rowEconomy.Controls.Add(this.txtEconomyPrice);
+            y += 50;
+
+            // Business row
+            this.rowBusiness.BackColor = System.Drawing.Color.Transparent;
+            this.rowBusiness.Location = new System.Drawing.Point(x, y);
+            this.rowBusiness.Size = new System.Drawing.Size(w, 42);
+
+            this.lblBusiness.AutoSize = true;
+            this.lblBusiness.Text = "Business";
+            this.lblBusiness.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblBusiness.ForeColor = System.Drawing.Color.FromArgb(70, 70, 70);
+            this.lblBusiness.Location = new System.Drawing.Point(0, 12);
+
+            this.txtBusinessPrice.BorderRadius = 10;
+            this.txtBusinessPrice.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtBusinessPrice.PlaceholderText = "0.00";
+            this.txtBusinessPrice.Location = new System.Drawing.Point(w - 140, 0);
+            this.txtBusinessPrice.Size = new System.Drawing.Size(140, 42);
+            this.txtBusinessPrice.FocusedState.BorderColor = System.Drawing.Color.FromArgb(35, 93, 220);
+            this.txtBusinessPrice.HoverState.BorderColor = System.Drawing.Color.FromArgb(35, 93, 220);
+
+            this.rowBusiness.Controls.Add(this.lblBusiness);
+            this.rowBusiness.Controls.Add(this.txtBusinessPrice);
+            y += 50;
+
+            // First row
+            this.rowFirst.BackColor = System.Drawing.Color.Transparent;
+            this.rowFirst.Location = new System.Drawing.Point(x, y);
+            this.rowFirst.Size = new System.Drawing.Size(w, 42);
+
+            this.lblFirst.AutoSize = true;
+            this.lblFirst.Text = "First";
+            this.lblFirst.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblFirst.ForeColor = System.Drawing.Color.FromArgb(70, 70, 70);
+            this.lblFirst.Location = new System.Drawing.Point(0, 12);
+
+            this.txtFirstPrice.BorderRadius = 10;
+            this.txtFirstPrice.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtFirstPrice.PlaceholderText = "0.00";
+            this.txtFirstPrice.Location = new System.Drawing.Point(w - 140, 0);
+            this.txtFirstPrice.Size = new System.Drawing.Size(140, 42);
+            this.txtFirstPrice.FocusedState.BorderColor = System.Drawing.Color.FromArgb(35, 93, 220);
+            this.txtFirstPrice.HoverState.BorderColor = System.Drawing.Color.FromArgb(35, 93, 220);
+
+            this.rowFirst.Controls.Add(this.lblFirst);
+            this.rowFirst.Controls.Add(this.txtFirstPrice);
+            y += 62;
+            // ===================== END NEW =====================
+
+            // Buttons (same style, just moved down)
             this.btnAddOrUpdate.Text = "Add Flight";
             this.btnAddOrUpdate.BorderRadius = 12;
             this.btnAddOrUpdate.FillColor = System.Drawing.Color.FromArgb(35, 93, 220);
@@ -218,6 +313,13 @@
             this.leftCard.Controls.Add(this.dtArrival);
             this.leftCard.Controls.Add(this.lblPlane);
             this.leftCard.Controls.Add(this.cmbPlane);
+
+            // NEW controls added to left card
+            this.leftCard.Controls.Add(this.lblSeatPrices);
+            this.leftCard.Controls.Add(this.rowEconomy);
+            this.leftCard.Controls.Add(this.rowBusiness);
+            this.leftCard.Controls.Add(this.rowFirst);
+
             this.leftCard.Controls.Add(this.btnAddOrUpdate);
             this.leftCard.Controls.Add(this.btnCancelEdit);
 
@@ -293,6 +395,22 @@
         private System.Windows.Forms.DateTimePicker dtArrival;
 
         private Guna.UI2.WinForms.Guna2ComboBox cmbPlane;
+
+        // ===== NEW: Seat Prices fields =====
+        private System.Windows.Forms.Label lblSeatPrices;
+
+        private Guna.UI2.WinForms.Guna2Panel rowEconomy;
+        private System.Windows.Forms.Label lblEconomy;
+        private Guna.UI2.WinForms.Guna2TextBox txtEconomyPrice;
+
+        private Guna.UI2.WinForms.Guna2Panel rowBusiness;
+        private System.Windows.Forms.Label lblBusiness;
+        private Guna.UI2.WinForms.Guna2TextBox txtBusinessPrice;
+
+        private Guna.UI2.WinForms.Guna2Panel rowFirst;
+        private System.Windows.Forms.Label lblFirst;
+        private Guna.UI2.WinForms.Guna2TextBox txtFirstPrice;
+        // ===== END NEW =====
 
         private Guna.UI2.WinForms.Guna2Button btnAddOrUpdate;
         private Guna.UI2.WinForms.Guna2Button btnCancelEdit;

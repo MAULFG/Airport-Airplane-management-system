@@ -7,15 +7,16 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
     public class HighLevel : Plane
     {
         public HighLevel(int id, string status)
-            : base(id, "Boeing 777-300ER", status)
+            : base(id, "HighLevel", "Boeing 777-300ER", status)
         {
         }
 
         public override void GenerateSeats()
         {
-            AddSeats("First", 1, 4, 4);       // First Class
-            AddSeats("Business", 5, 12, 6);   // Business Class
-            AddSeats("Economy", 13, 40, 9);   // Economy
+            Seats.Clear();
+            AddSeats("First", 1, 4, 4);       // 16
+            AddSeats("Business", 5, 12, 6);   // 48
+            AddSeats("Economy", 13, 40, 9);   // 252
         }
 
         private void AddSeats(string classType, int startRow, int endRow, int seatsPerRow)

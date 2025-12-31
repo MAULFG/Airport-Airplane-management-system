@@ -3,6 +3,7 @@ using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Airport_Airplane_management_system.Model.Repositories
 {
@@ -14,81 +15,114 @@ namespace Airport_Airplane_management_system.Model.Repositories
         {
             _connStr = connStr;
         }
-        public List<Plane> GetAllPlanesf()
-        {
-            var planes = new List<Plane>();
-            using var conn = new MySqlConnection(_connStr);
-            conn.Open();
 
-            using var cmd = new MySqlCommand("SELECT * FROM planes", conn);
+        // -----------------------------
+        // Helpers
+        // -----------------------------
+        private static Plane BuildPlaneFromType(int id, string type, string status)
+        {
+            return type switch
+            {
+                "HighLevel" => new HighLevel(id, status),
+                "A320" => new MidRangeA320(id, status),
+                "PrivateJet" => new PrivateJet(id, status),
+                _ => new MidRangeA320(id, status)
+            };
+        }
+
+        private List<Seat> LoadSeatsForPlane(int planeId, MySqlConnection conn)
+        {
+            var seats = new List<Seat>();
+
+            using var cmd = new MySqlCommand(
+                "SELECT seat_number, class_type FROM seats WHERE plane_id = @pid ORDER BY id",
+                conn);
+            cmd.Parameters.AddWithValue("@pid", planeId);
+
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                int id = reader.GetInt32("id");
-                string type = reader.GetString("type");
-                string status = reader.GetString("status");
+                string seatNumber = reader.GetString("seat_number");
+                string classType = reader.GetString("class_type");
 
-                Plane p = type switch
+                // ✅ FIX: Seat ctor is Seat(string seatNumber, string classType)
+                seats.Add(new Seat(seatNumber, classType));
+            }
+
+            return seats;
+        }
+
+        // Backward-compat alias
+        public List<Plane> GetAllPlanesf()
+        {
+            return GetAllPlanes();
+        }
+
+        public List<Plane> GetAllPlanes()
+        {
+            var planes = new List<Plane>();
+
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            // 1) Read planes first (no nested readers)
+            var rows = new List<(int Id, string Model, string Type, string Status)>();
+            using (var cmd = new MySqlCommand("SELECT id, model, type, status FROM planes ORDER BY id", conn))
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
                 {
-                    "HighLevel" => new HighLevel(id, status),
-                    "A320" => new MidRangeA320(id, status),
-                    "PrivateJet" => new PrivateJet(id, status),
-                    _ => new MidRangeA320(id, status)
-                };
+                    int id = reader.GetInt32("id");
+                    string model = reader.GetString("model");
+                    string type = reader.GetString("type");
+                    string status = reader.GetString("status");
+                    rows.Add((id, model, type, status));
+                }
+            }
 
-                p.GenerateSeats();
+            // 2) Load seats for each plane
+            foreach (var r in rows)
+            {
+                Plane p = BuildPlaneFromType(r.Id, r.Type, r.Status);
+
+                // ✅ Ensure the plane remembers its DB type + DB model label
+                p.Type = r.Type;
+                p.Model = r.Model;
+
+                var seats = LoadSeatsForPlane(r.Id, conn);
+                if (seats.Count > 0)
+                    p.Seats = seats;
+                else
+                    p.GenerateSeats(); // fallback for legacy DBs
+
                 planes.Add(p);
             }
 
-            if (!planes.Any())
+            if (planes.Count == 0)
             {
                 Plane dummy = new MidRangeA320(-1, "Available");
+                dummy.Model = "Demo";
                 dummy.GenerateSeats();
                 planes.Add(dummy);
             }
 
             return planes;
         }
-        public List<Plane> GetAllPlanes()
-        {
-            var planes = new List<Plane>();
-            using var conn = new MySqlConnection(_connStr);
-            conn.Open();
-            string sql = "SELECT * FROM planes";
-            using var cmd = new MySqlCommand(sql, conn);
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                int id = reader.GetInt32("id");
-                string type = reader.GetString("type");
-                string status = reader.GetString("status");
-
-                Plane p = type switch
-                {
-                    "HighLevel" => new HighLevel(id, status),
-                    "A320" => new MidRangeA320(id, status),
-                    "PrivateJet" => new PrivateJet(id, status),
-                    _ => new MidRangeA320(id, status)
-                };
-
-                p.GenerateSeats();
-                planes.Add(p);
-            }
-            return planes;
-        }
 
         public bool SetPlaneStatus(int planeId, string status, out string error)
         {
             error = "";
-            string sql = @"UPDATE planes SET status=@st WHERE id=@id;";
+            string sql = @"UPDATE planes SET status = @s WHERE id = @id";
+
             try
             {
                 using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+
                 using var cmd = new MySqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@st", status);
+                cmd.Parameters.AddWithValue("@s", status);
                 cmd.Parameters.AddWithValue("@id", planeId);
 
-                conn.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
             catch (Exception ex)
@@ -101,26 +135,29 @@ namespace Airport_Airplane_management_system.Model.Repositories
         public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId, out string error)
         {
             error = "";
-            string sql = @"
-SELECT COUNT(*)
-FROM flights
-WHERE plane_id = @pid
-  AND (@newDep < arrival AND @newArr > departure)";
-            if (excludeFlightId.HasValue)
-                sql += " AND id <> @excludeId";
-
             try
             {
                 using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+
+                string sql = @"
+                    SELECT COUNT(*)
+                    FROM flights
+                    WHERE plane_id = @pid
+                      AND NOT (arrival <= @dep OR departure >= @arr)
+                ";
+
+                if (excludeFlightId.HasValue)
+                    sql += " AND id <> @fid";
+
                 using var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@pid", planeId);
-                cmd.Parameters.AddWithValue("@newDep", dep);
-                cmd.Parameters.AddWithValue("@newArr", arr);
+                cmd.Parameters.AddWithValue("@dep", dep);
+                cmd.Parameters.AddWithValue("@arr", arr);
                 if (excludeFlightId.HasValue)
-                    cmd.Parameters.AddWithValue("@excludeId", excludeFlightId.Value);
+                    cmd.Parameters.AddWithValue("@fid", excludeFlightId.Value);
 
-                conn.Open();
-                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                long count = Convert.ToInt64(cmd.ExecuteScalar());
                 return count > 0;
             }
             catch (Exception ex)
@@ -129,5 +166,102 @@ WHERE plane_id = @pid
                 return true;
             }
         }
+
+        public int AddPlane(string model, string type, string status, out string error)
+        {
+            error = "";
+            try
+            {
+                using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+
+                using var cmd = new MySqlCommand(
+                    "INSERT INTO planes (model, type, status) VALUES (@m, @t, @s); SELECT LAST_INSERT_ID();",
+                    conn);
+
+                cmd.Parameters.AddWithValue("@m", model);
+                cmd.Parameters.AddWithValue("@t", type);
+                cmd.Parameters.AddWithValue("@s", status);
+
+                object? result = cmd.ExecuteScalar();
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return 0;
+            }
+        }
+
+        public bool InsertSeats(int planeId, List<Seat> seats, out string error)
+        {
+            error = "";
+            try
+            {
+                using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+
+                using var tx = conn.BeginTransaction();
+
+                using (var del = new MySqlCommand("DELETE FROM seats WHERE plane_id = @pid", conn, tx))
+                {
+                    del.Parameters.AddWithValue("@pid", planeId);
+                    del.ExecuteNonQuery();
+                }
+
+                string sql = @"INSERT INTO seats (plane_id, seat_number, class_type, is_booked, user_id)
+                               VALUES (@pid, @sn, @ct, 0, NULL)";
+
+                foreach (var s in seats)
+                {
+                    using var cmd = new MySqlCommand(sql, conn, tx);
+                    cmd.Parameters.AddWithValue("@pid", planeId);
+                    cmd.Parameters.AddWithValue("@sn", s.SeatNumber);
+                    cmd.Parameters.AddWithValue("@ct", s.ClassType);
+                    cmd.ExecuteNonQuery();
+                }
+
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
+        }
+        public bool DeletePlane(int planeId, out string error)
+        {
+            error = "";
+            try
+            {
+                using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+
+                using var tx = conn.BeginTransaction();
+
+                // delete seats first (FK-safe)
+                using (var cmd1 = new MySqlCommand("DELETE FROM seats WHERE plane_id = @id", conn, tx))
+                {
+                    cmd1.Parameters.AddWithValue("@id", planeId);
+                    cmd1.ExecuteNonQuery();
+                }
+
+                // delete plane
+                using (var cmd2 = new MySqlCommand("DELETE FROM planes WHERE id = @id", conn, tx))
+                {
+                    cmd2.Parameters.AddWithValue("@id", planeId);
+                    int affected = cmd2.ExecuteNonQuery();
+                    tx.Commit();
+                    return affected > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
+        }
+
     }
 }

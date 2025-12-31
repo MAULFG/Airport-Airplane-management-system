@@ -15,8 +15,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private Guna.UI2.WinForms.Guna2Panel statsPanel;
         private System.Windows.Forms.Label lblTotalPassengersValue;
         private System.Windows.Forms.Label lblTotalPassengersText;
-        private System.Windows.Forms.Label lblUpcomingFlightsValue;
-        private System.Windows.Forms.Label lblUpcomingFlightsText;
 
         private Guna.UI2.WinForms.Guna2TextBox txtSearch;
         private System.Windows.Forms.FlowLayoutPanel listPanel;
@@ -30,174 +28,162 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private void InitializeComponent()
         {
-            this.root = new Guna.UI2.WinForms.Guna2Panel();
-            this.listPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
-            this.header = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.lblSub = new System.Windows.Forms.Label();
-            this.statsPanel = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblTotalPassengersValue = new System.Windows.Forms.Label();
-            this.lblTotalPassengersText = new System.Windows.Forms.Label();
-            this.lblUpcomingFlightsValue = new System.Windows.Forms.Label();
-            this.lblUpcomingFlightsText = new System.Windows.Forms.Label();
-            this.root.SuspendLayout();
-            this.header.SuspendLayout();
-            this.statsPanel.SuspendLayout();
-            this.SuspendLayout();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            root = new Guna.UI2.WinForms.Guna2Panel();
+            listPanel = new FlowLayoutPanel();
+            txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
+            header = new Guna.UI2.WinForms.Guna2Panel();
+            lblTitle = new Label();
+            lblSub = new Label();
+            statsPanel = new Guna.UI2.WinForms.Guna2Panel();
+            lblTotalPassengersValue = new Label();
+            lblTotalPassengersText = new Label();
+            root.SuspendLayout();
+            header.SuspendLayout();
+            statsPanel.SuspendLayout();
+            SuspendLayout();
             // 
             // root
             // 
-            this.root.Controls.Add(this.listPanel);
-            this.root.Controls.Add(this.txtSearch);
-            this.root.Controls.Add(this.header);
-            this.root.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.root.FillColor = System.Drawing.Color.WhiteSmoke;
-            this.root.Location = new System.Drawing.Point(0, 0);
-            this.root.Name = "root";
-            this.root.Padding = new System.Windows.Forms.Padding(28, 20, 28, 20);
-            this.root.Size = new System.Drawing.Size(1319, 680);
-            this.root.TabIndex = 0;
+            root.Controls.Add(listPanel);
+            root.Controls.Add(txtSearch);
+            root.Controls.Add(header);
+            root.CustomizableEdges = customizableEdges7;
+            root.Dock = DockStyle.Fill;
+            root.FillColor = Color.WhiteSmoke;
+            root.Location = new Point(0, 0);
+            root.Name = "root";
+            root.Padding = new Padding(28, 20, 28, 20);
+            root.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            root.Size = new Size(1319, 680);
+            root.TabIndex = 0;
             // 
             // listPanel
             // 
-            this.listPanel.AutoScroll = true;
-            this.listPanel.BackColor = System.Drawing.Color.Transparent;
-            this.listPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.listPanel.Location = new System.Drawing.Point(28, 167);
-            this.listPanel.Name = "listPanel";
-            this.listPanel.Padding = new System.Windows.Forms.Padding(0, 14, 0, 0);
-            this.listPanel.Size = new System.Drawing.Size(1263, 493);
-            this.listPanel.TabIndex = 0;
-            this.listPanel.WrapContents = false;
+            listPanel.AutoScroll = true;
+            listPanel.BackColor = Color.Transparent;
+            listPanel.Dock = DockStyle.Fill;
+            listPanel.FlowDirection = FlowDirection.TopDown;
+            listPanel.Location = new Point(28, 167);
+            listPanel.Name = "listPanel";
+            listPanel.Padding = new Padding(0, 14, 0, 0);
+            listPanel.Size = new Size(1263, 493);
+            listPanel.TabIndex = 0;
+            listPanel.WrapContents = false;
             // 
             // txtSearch
             // 
-            this.txtSearch.AutoRoundedCorners = true;
-            this.txtSearch.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.txtSearch.BorderRadius = 27;
-            this.txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtSearch.DefaultText = "";
-            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Top;
-            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.txtSearch.Location = new System.Drawing.Point(28, 110);
-            this.txtSearch.Margin = new System.Windows.Forms.Padding(0);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Padding = new System.Windows.Forms.Padding(12, 0, 12, 0);
-            this.txtSearch.PlaceholderText = "Search by name, email, or phone...";
-            this.txtSearch.SelectedText = "";
-            this.txtSearch.Size = new System.Drawing.Size(1263, 57);
-            this.txtSearch.TabIndex = 1;
+            txtSearch.AutoRoundedCorners = true;
+            txtSearch.BorderColor = Color.FromArgb(220, 220, 220);
+            txtSearch.BorderRadius = 27;
+            txtSearch.Cursor = Cursors.IBeam;
+            txtSearch.CustomizableEdges = customizableEdges1;
+            txtSearch.DefaultText = "";
+            txtSearch.Dock = DockStyle.Top;
+            txtSearch.Font = new Font("Segoe UI", 10.5F);
+            txtSearch.Location = new Point(28, 110);
+            txtSearch.Margin = new Padding(0);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Padding = new Padding(12, 0, 12, 0);
+            txtSearch.PlaceholderText = "Search by name, email, or phone...";
+            txtSearch.SelectedText = "";
+            txtSearch.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            txtSearch.Size = new Size(1263, 57);
+            txtSearch.TabIndex = 1;
             // 
             // header
             // 
-            this.header.Controls.Add(this.lblTitle);
-            this.header.Controls.Add(this.lblSub);
-            this.header.Controls.Add(this.statsPanel);
-            this.header.Dock = System.Windows.Forms.DockStyle.Top;
-            this.header.FillColor = System.Drawing.Color.Transparent;
-            this.header.Location = new System.Drawing.Point(28, 20);
-            this.header.Name = "header";
-            this.header.Size = new System.Drawing.Size(1263, 90);
-            this.header.TabIndex = 2;
+            header.Controls.Add(lblTitle);
+            header.Controls.Add(lblSub);
+            header.Controls.Add(statsPanel);
+            header.CustomizableEdges = customizableEdges5;
+            header.Dock = DockStyle.Top;
+            header.FillColor = Color.Transparent;
+            header.Location = new Point(28, 20);
+            header.Name = "header";
+            header.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            header.Size = new Size(1263, 90);
+            header.TabIndex = 2;
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.lblTitle.Location = new System.Drawing.Point(-1, -9);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(401, 46);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Passenger Management";
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(20, 20, 20);
+            lblTitle.Location = new Point(-1, -9);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(401, 46);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Passenger Management";
             // 
             // lblSub
             // 
-            this.lblSub.AutoSize = true;
-            this.lblSub.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblSub.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(110)))), ((int)(((byte)(110)))));
-            this.lblSub.Location = new System.Drawing.Point(2, 48);
-            this.lblSub.Name = "lblSub";
-            this.lblSub.Size = new System.Drawing.Size(410, 25);
-            this.lblSub.TabIndex = 1;
-            this.lblSub.Text = "View and manage all passenger flight bookings";
-            this.lblSub.Click += new System.EventHandler(this.lblSub_Click);
+            lblSub.AutoSize = true;
+            lblSub.Font = new Font("Segoe UI", 11F);
+            lblSub.ForeColor = Color.FromArgb(110, 110, 110);
+            lblSub.Location = new Point(2, 48);
+            lblSub.Name = "lblSub";
+            lblSub.Size = new Size(410, 25);
+            lblSub.TabIndex = 1;
+            lblSub.Text = "View and manage all passenger flight bookings";
+            lblSub.Click += lblSub_Click;
             // 
             // statsPanel
             // 
-            this.statsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.statsPanel.Controls.Add(this.lblTotalPassengersValue);
-            this.statsPanel.Controls.Add(this.lblTotalPassengersText);
-            this.statsPanel.Controls.Add(this.lblUpcomingFlightsValue);
-            this.statsPanel.Controls.Add(this.lblUpcomingFlightsText);
-            this.statsPanel.FillColor = System.Drawing.Color.Transparent;
-            this.statsPanel.Location = new System.Drawing.Point(940, 6);
-            this.statsPanel.Name = "statsPanel";
-            this.statsPanel.Size = new System.Drawing.Size(320, 70);
-            this.statsPanel.TabIndex = 2;
+            statsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            statsPanel.Controls.Add(lblTotalPassengersValue);
+            statsPanel.Controls.Add(lblTotalPassengersText);
+            statsPanel.CustomizableEdges = customizableEdges3;
+            statsPanel.FillColor = Color.Transparent;
+            statsPanel.Location = new Point(940, 6);
+            statsPanel.Name = "statsPanel";
+            statsPanel.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            statsPanel.Size = new Size(320, 70);
+            statsPanel.TabIndex = 2;
             // 
             // lblTotalPassengersValue
             // 
-            this.lblTotalPassengersValue.AutoSize = true;
-            this.lblTotalPassengersValue.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblTotalPassengersValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.lblTotalPassengersValue.Location = new System.Drawing.Point(64, 10);
-            this.lblTotalPassengersValue.Name = "lblTotalPassengersValue";
-            this.lblTotalPassengersValue.Size = new System.Drawing.Size(28, 32);
-            this.lblTotalPassengersValue.TabIndex = 0;
-            this.lblTotalPassengersValue.Text = "0";
-            this.lblTotalPassengersValue.Click += new System.EventHandler(this.lblTotalPassengersValue_Click);
+            lblTotalPassengersValue.AutoSize = true;
+            lblTotalPassengersValue.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblTotalPassengersValue.ForeColor = Color.FromArgb(20, 20, 20);
+            lblTotalPassengersValue.Location = new Point(220, 10);
+            lblTotalPassengersValue.Name = "lblTotalPassengersValue";
+            lblTotalPassengersValue.Size = new Size(28, 32);
+            lblTotalPassengersValue.TabIndex = 0;
+            lblTotalPassengersValue.Text = "0";
+            lblTotalPassengersValue.Click += lblTotalPassengersValue_Click;
             // 
             // lblTotalPassengersText
             // 
-            this.lblTotalPassengersText.AutoSize = true;
-            this.lblTotalPassengersText.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblTotalPassengersText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(110)))), ((int)(((byte)(110)))));
-            this.lblTotalPassengersText.Location = new System.Drawing.Point(19, 38);
-            this.lblTotalPassengersText.Name = "lblTotalPassengersText";
-            this.lblTotalPassengersText.Size = new System.Drawing.Size(134, 23);
-            this.lblTotalPassengersText.TabIndex = 1;
-            this.lblTotalPassengersText.Text = "Total Passengers";
-            this.lblTotalPassengersText.Click += new System.EventHandler(this.lblTotalPassengersText_Click);
+            lblTotalPassengersText.AutoSize = true;
+            lblTotalPassengersText.Font = new Font("Segoe UI", 10F);
+            lblTotalPassengersText.ForeColor = Color.FromArgb(110, 110, 110);
+            lblTotalPassengersText.Location = new Point(166, 42);
+            lblTotalPassengersText.Name = "lblTotalPassengersText";
+            lblTotalPassengersText.Size = new Size(134, 23);
+            lblTotalPassengersText.TabIndex = 1;
+            lblTotalPassengersText.Text = "Total Passengers";
+            lblTotalPassengersText.Click += lblTotalPassengersText_Click;
             // 
-            // lblUpcomingFlightsValue
+            // PassengerMangement
             // 
-            this.lblUpcomingFlightsValue.AutoSize = true;
-            this.lblUpcomingFlightsValue.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblUpcomingFlightsValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.lblUpcomingFlightsValue.Location = new System.Drawing.Point(238, 10);
-            this.lblUpcomingFlightsValue.Name = "lblUpcomingFlightsValue";
-            this.lblUpcomingFlightsValue.Size = new System.Drawing.Size(28, 32);
-            this.lblUpcomingFlightsValue.TabIndex = 2;
-            this.lblUpcomingFlightsValue.Text = "0";
-            this.lblUpcomingFlightsValue.Click += new System.EventHandler(this.lblUpcomingFlightsValue_Click);
-            // 
-            // lblUpcomingFlightsText
-            // 
-            this.lblUpcomingFlightsText.AutoSize = true;
-            this.lblUpcomingFlightsText.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblUpcomingFlightsText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(110)))), ((int)(((byte)(110)))));
-            this.lblUpcomingFlightsText.Location = new System.Drawing.Point(174, 38);
-            this.lblUpcomingFlightsText.Name = "lblUpcomingFlightsText";
-            this.lblUpcomingFlightsText.Size = new System.Drawing.Size(143, 23);
-            this.lblUpcomingFlightsText.TabIndex = 3;
-            this.lblUpcomingFlightsText.Text = "Upcoming Flights";
-            this.lblUpcomingFlightsText.Click += new System.EventHandler(this.lblUpcomingFlightsText_Click);
-            // 
-            // PassengerManagementForm
-            // 
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.Controls.Add(this.root);
-            this.Name = "PassengerManagementForm";
-            this.Size = new System.Drawing.Size(1319, 680);
-            this.root.ResumeLayout(false);
-            this.header.ResumeLayout(false);
-            this.header.PerformLayout();
-            this.statsPanel.ResumeLayout(false);
-            this.statsPanel.PerformLayout();
-            this.ResumeLayout(false);
+            BackColor = Color.WhiteSmoke;
+            Controls.Add(root);
+            Name = "PassengerMangement";
+            Size = new Size(1319, 680);
+            root.ResumeLayout(false);
+            header.ResumeLayout(false);
+            header.PerformLayout();
+            statsPanel.ResumeLayout(false);
+            statsPanel.PerformLayout();
+            ResumeLayout(false);
         }
     }
 }

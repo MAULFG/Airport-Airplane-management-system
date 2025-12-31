@@ -2,43 +2,203 @@
 {
     partial class MainA
     {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        private Guna.UI2.WinForms.Guna2Panel root;
+        private Guna.UI2.WinForms.Guna2Panel header;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Label lblSub;
+
+        private System.Windows.Forms.TableLayoutPanel kpiGrid;
+        private Guna.UI2.WinForms.Guna2ShadowPanel flightsCard;
+        private Guna.UI2.WinForms.Guna2ShadowPanel alertsCard;
+
+        private System.Windows.Forms.Label lblFlightsTitle;
+        private System.Windows.Forms.LinkLabel lnkViewAllFlights;
+        private System.Windows.Forms.FlowLayoutPanel flightsList;
+
+        private System.Windows.Forms.Label lblAlertsTitle;
+        private System.Windows.Forms.Label lblAlertsRight;
+        private System.Windows.Forms.FlowLayoutPanel alertsList;
+
+        private System.Windows.Forms.TableLayoutPanel bottomGrid;
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
+            root = new Guna.UI2.WinForms.Guna2Panel();
+            header = new Guna.UI2.WinForms.Guna2Panel();
+            lblTitle = new System.Windows.Forms.Label();
+            lblSub = new System.Windows.Forms.Label();
+
+            kpiGrid = new System.Windows.Forms.TableLayoutPanel();
+            bottomGrid = new System.Windows.Forms.TableLayoutPanel();
+
+            flightsCard = new Guna.UI2.WinForms.Guna2ShadowPanel();
+            alertsCard = new Guna.UI2.WinForms.Guna2ShadowPanel();
+
+            lblFlightsTitle = new System.Windows.Forms.Label();
+            lnkViewAllFlights = new System.Windows.Forms.LinkLabel();
+            flightsList = new System.Windows.Forms.FlowLayoutPanel();
+
+            lblAlertsTitle = new System.Windows.Forms.Label();
+            lblAlertsRight = new System.Windows.Forms.Label();
+            alertsList = new System.Windows.Forms.FlowLayoutPanel();
+
             SuspendLayout();
-            // 
-            // AdminMain
-            // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            Name = "AdminMain";
-            Size = new Size(963, 683);
+
+            // root
+            root.Dock = System.Windows.Forms.DockStyle.Fill;
+            root.FillColor = System.Drawing.Color.FromArgb(245, 246, 250);
+            root.Padding = new System.Windows.Forms.Padding(28, 22, 28, 22);
+            root.Controls.Add(bottomGrid);
+            root.Controls.Add(kpiGrid);
+            root.Controls.Add(header);
+
+            // header
+            header.Dock = System.Windows.Forms.DockStyle.Top;
+            header.Height = 86;
+            header.FillColor = System.Drawing.Color.Transparent;
+            header.Controls.Add(lblTitle);
+            header.Controls.Add(lblSub);
+
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            lblTitle.ForeColor = System.Drawing.Color.FromArgb(20, 20, 20);
+            lblTitle.Location = new System.Drawing.Point(0, 0);
+            lblTitle.Text = "Dashboard Overview";
+
+            lblSub.AutoSize = true;
+            lblSub.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lblSub.ForeColor = System.Drawing.Color.FromArgb(110, 110, 110);
+            lblSub.Location = new System.Drawing.Point(2, 48);
+            lblSub.Text = "Welcome back! Here's what's happening today.";
+
+            // kpiGrid (3x2)
+            kpiGrid.Dock = System.Windows.Forms.DockStyle.Top;
+            kpiGrid.Height = 300;
+            kpiGrid.ColumnCount = 3;
+            kpiGrid.RowCount = 2;
+            kpiGrid.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            kpiGrid.BackColor = System.Drawing.Color.Transparent;
+            kpiGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.333f));
+            kpiGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.333f));
+            kpiGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.333f));
+            kpiGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50f));
+            kpiGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50f));
+
+            // spacing inside cells
+            kpiGrid.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.None;
+
+            // bottomGrid (Flights left, Alerts right)
+            bottomGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            bottomGrid.ColumnCount = 2;
+            bottomGrid.RowCount = 1;
+            bottomGrid.Padding = new System.Windows.Forms.Padding(0, 18, 0, 0);
+            bottomGrid.BackColor = System.Drawing.Color.Transparent;
+            bottomGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65f));
+            bottomGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35f));
+            bottomGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100f));
+
+            // Flights card
+            flightsCard.BackColor = System.Drawing.Color.Transparent;
+            flightsCard.FillColor = System.Drawing.Color.White;
+            flightsCard.Radius = 12;
+            flightsCard.Padding = new System.Windows.Forms.Padding(18, 16, 18, 16);
+            flightsCard.Margin = new System.Windows.Forms.Padding(0, 0, 16, 0);
+            flightsCard.Dock = System.Windows.Forms.DockStyle.Fill;
+
+            lblFlightsTitle.AutoSize = true;
+            lblFlightsTitle.Text = "Flights Status Overview";
+            lblFlightsTitle.Font = new System.Drawing.Font("Segoe UI", 11.5F, System.Drawing.FontStyle.Bold);
+            lblFlightsTitle.ForeColor = System.Drawing.Color.FromArgb(30, 30, 30);
+            lblFlightsTitle.Location = new System.Drawing.Point(18, 14);
+
+            lnkViewAllFlights.AutoSize = true;
+            lnkViewAllFlights.Text = "View all flights →";
+            lnkViewAllFlights.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lnkViewAllFlights.LinkColor = System.Drawing.Color.FromArgb(0, 150, 140);
+            lnkViewAllFlights.ActiveLinkColor = System.Drawing.Color.FromArgb(0, 150, 140);
+            lnkViewAllFlights.VisitedLinkColor = System.Drawing.Color.FromArgb(0, 150, 140);
+            lnkViewAllFlights.Location = new System.Drawing.Point(0, 0);
+            lnkViewAllFlights.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+
+            flightsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            flightsList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            flightsList.WrapContents = false;
+            flightsList.AutoScroll = true;
+            flightsList.BackColor = System.Drawing.Color.Transparent;
+            flightsList.Location = new System.Drawing.Point(18, 54);
+            flightsList.Margin = new System.Windows.Forms.Padding(0);
+            flightsList.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+
+            flightsCard.Controls.Add(flightsList);
+            flightsCard.Controls.Add(lblFlightsTitle);
+            flightsCard.Controls.Add(lnkViewAllFlights);
+
+            flightsCard.SizeChanged += (s, e) =>
+            {
+                lnkViewAllFlights.Location = new System.Drawing.Point(flightsCard.Width - 18 - lnkViewAllFlights.Width, 16);
+                flightsList.Location = new System.Drawing.Point(18, 52);
+                flightsList.Size = new System.Drawing.Size(flightsCard.Width - 36, flightsCard.Height - 68);
+            };
+
+            // Alerts card
+            alertsCard.BackColor = System.Drawing.Color.Transparent;
+            alertsCard.FillColor = System.Drawing.Color.White;
+            alertsCard.Radius = 12;
+            alertsCard.Padding = new System.Windows.Forms.Padding(18, 16, 18, 16);
+            alertsCard.Margin = new System.Windows.Forms.Padding(0);
+            alertsCard.Dock = System.Windows.Forms.DockStyle.Fill;
+
+            lblAlertsTitle.AutoSize = true;
+            lblAlertsTitle.Text = "Crew & Plane Alerts";
+            lblAlertsTitle.Font = new System.Drawing.Font("Segoe UI", 11.5F, System.Drawing.FontStyle.Bold);
+            lblAlertsTitle.ForeColor = System.Drawing.Color.FromArgb(30, 30, 30);
+            lblAlertsTitle.Location = new System.Drawing.Point(18, 14);
+
+            lblAlertsRight.AutoSize = true;
+            lblAlertsRight.Text = "4 Active";
+            lblAlertsRight.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lblAlertsRight.ForeColor = System.Drawing.Color.FromArgb(120, 120, 120);
+            lblAlertsRight.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+
+            alertsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            alertsList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            alertsList.WrapContents = false;
+            alertsList.AutoScroll = true;
+            alertsList.BackColor = System.Drawing.Color.Transparent;
+            alertsList.Margin = new System.Windows.Forms.Padding(0);
+            alertsList.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
+
+            alertsCard.Controls.Add(alertsList);
+            alertsCard.Controls.Add(lblAlertsTitle);
+            alertsCard.Controls.Add(lblAlertsRight);
+
+            alertsCard.SizeChanged += (s, e) =>
+            {
+                lblAlertsRight.Location = new System.Drawing.Point(alertsCard.Width - 18 - lblAlertsRight.Width, 16);
+                alertsList.Location = new System.Drawing.Point(18, 52);
+                alertsList.Size = new System.Drawing.Size(alertsCard.Width - 36, alertsCard.Height - 68);
+            };
+
+            // Add bottom cards to grid
+            bottomGrid.Controls.Add(flightsCard, 0, 0);
+            bottomGrid.Controls.Add(alertsCard, 1, 0);
+
+            // Add to control
+            Controls.Add(root);
+            BackColor = System.Drawing.Color.FromArgb(245, 246, 250);
+            Name = "MainA";
+            Size = new System.Drawing.Size(1319, 680);
+
             ResumeLayout(false);
         }
-
-        #endregion
     }
 }

@@ -49,7 +49,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public void SetHeaderCounts(int totalPassengers, int upcomingFlightsNotFullyBooked)
         {
             lblTotalPassengersValue.Text = totalPassengers.ToString();
-            lblUpcomingFlightsValue.Text = upcomingFlightsNotFullyBooked.ToString();
         }
 
         public void RenderPassengers(List<PassengerSummaryRow> passengers)
@@ -228,7 +227,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
                 // Counts table (Upcoming/Past/Total)
                 var counts = BuildCounts(Passenger.UpcomingCount, Passenger.PastCount, Passenger.TotalCount);
-                counts.Location = new Point(Width - 290, 20);
+                counts.Location = new Point(
+    Width - counts.Width - 40,
+    (92 - counts.Height) / 2
+);
+
                 counts.Anchor = AnchorStyles.Top | AnchorStyles.Right;
                 Controls.Add(counts);
 
@@ -575,14 +578,18 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 {
                     ColumnCount = 3,
                     RowCount = 2,
-                    Size = new Size(210, 52),
-                    BackColor = Color.Transparent
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    BackColor = Color.Transparent,
+                    Margin = new Padding(0)
                 };
+
                 t.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
                 t.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
                 t.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
-                t.RowStyles.Add(new RowStyle(SizeType.Absolute, 18));
-                t.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+
+                t.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // ✅
+                t.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // ✅
 
                 Label H(string s) => new Label
                 {
@@ -590,7 +597,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     Font = new Font("Segoe UI", 8.5f),
                     ForeColor = Color.FromArgb(140, 140, 140),
                     Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleCenter
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    AutoSize = true
                 };
 
                 Label V(string s, Color c) => new Label
@@ -599,7 +607,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     Font = new Font("Segoe UI", 11f, FontStyle.Bold),
                     ForeColor = c,
                     Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleCenter
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    AutoSize = true
                 };
 
                 t.Controls.Add(H("Upcoming"), 0, 0);
@@ -612,6 +621,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
                 return t;
             }
+
 
             private static Image BuildAvatarCircle()
             {

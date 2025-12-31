@@ -1,4 +1,5 @@
-﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
@@ -6,9 +7,11 @@ using Airport_Airplane_management_system.Presenter.AdminPages;
 using Airport_Airplane_management_system.Presenter.AdminPagesPresenters;
 using Airport_Airplane_management_system.Repositories;
 using Airport_Airplane_management_system.View.Interfaces;
+using Airport_Airplane_management_system.View.UserControls;
 using Guna.UI2.WinForms;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Ticket_Booking_System_OOP.Model.Repositories;
 
@@ -30,7 +33,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private readonly INavigationService _navigation;
         private readonly AdminDashboardPresenter _presenter;
 
-        // ===== Repos (ONE source of truth) =====
+        // ===== Repos =====
         private IFlightRepository _flightRepo;
         private IUserRepository _userRepo;
         private IBookingRepository _bookingRepo;
@@ -47,6 +50,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private FlightManagementPresenter _flightPresenter;
         private CrewManagementPresenter _crewPresenter;
         private PassengerManagementPresenter _passengerPresenter;
+        private PlaneManagementPresenter _planePresenter;
+
+        // ===== Docked schedule refs =====
+        private PlaneScheduleControl _dockedScheduleOnPlanePage;
+        private PlaneScheduleControl _dockedScheduleOnFlightPage;
+
+        private bool _returnToFlightAfterSchedule = false;
+        private int _returnPlaneIdAfterSchedule = -1;
 
         public AdminDashboard(INavigationService navigation)
         {
@@ -55,63 +66,190 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _navigation = navigation;
             _presenter = new AdminDashboardPresenter(this, navigation);
 
-            // ✅ Connection string (same one you used)
             string connStr = "server=localhost;port=3306;database=user;user=root;password=2006";
 
-            // ✅ Create repositories (IMPORTANT: do NOT keep duplicate variables)
             _flightRepo = new MySqlFlightRepository(connStr);
             _userRepo = new MySqlUserRepository(connStr);
             _bookingRepo = new MySqlBookingRepository(connStr);
             _planeRepo = new MySqlPlaneRepository(connStr);
             _crewRepo = new MySqlCrewRepository(connStr);
-
-            // ✅ Passenger Repo (make sure this class name matches your project)
             _passengerRepo = new PassengerRepository(connStr);
 
-            // ✅ Create services
             _flightService = new FlightService(_flightRepo, _userRepo, _bookingRepo, _planeRepo);
             _crewService = new CrewService(_crewRepo, _flightRepo);
             _passengerService = new PassengerService(_passengerRepo);
 
-            // ✅ Wire MVP presenters ONCE
+            // ===== MVP presenters =====
+            _planePresenter = new PlaneManagementPresenter(planeManagements1, _planeRepo);
 
             _flightPresenter = new FlightManagementPresenter(
                 flightManagement1,
                 _flightService,
                 openCrewForFlight: (flightId) =>
                 {
-                    // 1) open crew page
                     CrewMangement();
-
-                    // 2) set the crew page filter to the selected flight
                     crewManagement1.SetFilterFlight(flightId);
-
-                    // 3) also sync the left form dropdown (optional but usually wanted)
                     crewManagement1.SetFormFlight(flightId);
                 }
             );
 
             _crewPresenter = new CrewManagementPresenter(crewManagement1, _crewService);
 
-            // ✅ Passenger MVP presenter (THIS is what was missing)
-            // Passenger MVP
-            _passengerRepo = new PassengerRepository(connStr);
-
-            // PassengerService takes ONE arg in your project (repo)
-            _passengerService = new PassengerService(_passengerRepo);
-
-            // Passenger presenter requires the count function
             _passengerPresenter = new PassengerManagementPresenter(
                 passengerMangement1,
                 _passengerService,
                 () => _flightRepo.CountUpcomingFlightsNotFullyBooked()
             );
 
+            // =========================
+            // DOCKED schedule everywhere
+            // =========================
+            if (flightManagement1 != null)
+            {
+                flightManagement1.PlaneScheduleRequested -= OpenPlaneScheduleDockedOnFlightPage;
+                flightManagement1.PlaneScheduleRequested += OpenPlaneScheduleDockedOnFlightPage;
+            }
+
+            if (planeManagements1 != null)
+            {
+                planeManagements1.PlaneSelected -= OpenPlaneScheduleDockedOnPlanePage;
+                planeManagements1.PlaneSelected += OpenPlaneScheduleDockedOnPlanePage;
+            }
+
+            // ✅ Bind repos to main dashboard page (MainA)
+            maina1.BindRepositories(_flightRepo, _planeRepo, _crewRepo, _passengerRepo, _bookingRepo);
+
+            // ✅ KPI click navigation
+            maina1.GoToFlightsRequested += () => FlightMangement();
+            maina1.GoToPlanesRequested += () => PlaneMangement();
+            maina1.GoToCrewRequested += () => CrewMangement();
+            maina1.GoToPassengersRequested += () => PassengerMangement();
+            maina1.GoToNotificationsRequested += () => NotrificationA();
 
             // UI init
             HideAllPanels();
             InitializeButtonEvents();
             MainA();
+        }
+
+        // =========================
+        // Dock schedule on FLIGHT page
+        // =========================
+        private void OpenPlaneScheduleDockedOnFlightPage(int planeId)
+        {
+            FlightMangement();
+            CloseDockedScheduleOnFlightPage();
+
+            var plane = _planeRepo.GetAllPlanes().FirstOrDefault(p => p.PlaneID == planeId);
+            if (plane == null)
+            {
+                MessageBox.Show("Plane not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var schedule = new PlaneScheduleControl();
+            schedule.Dock = DockStyle.Fill;
+
+            schedule.SetMode(true);
+            schedule.SetAircraftTitle($"{plane.Model} Schedule");
+
+            var flights = _flightRepo.GetAllFlights();
+
+            schedule.BindPlaneSchedule(
+                planeId,
+                flights,
+                DateTime.Today.AddDays(-2),
+                360
+            );
+
+            schedule.CloseClicked += (_, __) => CloseDockedScheduleOnFlightPage();
+
+            schedule.SlotSelected += (_, info) =>
+            {
+                DateTime suggestedDate = info.date.Date;
+                DateTime suggestedDeparture = suggestedDate.AddHours(info.hour);
+                DateTime suggestedArrival = suggestedDeparture.AddHours(3);
+
+                using (var dlg = new SlotDialog(suggestedDate, suggestedDeparture, suggestedArrival))
+                {
+                    if (dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        flightManagement1.SetTimes(dlg.SelectedDeparture, dlg.SelectedArrival);
+                        CloseDockedScheduleOnFlightPage();
+                        FlightMangement();
+                    }
+                }
+            };
+
+            flightManagement1.ShowDockedSchedule(schedule);
+            _dockedScheduleOnFlightPage = schedule;
+        }
+
+        private void CloseDockedScheduleOnFlightPage()
+        {
+            if (_dockedScheduleOnFlightPage == null || _dockedScheduleOnFlightPage.IsDisposed) return;
+
+            try
+            {
+                flightManagement1.HideDockedSchedule();
+                _dockedScheduleOnFlightPage.Dispose();
+            }
+            catch { }
+
+            _dockedScheduleOnFlightPage = null;
+        }
+
+        // =========================
+        // Dock schedule on PLANE page
+        // =========================
+        private void OpenPlaneScheduleDockedOnPlanePage(int planeId)
+        {
+            PlaneMangement();
+            CloseDockedScheduleOnPlanePage();
+
+            var plane = _planeRepo.GetAllPlanes().FirstOrDefault(p => p.PlaneID == planeId);
+            if (plane == null)
+            {
+                MessageBox.Show("Plane not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var schedule = new PlaneScheduleControl();
+            schedule.Dock = DockStyle.Fill;
+
+            schedule.SetMode(false);
+            schedule.SetAircraftTitle($"{plane.Model} Schedule");
+
+            var flights = _flightRepo.GetAllFlights();
+
+            schedule.BindPlaneSchedule(
+                planeId,
+                flights,
+                DateTime.Today.AddDays(-2),
+                360
+            );
+
+            schedule.CloseClicked += (_, __) => CloseDockedScheduleOnPlanePage();
+
+            planeManagements1.Controls.Add(schedule);
+            schedule.BringToFront();
+            _dockedScheduleOnPlanePage = schedule;
+        }
+
+        private void CloseDockedScheduleOnPlanePage()
+        {
+            if (_dockedScheduleOnPlanePage == null || _dockedScheduleOnPlanePage.IsDisposed) return;
+
+            try
+            {
+                if (planeManagements1.Controls.Contains(_dockedScheduleOnPlanePage))
+                    planeManagements1.Controls.Remove(_dockedScheduleOnPlanePage);
+
+                _dockedScheduleOnPlanePage.Dispose();
+            }
+            catch { }
+
+            _dockedScheduleOnPlanePage = null;
         }
 
         private void InitializeButtonEvents()
@@ -140,10 +278,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private void ShowOnly(Control panelToShow, Guna2Button activeButton)
         {
             HideAllPanels();
-
             panelToShow.Visible = true;
-            panelToShow.BringToFront(); // REQUIRED so the selected page shows correctly
-
+            panelToShow.BringToFront();
             SetActiveButton(activeButton);
         }
 
@@ -167,12 +303,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             activeBtn.FillColor = Color.DarkCyan;
         }
 
-        // ===== IAdminDashboardView methods called by AdminDashboardPresenter =====
         public void Logout()
         {
             HideAllPanels();
             SetActiveButton(btnlogoutA);
         }
+
+        public void Reports() => ShowOnly(reports1, btnreport);
 
         public void MainA() => ShowOnly(maina1, btnMainA);
         public void NotrificationA() => ShowOnly(notrificationsa1, btnnotrificationA);
@@ -180,9 +317,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public void CrewMangement() => ShowOnly(crewManagement1, btncrew);
         public void PassengerMangement() => ShowOnly(passengerMangement1, btnpasenger);
         public void PlaneMangement() => ShowOnly(planeManagements1, btnplane);
-        public void Report() => ShowOnly(reports1, btnreport);
 
-        // ===== Existing designer event handlers (keep) =====
         private void btnUpcomingFlights_Click(object sender, EventArgs e) { }
         private void btnSearchBook_Click(object sender, EventArgs e) { }
         private void guna2Panel1_Paint(object sender, PaintEventArgs e) { }
