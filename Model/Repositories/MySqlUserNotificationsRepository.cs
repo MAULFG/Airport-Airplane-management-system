@@ -143,5 +143,38 @@ ORDER BY created_at DESC;";
 
             return cmd.ExecuteNonQuery();
         }
+        public void MarkRead(int userId, List<int> notificationIds)
+       => SetReadFlag(userId, notificationIds, true);
+
+        public void MarkUnread(int userId, List<int> notificationIds)
+            => SetReadFlag(userId, notificationIds, false);
+
+        private void SetReadFlag(int userId, List<int> ids, bool isRead)
+        {
+            if (ids == null || ids.Count == 0) return;
+
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            // Build IN (@id0,@id1,...)
+            var paramNames = ids.Select((_, i) => $"@id{i}").ToList();
+            string inClause = string.Join(",", paramNames);
+
+            string sql = $@"
+UPDATE notifications
+SET is_read = @isRead
+WHERE user_id = @userId
+  AND notification_id IN ({inClause});";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@isRead", isRead ? 1 : 0);
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+            for (int i = 0; i < ids.Count; i++)
+                cmd.Parameters.AddWithValue(paramNames[i], ids[i]);
+
+            cmd.ExecuteNonQuery();
+        }
+
     }
 }

@@ -55,5 +55,16 @@ namespace Airport_Airplane_management_system.Model.Services
             if (userId <= 0) return 0;
             return _repo.ClearAll(userId);
         }
+        public void MarkRead(int userId, List<int> notificationIds)
+        {
+            if (notificationIds == null || notificationIds.Count == 0) return;
+            _repo.MarkRead(userId, notificationIds);
+        }
+
+        public void MarkUnread(int userId, List<int> notificationIds)
+        {
+            if (notificationIds == null || notificationIds.Count == 0) return;
+            _repo.MarkUnread(userId, notificationIds);
+        }
     }
 }

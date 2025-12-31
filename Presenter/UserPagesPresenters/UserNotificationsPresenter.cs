@@ -33,6 +33,12 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
             _view.DeleteSelectedClicked += OnDeleteSelected;
             _view.ClearAllClicked += OnClearAll;
+
+            _view.MarkSelectedReadClicked += OnMarkSelectedRead;
+            _view.MarkSelectedUnreadClicked += OnMarkSelectedUnread;
+
+           
+
         }
 
         private void OnLoad()
@@ -191,5 +197,25 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             ApplyFilter();
             _view.ShowInfo($"Cleared: {deleted}");
         }
+        private void OnMarkSelectedRead()
+        {
+            var ids = _view.SelectedNotificationIds;
+            if (ids.Count == 0) return;
+
+            _service.MarkRead(_view.UserId, ids);
+            OnLoad();
+            _view.RequestBadgeRefresh();
+        }
+
+        private void OnMarkSelectedUnread()
+        {
+            var ids = _view.SelectedNotificationIds;
+            if (ids.Count == 0) return;
+
+            _service.MarkUnread(_view.UserId, ids);
+            OnLoad();
+            _view.RequestBadgeRefresh();
+        }
+
     }
 }

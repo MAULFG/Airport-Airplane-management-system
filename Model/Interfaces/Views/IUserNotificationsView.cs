@@ -37,5 +37,8 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
 
         // ask dashboard to refresh bell badge
         void RequestBadgeRefresh();
+        event Action MarkSelectedReadClicked;
+        event Action MarkSelectedUnreadClicked;
+
     }
 }

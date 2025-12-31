@@ -33,6 +33,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         // Exposed event to dashboard
         public event Action BadgeRefreshRequested;
         public event Action<int> SeeTicketRequested;
+        public event Action MarkSelectedReadClicked;
+        public event Action MarkSelectedUnreadClicked;
 
         public UserNotifications()
         {
@@ -59,6 +61,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 if (Visible && _initialized)
                     Activate();
             };
+            btnMarkReadSelected.Click += (_, __) => MarkSelectedReadClicked?.Invoke();
+            btnMarkUnreadSelected.Click += (_, __) => MarkSelectedUnreadClicked?.Invoke();
+            flow.SizeChanged += (_, __) => FixCardsWidth();
+
         }
 
         // CALL THIS like MyTickets / UserSettings
@@ -109,35 +115,39 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public void BindNotifications(List<UserNotificationRow> rows)
         {
             flow.SuspendLayout();
-            flow.Controls.Clear();
-
-            _selectedIds.Clear();
-            _focusedId = null;
-            UpdateSelectionBar();
-
-            lblCount.Text = $"Notifications ({rows.Count})";
-
-            pnlEmpty.Visible = rows.Count == 0;
-            if (rows.Count == 0)
+            try
             {
-                flow.Controls.Add(pnlEmpty);
-                flow.ResumeLayout();
-                return;
+                flow.Controls.Clear();
+
+                _selectedIds.Clear();
+                _focusedId = null;
+                UpdateSelectionBar();
+
+                lblCount.Text = $"Notifications ({rows.Count})";
+
+                pnlEmpty.Visible = rows.Count == 0;
+                if (rows.Count == 0)
+                {
+                    flow.Controls.Add(pnlEmpty);
+                    return;
+                }
+
+                foreach (var n in rows)
+                    flow.Controls.Add(CreateCard(n));
+
+                // ✅ IMPORTANT: set padding once here (do not multiply widths)
+                flow.Padding = new Padding(6, 6, 26, 6); // right padding gives scrollbar space
+            }
+            finally
+            {
+                flow.ResumeLayout(true);
             }
 
-            foreach (var n in rows)
-                flow.Controls.Add(CreateCard(n));
-
-            flow.SizeChanged -= Flow_SizeChanged;
-            flow.SizeChanged += Flow_SizeChanged;
-            flow.Padding = new Padding(6, 6, 25, 6); // gives space for scrollbar
-            const int RIGHT_SAFE_MARGIN = 160;
-
-            flow.ResumeLayout(true);
-            flow.PerformLayout();
-            flow.Invalidate();
-            flow.Update();
+            // ✅ force proper width now
+            FixCardsWidth();
         }
+
+
 
         public void SetUnreadCount(int count)
         {
@@ -161,15 +171,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         // ================== UI HELPERS ==================
         private Control CreateCard(UserNotificationRow n)
         {
-            const int CUT_RIGHT = 220;
-            const int CUT_LEFT = 10;
-
-            int cardWidth = flow.ClientSize.Width - flow.Padding.Horizontal - CUT_LEFT - CUT_RIGHT;
-
-            // ✅ increase width by 1/4
-            cardWidth = (int)(cardWidth * 1.25);
-
-            if (cardWidth < 520) cardWidth = 520;
+            int cardWidth = Math.Max(520, flow.DisplayRectangle.Width - flow.Padding.Horizontal - 16);
 
             var card = new Guna2ShadowPanel
             {
@@ -229,12 +231,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             void PositionMenu()
             {
                 int x = card.Width - btnMenu.Width - 10;
-
-                // ✅ move dots more to the right (smaller subtract)
-                x -= 40;
-
-                if (x < 10) x = 10;
-
                 btnMenu.Location = new Point(x, 6);
                 btnMenu.BringToFront();
             }
@@ -253,16 +249,19 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 _focusedId = n.NotificationId;
 
                 bool ctrl = (ModifierKeys & Keys.Control) == Keys.Control;
+
                 if (ctrl)
                 {
-                    ToggleSelect(n.NotificationId, card);
+                    ToggleSelect(n.NotificationId, card);   // ✅ multi-select
                     return;
                 }
 
+                // normal click: clear selection + open notification
                 ClearSelectionUI();
                 NotificationClicked?.Invoke();
             }
 
+            // click handlers
             card.Click += CardClick;
             lblTitle.Click += CardClick;
             lblMsg.Click += CardClick;
@@ -273,9 +272,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             card.Controls.Add(lblMeta);
             card.Controls.Add(btnMenu);
 
+            // ✅ show selection highlight if already selected
             ApplySelectedVisual(card, _selectedIds.Contains(n.NotificationId));
+
             return card;
         }
+
+
 
 
 
@@ -330,16 +333,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         private void ApplySelectedVisual(Control card, bool selected)
         {
-            if (card is Guna2Panel p)
+            if (card is Guna2ShadowPanel sp && sp.Tag is UserNotificationRow row)
             {
-                var row = p.Tag as UserNotificationRow;
-
-                p.FillColor = selected ? Color.FromArgb(230, 245, 255)
-                          : (row != null && row.IsRead)
-                                ? Color.White
-                                : Color.FromArgb(248, 249, 251);
+                sp.FillColor =
+                    selected ? Color.FromArgb(230, 245, 255)
+                    : row.IsRead ? Color.White
+                    : Color.FromArgb(248, 249, 251);
             }
         }
+
 
 
         private void UpdateSelectionBar()
@@ -354,21 +356,34 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             if (s.Length <= max) return s;
             return s.Substring(0, max - 3) + "...";
         }
-        private void Flow_SizeChanged(object sender, EventArgs e)
+        
+
+        private int GetCardWidth()
         {
             const int CUT_RIGHT = 220;
             const int CUT_LEFT = 10;
 
-            int cardWidth = flow.ClientSize.Width - flow.Padding.Horizontal - CUT_LEFT - CUT_RIGHT;
-            if (cardWidth < 520) cardWidth = 520;
+            int w = flow.ClientSize.Width - flow.Padding.Horizontal - CUT_LEFT - CUT_RIGHT;
+
+            // keep the “wider cards” rule here ONLY (not in two places)
+            w = (int)(w * 1.25);
+
+            if (w < 520) w = 520;
+            return w;
+        }
+
+        private void FixCardsWidth()
+        {
+            // DisplayRectangle.Width is better when AutoScroll is ON
+            int w = flow.DisplayRectangle.Width - flow.Padding.Horizontal - 16;
+            if (w < 520) w = 520;
 
             foreach (Control c in flow.Controls)
             {
                 if (c is Guna2ShadowPanel sp && sp.Tag is UserNotificationRow)
-                    sp.Width = cardWidth;
+                    sp.Width = w;
             }
         }
-
 
     }
 }

@@ -26,6 +26,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private DoubleBufferedFlowLayoutPanel flow;
         private Panel pnlEmpty;
         private Label lblEmpty;
+        private Guna2Button btnMarkReadSelected;
+        private Guna2Button btnMarkUnreadSelected;
 
         protected override void Dispose(bool disposing)
         {
@@ -71,6 +73,29 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblTitle.Size = new Size(202, 41);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Notifications";
+            btnMarkReadSelected = new Guna2Button();
+            btnMarkUnreadSelected = new Guna2Button();
+
+            // btnMarkReadSelected
+            btnMarkReadSelected.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMarkReadSelected.BorderRadius = 10;
+            btnMarkReadSelected.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnMarkReadSelected.ForeColor = Color.White;
+            btnMarkReadSelected.Size = new Size(140, 30);
+            btnMarkReadSelected.Text = "Mark read";
+            btnMarkReadSelected.Location = new Point(888 - 465, 5); // adjust
+            pnlSelection.Controls.Add(btnMarkReadSelected);
+
+            // btnMarkUnreadSelected
+            btnMarkUnreadSelected.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMarkUnreadSelected.BorderRadius = 10;
+            btnMarkUnreadSelected.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnMarkUnreadSelected.ForeColor = Color.White;
+            btnMarkUnreadSelected.Size = new Size(140, 30);
+            btnMarkUnreadSelected.Text = "Mark unread";
+            btnMarkUnreadSelected.Location = new Point(888 - 315, 5); // adjust
+            pnlSelection.Controls.Add(btnMarkUnreadSelected);
+
             // 
             // lblCount
             // 

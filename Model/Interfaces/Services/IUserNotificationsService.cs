@@ -16,5 +16,8 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Services
         int DeleteMany(int userId, List<int> ids);
 
         int ClearAll(int userId);
+        void MarkRead(int userId, List<int> notificationIds);
+        void MarkUnread(int userId, List<int> notificationIds);
+
     }
 }
