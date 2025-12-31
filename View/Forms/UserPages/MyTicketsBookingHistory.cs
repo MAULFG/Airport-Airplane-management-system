@@ -25,6 +25,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private MyTicketsPresenter _presenter;
 
         private int? _selectedBookingId;
+        private int? _focusBookingId;
 
         public MyTicketsBookingHistory()
         {
@@ -89,36 +90,43 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         public void BindTickets(List<MyTicketRow> rows)
         {
-            Console.WriteLine("BindTickets called at: " + DateTime.Now.ToString("HH:mm:ss.fff"));
-
             flowTickets.SuspendLayout();
-            flowTickets.Controls.Clear();
+            flowTickets.Visible = false; // ✅ prevents redraw flicker while rebuilding
 
-            _selectedBookingId = null;
-
-            lblCount.Text = $"Tickets ({rows.Count})";
-
-            pnlEmpty.Visible = rows.Count == 0;
-
-            if (rows.Count == 0)
+            try
             {
-                if (!flowTickets.Controls.Contains(pnlEmpty))
-                    flowTickets.Controls.Add(pnlEmpty);
+                flowTickets.Controls.Clear();
+                _selectedBookingId = null;
 
-                flowTickets.ResumeLayout();
-                return;
+                lblCount.Text = $"Tickets ({rows.Count})";
+                pnlEmpty.Visible = rows.Count == 0;
+
+                if (rows.Count == 0)
+                {
+                    flowTickets.Controls.Add(pnlEmpty);
+                    return;
+                }
+
+                foreach (var r in rows)
+                    flowTickets.Controls.Add(CreateTicketCard(r));
+
+                FixCardsWidth();
+                TryFocusBookingCard();
+            }
+            finally
+{
+                flowTickets.Visible = true;
+                flowTickets.ResumeLayout(true);
+
+                FixCardsWidth();
+               // ForceFlowScrollRecalc();   // ✅ ADD THIS
+
+                flowTickets.Invalidate();
+                flowTickets.Update();
             }
 
-            foreach (var r in rows)
-                flowTickets.Controls.Add(CreateTicketCard(r));
-
-            flowTickets.ResumeLayout();
-
-            FixCardsWidth();
-
-           /* MessageBox.Show(
-               $"BindTickets called ✅\nRows: {rows.Count}\nControls in flow: {flowTickets.Controls.Count}\nflowTickets size: {flowTickets.Width}x{flowTickets.Height}"); */
         }
+
 
 
         public bool Confirm(string message)
@@ -144,6 +152,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         private Control CreateTicketCard(MyTicketRow t)
         {
+            int cardWidth = flowTickets.ClientSize.Width
+               - flowTickets.Padding.Horizontal
+               - 35; // scrollbar safety
+
+            if (cardWidth < 900) cardWidth = 900;
+
             var card = new Guna2ShadowPanel
             {
                 BackColor = Color.Transparent,
@@ -151,8 +165,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Radius = 14,
                 ShadowColor = Color.Black,
                 ShadowDepth = 12,
-                Width = Math.Max(900, flowTickets.ClientSize.Width - 30),
+
+                Width = cardWidth,
                 Height = 90,
+
                 Margin = new Padding(8),
                 Padding = new Padding(14),
                 Tag = false
@@ -226,6 +242,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             details.Visible = false;
             card.Controls.Add(details);
 
+            card.Name = "ticket_" + t.BookingId;
+
             // CLICK selects + toggles
             void SelectCard()
             {
@@ -238,9 +256,21 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 bool expanded = (bool)card.Tag;
                 card.Tag = !expanded;
 
+                flowTickets.SuspendLayout();
+
                 details.Visible = !expanded;
                 card.Height = !expanded ? 250 : 90;
+
+                // ✅ allow shrinking back
+                card.MinimumSize = new Size(card.Width, 0);
+
+                flowTickets.ResumeLayout(true);
+
+                FixCardsWidth();
+                flowTickets.ScrollControlIntoView(details);
             }
+
+
 
             void ClickAny(object s, EventArgs e)
             {
@@ -267,8 +297,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             var grid = new TableLayoutPanel
             {
-                Location = new Point(14, 12),
-                Size = new Size(details.Width - 28, details.Height - 70),
+                Location = new Point(8, 12),
+                Size = new Size(details.Width - 40, details.Height - 70), // ✅ less width => more breathing room
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 ColumnCount = 2,
                 RowCount = 3,
@@ -317,7 +347,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             details.SizeChanged += (_, __) =>
             {
                 grid.Width = details.Width - 28;
-                btnCancel.Location = new Point(details.Width - 175, details.Height - 52);
+                btnCancel.Location = new Point(details.Width - 190, details.Height - 52);
             };
 
             return details;
@@ -373,20 +403,71 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
         private void FixCardsWidth()
         {
-            int w = Math.Max(900, flowTickets.ClientSize.Width - 30);
+            int w = flowTickets.ClientSize.Width
+                    - flowTickets.Padding.Horizontal
+                    - 35; // scrollbar safety
+
+            if (w < 900) w = 900;
 
             foreach (Control c in flowTickets.Controls)
             {
                 if (c == pnlEmpty) continue;
 
                 c.Width = w;
-                c.MinimumSize = new Size(w, c.Height);
+
+                // ✅ DO NOT lock the height
+                c.MinimumSize = new Size(w, 0); // or just remove MinimumSize entirely
 
                 var details = c.Controls.Find("detailsPanel", true).FirstOrDefault();
                 if (details != null)
                     details.Width = w - 28;
             }
         }
+
+        public void FocusBooking(int bookingId)
+        {
+            _focusBookingId = bookingId;
+            TryFocusBookingCard();
+        }
+        private void TryFocusBookingCard()
+        {
+            if (_focusBookingId == null) return;
+
+            string targetName = "ticket_" + _focusBookingId.Value;
+
+            var target = flowTickets.Controls
+                .OfType<Control>()
+                .FirstOrDefault(c => c.Name == targetName);
+
+            if (target != null)
+            {
+                flowTickets.ScrollControlIntoView(target);
+                HighlightSelectedCard(target);
+            }
+
+            _focusBookingId = null;
+        }
+        //private void ForceFlowScrollRecalc()
+        //{
+        //    if (flowTickets == null) return;
+
+        //    int totalHeight = flowTickets.Padding.Vertical;
+
+        //    foreach (Control c in flowTickets.Controls)
+        //    {
+        //        if (!c.Visible) continue;
+        //        totalHeight += c.Height + c.Margin.Vertical;
+        //    }
+
+        //    // + extra bottom space so last expanded ticket is 100% reachable
+        //    totalHeight += 120;
+
+        //    // Force scrollable area
+        //    flowTickets.AutoScrollMinSize = new Size(0, totalHeight);
+
+        //    // Re-layout
+        //    flowTickets.PerformLayout();
+        //}
 
     }
 }

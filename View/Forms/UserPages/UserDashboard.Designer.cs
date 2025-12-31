@@ -61,7 +61,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             userAccount1 = new UserAccount();
             userSettings1 = new UserSettings();
             searchAndBooking1 = new SearchAndBooking();
-            notifications1 = new Notifications();
+            notifications1 = new UserNotifications();
             myTicketsBookingHistory1 = new MyTicketsBookingHistory();
             upcomingFlights1 = new UpcomingFlights();
             mainUserPage1 = new MainUserPage();
@@ -78,6 +78,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2Panel1.Controls.Add(Account);
             guna2Panel1.Controls.Add(guna2Button1);
             guna2Panel1.Controls.Add(btnNotifications);
+            guna2Panel1.Controls.Add(notifBadge);
             guna2Panel1.Controls.Add(btnMyTickets);
             guna2Panel1.Controls.Add(btnSearchBook);
             guna2Panel1.Controls.Add(btnUpcomingFlights);
@@ -95,6 +96,17 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2Panel1.Size = new Size(250, 683);
             guna2Panel1.TabIndex = 1;
             guna2Panel1.Paint += guna2Panel1_Paint;
+
+            // notifBadge
+            notifBadge = new Guna.UI2.WinForms.Guna2CircleButton();
+            notifBadge.Size = new Size(18, 18);
+            notifBadge.FillColor = Color.Red;
+            notifBadge.ForeColor = Color.White;
+            notifBadge.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            notifBadge.Text = "0";
+            notifBadge.Visible = false;
+            notifBadge.Enabled = false; // not clickable
+            notifBadge.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             // 
             // logoutuser
             // 
@@ -337,13 +349,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private Guna.UI2.WinForms.Guna2Button Account;
         private Guna.UI2.WinForms.Guna2Button Settings;
         private Guna.UI2.WinForms.Guna2Button logoutuser;
-    
+        private Guna.UI2.WinForms.Guna2CircleButton notifBadge;
+
         private UserSettings settings1;
         private UpcomingFlights upcomingFlights1;
         private UserAccount userAccount1;
         private UserSettings userSettings1;
         private SearchAndBooking searchAndBooking1;
-        private Notifications notifications1;
+        private UserNotifications notifications1;
         private MyTicketsBookingHistory myTicketsBookingHistory1;
         private MainUserPage mainUserPage1;
     }

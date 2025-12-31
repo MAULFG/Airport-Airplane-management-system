@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Services;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
-using Airport_Airplane_management_system.Model.Core.Classes;
-using Airport_Airplane_management_system.Model.Interfaces.Repositories;
-using MySql.Data.MySqlClient;
+using Airport_Airplane_management_system.Model.Repositories;
+
 
 namespace Airport_Airplane_management_system.Model.Repositories
 {
@@ -141,6 +144,18 @@ FOR UPDATE;";
                 }
 
                 tx.Commit();
+                // create notification after successful cancel
+                try
+                {
+                    var notifRepo = new MySqlNotificationWriterRepository(_connStr);
+                    var notifService = new NotificationWriterService(notifRepo);
+
+                    notifService.NotifyBookingCancelled(userId, bookingId);
+                }
+                catch
+                {
+
+                }
                 return true;
             }
             catch (Exception ex)

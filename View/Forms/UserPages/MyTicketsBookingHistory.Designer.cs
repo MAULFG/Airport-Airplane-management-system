@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
+using Airport_Airplane_management_system.View.Controls;
 
 namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
@@ -26,7 +27,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private Guna2HtmlLabel lblCount;
         private Guna2Separator sepTop;
 
-        private FlowLayoutPanel flowTickets;
+        // private FlowLayoutPanel flowTickets;
+        private DoubleBufferedFlowLayoutPanel flowTickets;
+
         private Guna2Panel pnlEmpty;
         private Guna2HtmlLabel lblEmpty;
         private Panel pnlListBody;
@@ -53,7 +56,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             pnlListBody = new Panel();
-            flowTickets = new FlowLayoutPanel();
+            flowTickets = new DoubleBufferedFlowLayoutPanel();
             pnlEmpty = new Guna2Panel();
             lblEmpty = new Guna2HtmlLabel();
             cardList = new Guna2ShadowPanel();
@@ -79,6 +82,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             // pnlListBody
             // 
+            pnlListBody.Dock = DockStyle.Fill;
+            pnlListBody.Padding = new Padding(0);
+            pnlListBody.Margin = new Padding(0);
             pnlListBody.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pnlListBody.BackColor = Color.Transparent;
             pnlListBody.Controls.Add(flowTickets);
@@ -93,9 +99,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowTickets.AutoScroll = true;
             flowTickets.WrapContents = false;
             flowTickets.FlowDirection = FlowDirection.TopDown;
+            flowTickets.Margin = new Padding(0); // add new
             flowTickets.AutoSize = false;          // VERY IMPORTANT
             flowTickets.Margin = new Padding(0);
-            flowTickets.Padding = new Padding(6);
+            flowTickets.Padding = new Padding(6, 6, 24, 60); // it was only one 6
             flowTickets.BackColor = Color.Transparent;
 
             // 
@@ -317,13 +324,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cardFilters.ResumeLayout(false);
             cardFilters.PerformLayout();
             ResumeLayout(false);
-
+            /*
             pnlListBody.Dock = DockStyle.Fill;
             pnlListBody.Location = new Point(16, 70);   // you can remove Location/Size if Dock=Fill
             pnlListBody.Size = new Size(cardList.Width - 32, cardList.Height - 86);
             pnlListBody.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pnlListBody.AutoScroll = true;
-            pnlListBody.Padding = new Padding(6);
+            pnlListBody.Padding = new Padding(6); */
 
         }
     }
