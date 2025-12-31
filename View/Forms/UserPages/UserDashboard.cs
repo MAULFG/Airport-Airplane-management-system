@@ -52,8 +52,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             var userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             var bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             var planeRepo =new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            _flightService = new FlightService(flightRepo, userRepo, bookingRepo,planeRepo);
-            
+            var notifRepo = new MySqlUserNotificationsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo, notifRepo);
+
+
             _upcomingFlightsPresenter =
                 new UpcomingFlightsPresenter(upcomingFlights1, _flightService);
             _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1,_flightService);

@@ -37,9 +37,11 @@ public partial class Main1 : Form, INavigationService
         userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-        
-        flightService = new FlightService(flightRepo, userRepo, bookingRepo,planeRepo);
-        
+
+        var notifRepo = new MySqlUserNotificationsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+        flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo, notifRepo);
+
+
         // Initialize pages and pass this as INavigationService
         loginPage = new LoginPage(this);
         userDashboard = new UserDashboard(this);

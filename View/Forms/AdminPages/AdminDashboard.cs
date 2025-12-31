@@ -75,7 +75,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _crewRepo = new MySqlCrewRepository(connStr);
             _passengerRepo = new PassengerRepository(connStr);
 
-            _flightService = new FlightService(_flightRepo, _userRepo, _bookingRepo, _planeRepo);
+            var notifRepo = new MySqlUserNotificationsRepository(connStr);
+            _flightService = new FlightService(_flightRepo, _userRepo, _bookingRepo, _planeRepo, notifRepo);
+
             _crewService = new CrewService(_crewRepo, _flightRepo);
             _passengerService = new PassengerService(_passengerRepo);
 

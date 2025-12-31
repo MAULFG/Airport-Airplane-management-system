@@ -17,7 +17,9 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
 
         bool CancelBooking(int bookingId, out string error);
 
-        List<int> GetActiveBookingIdsForFlight(int flightId); 
+        List<int> GetActiveBookingIdsForFlight(int flightId);
+        List<(int bookingId, int userId)> GetActiveBookingsForFlight(int flightId);
+
     }
 
 

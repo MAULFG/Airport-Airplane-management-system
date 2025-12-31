@@ -33,6 +33,8 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
             _view.DeleteRequested += flightId => DeleteFlight(flightId);
 
             _view.PlaneChanged += planeId => OnPlaneChanged(planeId);
+            _view.ViewCrewRequested += flightId => _openCrewForFlight?.Invoke(flightId);
+
         }
 
         private void OnLoad()
@@ -231,7 +233,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
             }
 
             // update dates
-            if (!_service.UpdateFlightDates(flightId, _view.Departure, _view.Arrival, out string dateErr))
+            if (!_service.DelayFlight(flightId, _view.Departure, _view.Arrival, out string dateErr))
             {
                 _view.ShowError("Failed to update flight: " + dateErr);
                 return;

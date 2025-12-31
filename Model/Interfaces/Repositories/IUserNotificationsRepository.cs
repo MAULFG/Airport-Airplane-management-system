@@ -18,6 +18,8 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
         int ClearAll(int userId);
         void MarkRead(int userId, List<int> notificationIds);
         void MarkUnread(int userId, List<int> notificationIds);
+        void InsertNotification(int userId, int? bookingId, string type, string title, string message);
+        void InsertNotificationsBulk(List<(int userId, int? bookingId, string type, string title, string message)> items);
 
     }
 }

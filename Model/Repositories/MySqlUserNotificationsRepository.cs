@@ -175,6 +175,58 @@ WHERE user_id = @userId
 
             cmd.ExecuteNonQuery();
         }
+        public void InsertNotificationsBulk(List<(int userId, int? bookingId, string type, string title, string message)> rows)
+        {
+            if (rows == null || rows.Count == 0) return;
+
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+            using var tx = conn.BeginTransaction();
+
+            const string sql = @"
+INSERT INTO notifications (user_id, booking_id, type, title, message, is_read, created_at)
+VALUES (@uid, @bid, @type, @title, @msg, 0, NOW());";
+
+            using var cmd = new MySqlCommand(sql, conn, tx);
+            cmd.Parameters.Add("@uid", MySqlDbType.Int32);
+            cmd.Parameters.Add("@bid", MySqlDbType.Int32);
+            cmd.Parameters.Add("@type", MySqlDbType.VarChar);
+            cmd.Parameters.Add("@title", MySqlDbType.VarChar);
+            cmd.Parameters.Add("@msg", MySqlDbType.VarChar);
+
+            foreach (var r in rows)
+            {
+                cmd.Parameters["@uid"].Value = r.userId;
+                cmd.Parameters["@bid"].Value = r.bookingId.HasValue ? r.bookingId.Value : DBNull.Value;
+                cmd.Parameters["@type"].Value = r.type ?? "";
+                cmd.Parameters["@title"].Value = r.title ?? "";
+                cmd.Parameters["@msg"].Value = r.message ?? "";
+                cmd.ExecuteNonQuery();
+            }
+
+            tx.Commit();
+        }
+
+
+        public void InsertNotification(int userId, int? bookingId, string type, string title, string message)
+        {
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            const string sql = @"
+INSERT INTO notifications (user_id, booking_id, type, title, message, is_read, created_at)
+VALUES (@uid, @bid, @type, @title, @msg, 0, NOW());";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@uid", userId);
+            cmd.Parameters.AddWithValue("@bid", bookingId.HasValue ? bookingId.Value : DBNull.Value);
+            cmd.Parameters.AddWithValue("@type", type ?? "");
+            cmd.Parameters.AddWithValue("@title", title ?? "");
+            cmd.Parameters.AddWithValue("@msg", message ?? "");
+
+            cmd.ExecuteNonQuery();
+        }
+
 
     }
 }

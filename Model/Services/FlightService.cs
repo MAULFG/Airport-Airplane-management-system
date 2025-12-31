@@ -12,15 +12,22 @@ namespace Airport_Airplane_management_system.Model.Services
         private readonly IUserRepository _userRepo;
         private readonly IBookingRepository _bookingRepo;
         private readonly IPlaneRepository _planeRepo;
+        private readonly IUserNotificationsRepository _notifRepo;
 
-        public FlightService(IFlightRepository flightRepo, IUserRepository userRepo,
-                             IBookingRepository bookingRepo, IPlaneRepository planeRepo)
+        public FlightService(
+    IFlightRepository flightRepo,
+    IUserRepository userRepo,
+    IBookingRepository bookingRepo,
+    IPlaneRepository planeRepo,
+    IUserNotificationsRepository notifRepo)
         {
             _flightRepo = flightRepo ?? throw new ArgumentNullException(nameof(flightRepo));
             _userRepo = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
             _bookingRepo = bookingRepo ?? throw new ArgumentNullException(nameof(bookingRepo));
             _planeRepo = planeRepo ?? throw new ArgumentNullException(nameof(planeRepo));
+            _notifRepo = notifRepo ?? throw new ArgumentNullException(nameof(notifRepo));
         }
+
 
         public List<Flight> LoadFlightsWithSeats()
         {
@@ -81,18 +88,40 @@ namespace Airport_Airplane_management_system.Model.Services
         {
             error = "";
 
-            var bookingIds = _bookingRepo.GetActiveBookingIdsForFlight(flightID);
+            // Load flight info (for message)
+            var f = _flightRepo.GetFlightById(flightID);
+
+            // Get (bookingId,userId)
+            var bookings = _bookingRepo.GetActiveBookingsForFlight(flightID);
+
+            // 1) Insert notifications BEFORE deleting anything
+            foreach (var (bookingId, userId) in bookings)
+            {
+                // Option A: booking_id null (safe even if booking row later deleted)
+                _notifRepo.InsertNotification(
+                    userId,
+                    bookingId: null,
+                    type: "FlightCancelled",
+                    title: "Flight Cancelled",
+                    message: $"Your flight from {f?.From ?? "-"} to {f?.To ?? "-"} on {f?.Departure:yyyy-MM-dd HH:mm} was cancelled."
+                );
+            }
+
+            // 2) Cancel bookings (your existing logic)
+            var bookingIds = bookings.Select(x => x.bookingId).ToList();
             foreach (var bookingId in bookingIds)
             {
                 if (!_bookingRepo.CancelBooking(bookingId, out error))
                     return false;
             }
 
+            // 3) Delete flight (your existing logic)
             if (!_flightRepo.DeleteFlight(flightID, out error))
                 return false;
 
             return true;
         }
+
 
         public List<Plane> GetPlanes() => _planeRepo.GetAllPlanesf();
 
@@ -191,6 +220,36 @@ namespace Airport_Airplane_management_system.Model.Services
             => _flightRepo.UpdateSeatPricesForFlight(flightId, economy, business, firstOrVip, out error);
 
 
+        public bool DelayFlight(int flightId, DateTime newDep, DateTime newArr, out string error)
+        {
+            error = "";
+
+            var old = _flightRepo.GetFlightById(flightId);
+            if (old == null)
+            {
+                error = "Flight not found.";
+                return false;
+            }
+
+            if (!_flightRepo.UpdateFlightDates(flightId, newDep, newArr, out error))
+                return false;
+
+            // notify booked users
+            var bookings = _bookingRepo.GetActiveBookingsForFlight(flightId);
+
+            foreach (var (bookingId, userId) in bookings)
+            {
+                _notifRepo.InsertNotification(
+                    userId,
+                    bookingId: null, // Option A safe
+                    type: "FlightDelayed",
+                    title: "Flight Time Updated",
+                    message: $"Your flight {old.From} → {old.To} changed from {old.Departure:yyyy-MM-dd HH:mm} to {newDep:yyyy-MM-dd HH:mm}."
+                );
+            }
+
+            return true;
+        }
 
     }
 }
