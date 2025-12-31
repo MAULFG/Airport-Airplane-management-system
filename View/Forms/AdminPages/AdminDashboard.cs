@@ -104,20 +104,27 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // =========================
             // DOCKED schedule everywhere
             // =========================
-
-            // 1) From FlightManagement -> DOCK schedule on FlightManagement page
             if (flightManagement1 != null)
             {
                 flightManagement1.PlaneScheduleRequested -= OpenPlaneScheduleDockedOnFlightPage;
                 flightManagement1.PlaneScheduleRequested += OpenPlaneScheduleDockedOnFlightPage;
             }
 
-            // 2) From PlaneManagement -> DOCK schedule on PlaneManagement page
             if (planeManagements1 != null)
             {
                 planeManagements1.PlaneSelected -= OpenPlaneScheduleDockedOnPlanePage;
                 planeManagements1.PlaneSelected += OpenPlaneScheduleDockedOnPlanePage;
             }
+
+            // ✅ Bind repos to main dashboard page (MainA)
+            maina1.BindRepositories(_flightRepo, _planeRepo, _crewRepo, _passengerRepo, _bookingRepo);
+
+            // ✅ KPI click navigation
+            maina1.GoToFlightsRequested += () => FlightMangement();
+            maina1.GoToPlanesRequested += () => PlaneMangement();
+            maina1.GoToCrewRequested += () => CrewMangement();
+            maina1.GoToPassengersRequested += () => PassengerMangement();
+            maina1.GoToNotificationsRequested += () => NotrificationA();
 
             // UI init
             HideAllPanels();
@@ -143,9 +150,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             var schedule = new PlaneScheduleControl();
             schedule.Dock = DockStyle.Fill;
 
-            // ✅ interactive when opened from Flight Management
             schedule.SetMode(true);
-
             schedule.SetAircraftTitle($"{plane.Model} Schedule");
 
             var flights = _flightRepo.GetAllFlights();
@@ -180,8 +185,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _dockedScheduleOnFlightPage = schedule;
         }
 
-
-
         private void CloseDockedScheduleOnFlightPage()
         {
             if (_dockedScheduleOnFlightPage == null || _dockedScheduleOnFlightPage.IsDisposed) return;
@@ -214,9 +217,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             var schedule = new PlaneScheduleControl();
             schedule.Dock = DockStyle.Fill;
 
-            // ✅ view-only mode (Plane Management entry)
             schedule.SetMode(false);
-
             schedule.SetAircraftTitle($"{plane.Model} Schedule");
 
             var flights = _flightRepo.GetAllFlights();
@@ -230,13 +231,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             schedule.CloseClicked += (_, __) => CloseDockedScheduleOnPlanePage();
 
-            // ❌ IMPORTANT: DO NOT attach SlotSelected here (no SlotDialog in plane page)
-
             planeManagements1.Controls.Add(schedule);
             schedule.BringToFront();
             _dockedScheduleOnPlanePage = schedule;
         }
-
 
         private void CloseDockedScheduleOnPlanePage()
         {
@@ -305,7 +303,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             activeBtn.FillColor = Color.DarkCyan;
         }
 
-        // ===== IAdminDashboardView methods called by AdminDashboardPresenter =====
         public void Logout()
         {
             HideAllPanels();
@@ -321,7 +318,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public void PassengerMangement() => ShowOnly(passengerMangement1, btnpasenger);
         public void PlaneMangement() => ShowOnly(planeManagements1, btnplane);
 
-        // ===== Existing designer event handlers (keep) =====
         private void btnUpcomingFlights_Click(object sender, EventArgs e) { }
         private void btnSearchBook_Click(object sender, EventArgs e) { }
         private void guna2Panel1_Paint(object sender, PaintEventArgs e) { }

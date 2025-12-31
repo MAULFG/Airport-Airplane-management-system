@@ -29,13 +29,33 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         }
         private void BuildFlow()
         {
+            // Header panel (title + filter)
+            var header = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 60,
+                Padding = new Padding(12, 12, 12, 8),
+                BackColor = Color.Transparent
+            };
+
+            lblCount.Location = new Point(12, 14);
+            cmbFilter.Location = new Point(
+                rightCard.Width - cmbFilter.Width - 16,
+                12
+            );
+            cmbFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            header.Controls.Add(lblCount);
+            header.Controls.Add(cmbFilter);
+
+            // Flow panel
             flowCrew = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                AutoScroll = true,  // keep vertical scroll
+                AutoScroll = true,
                 WrapContents = false,
                 FlowDirection = FlowDirection.TopDown,
-                Padding = new Padding(12, 50, 12, 12)
+                Padding = new Padding(12, 8, 12, 30)
             };
 
             typeof(FlowLayoutPanel).InvokeMember(
@@ -45,7 +65,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 flowCrew,
                 new object[] { true });
 
+            rightCard.Controls.Clear();
             rightCard.Controls.Add(flowCrew);
+            rightCard.Controls.Add(header);
 
             flowCrew.SizeChanged += (_, __) =>
             {
@@ -282,7 +304,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 FillColor = Color.White,
                 Radius = 12,
                 Padding = new Padding(16, 14, 16, 14),
-                Margin = new Padding(0, 0, 0, 12),
+                Margin = new Padding(0, 0, 0, 16),
                 Height = 120,
                 ShadowDepth = 100,
                 ShadowShift = 5,

@@ -45,8 +45,8 @@ namespace Airport_Airplane_management_system.Model.Repositories
                 string seatNumber = reader.GetString("seat_number");
                 string classType = reader.GetString("class_type");
 
-                // Seat ctor in your project: Seat(string classType, string seatNumber)
-                seats.Add(new Seat(classType, seatNumber));
+                // ✅ FIX: Seat ctor is Seat(string seatNumber, string classType)
+                seats.Add(new Seat(seatNumber, classType));
             }
 
             return seats;
@@ -84,6 +84,9 @@ namespace Airport_Airplane_management_system.Model.Repositories
             foreach (var r in rows)
             {
                 Plane p = BuildPlaneFromType(r.Id, r.Type, r.Status);
+
+                // ✅ Ensure the plane remembers its DB type + DB model label
+                p.Type = r.Type;
                 p.Model = r.Model;
 
                 var seats = LoadSeatsForPlane(r.Id, conn);
@@ -97,7 +100,6 @@ namespace Airport_Airplane_management_system.Model.Repositories
 
             if (planes.Count == 0)
             {
-                // UI fallback (optional)
                 Plane dummy = new MidRangeA320(-1, "Available");
                 dummy.Model = "Demo";
                 dummy.GenerateSeats();
@@ -138,7 +140,6 @@ namespace Airport_Airplane_management_system.Model.Repositories
                 using var conn = new MySqlConnection(_connStr);
                 conn.Open();
 
-                // NOTE: adjust table/column names if yours differ (flights table structure)
                 string sql = @"
                     SELECT COUNT(*)
                     FROM flights
@@ -162,7 +163,7 @@ namespace Airport_Airplane_management_system.Model.Repositories
             catch (Exception ex)
             {
                 error = ex.Message;
-                return true; // safer to block if DB error
+                return true;
             }
         }
 
@@ -202,7 +203,6 @@ namespace Airport_Airplane_management_system.Model.Repositories
 
                 using var tx = conn.BeginTransaction();
 
-                // Clear existing seats (optional but prevents duplicates if re-adding)
                 using (var del = new MySqlCommand("DELETE FROM seats WHERE plane_id = @pid", conn, tx))
                 {
                     del.Parameters.AddWithValue("@pid", planeId);
@@ -230,5 +230,38 @@ namespace Airport_Airplane_management_system.Model.Repositories
                 return false;
             }
         }
+        public bool DeletePlane(int planeId, out string error)
+        {
+            error = "";
+            try
+            {
+                using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+
+                using var tx = conn.BeginTransaction();
+
+                // delete seats first (FK-safe)
+                using (var cmd1 = new MySqlCommand("DELETE FROM seats WHERE plane_id = @id", conn, tx))
+                {
+                    cmd1.Parameters.AddWithValue("@id", planeId);
+                    cmd1.ExecuteNonQuery();
+                }
+
+                // delete plane
+                using (var cmd2 = new MySqlCommand("DELETE FROM planes WHERE id = @id", conn, tx))
+                {
+                    cmd2.Parameters.AddWithValue("@id", planeId);
+                    int affected = cmd2.ExecuteNonQuery();
+                    tx.Commit();
+                    return affected > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
+        }
+
     }
 }

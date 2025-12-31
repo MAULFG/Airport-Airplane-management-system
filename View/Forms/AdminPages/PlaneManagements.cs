@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using Airport_Airplane_management_system.Presenter.AdminPages;
+
 namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
     public partial class PlaneManagements : UserControl, IPlaneManagementView
@@ -35,7 +36,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             InitializeComponent();
 
             Load += (_, __) => ViewLoaded?.Invoke(this, EventArgs.Empty);
-
             btnAddPlane.Click += (_, __) => ShowAddPlaneOverlay();
 
             Resize += (_, __) =>
@@ -95,8 +95,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 return false;
             }
 
-            // we can still compute here (not required, but harmless)
-            SeatGenerator.GetFixedCounts(type, out total, out eco, out biz, out first);
+            // ✅ Fixed mapping (no SeatGenerator dependency)
+            GetCountsByType(type, out total, out eco, out biz, out first, out _);
 
             return true;
         }
@@ -129,24 +129,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private Control CreatePlaneCard(Plane p)
         {
-            // ✅ Always show distribution from FIXED mapping (do NOT rely on p.Seats)
-            int total, eco, biz, first;
-            int vip = 0;
+            // ✅ Source of truth for type is p.Type (fallback to runtime class name)
+            string typeKey = GetTypeKey(p);
+            string typeText = GetFriendlyTypeName(typeKey);
 
-            string typeText = (p.Model ?? "").Trim();
-            string typeKey = typeText.ToLowerInvariant();
+            // ✅ Fixed mapping for counts
+            GetCountsByType(typeKey, out int total, out int eco, out int biz, out int first, out int vip);
 
-            if (typeKey.Contains("private"))
-            {
-                // PrivateJet -> show VIP
-                total = 7; vip = 7; eco = 0; biz = 0; first = 0;
-            }
-            else
-            {
-                SeatGenerator.GetFixedCounts(typeText, out total, out eco, out biz, out first);
-            }
-
-            string modelText = p.Model ?? "-";
+            string modelText = string.IsNullOrWhiteSpace(p.Model) ? "-" : p.Model.Trim();
             string statusText = NormalizePlaneStatus(p.Status);
 
             var card = new Guna2ShadowPanel
@@ -176,10 +166,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             };
             card.Controls.Add(title);
 
+            // Badge: show MODEL (name)
             var modelBadge = Badge(modelText, Color.FromArgb(222, 235, 255), Color.FromArgb(35, 93, 220));
             modelBadge.Location = new Point(title.Right + 14, 12);
             card.Controls.Add(modelBadge);
 
+            // Badge: status
             var (stBack, stFore) = GetPlaneStatusColors(statusText);
             var stBadge = Badge(statusText, stBack, stFore);
             stBadge.Location = new Point(modelBadge.Right + 10, 12);
@@ -195,12 +187,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             card.Controls.Add(btnSchedule);
             card.Controls.Add(btnDelete);
 
-            // ✅ Use the DB type text directly (HighLevel / MidRangeA320 / PrivateJet)
+            // ✅ Correct "Type" display (not model)
             card.Controls.Add(InfoLine("Type:", typeText, 16, 60));
             card.Controls.Add(InfoLine("Total Seats:", total.ToString(), 16, 86));
 
-            // ✅ FIX: shift this row a bit right so VIP label doesn't clip
-            int rightRowX = 380;   // was 360
+            int rightRowX = 380;
             int rightRowY = 64;
 
             Control rightRow;
@@ -208,8 +199,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             {
                 rightRow = HorizontalRow(new[]
                 {
-                    ("VIP", vip.ToString()),
-                    ("Status", statusText)
+                    ("VIP", vip.ToString())
                 }, rightRowX, rightRowY);
             }
             else
@@ -229,7 +219,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             modelBadge.Click += (_, __) => Open();
             stBadge.Click += (_, __) => Open();
 
-            // keep header buttons positioned
             card.SizeChanged += (_, __) =>
             {
                 btnDelete.Location = new Point(card.Width - 16 - btnDelete.Width, 10);
@@ -247,6 +236,30 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             rightRow.Width = Math.Max(200, card.Width - rightRow.Left - 16);
 
             return card;
+        }
+
+        private static string GetTypeKey(Plane p)
+        {
+            if (!string.IsNullOrWhiteSpace(p.Type))
+                return p.Type.Trim();
+
+            // fallback
+            if (p is HighLevel) return "HighLevel";
+            if (p is MidRangeA320) return "A320";
+            if (p is PrivateJet) return "PrivateJet";
+
+            return p.GetType().Name;
+        }
+
+        private static string GetFriendlyTypeName(string typeKey)
+        {
+            return typeKey switch
+            {
+                "HighLevel" => "Boeing 777 (High)",
+                "A320" => "Airbus A320 (Med)",
+                "PrivateJet" => "Private Jet",
+                _ => typeKey
+            };
         }
 
         private Guna2Button MakeTopButton(string text)
@@ -497,10 +510,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             flow.BringToFront();
         }
+
+        // ✅ Fixed seat counts by type
         private static void GetCountsByType(string type, out int total, out int eco, out int biz, out int first, out int vip)
         {
             total = eco = biz = first = vip = 0;
-
             type = (type ?? "").Trim();
 
             if (type == "HighLevel")
@@ -521,6 +535,5 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 return;
             }
         }
-
     }
 }

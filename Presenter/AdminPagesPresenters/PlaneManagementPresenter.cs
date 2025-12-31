@@ -29,20 +29,20 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         private void OnDeletePlane(int planeId)
         {
-            if (!_view.Confirm("Delete this plane?")) return;
+            if (!_view.Confirm($"Delete Plane #{planeId}?")) return;
 
-            if (!_repo.SetPlaneStatus(planeId, "Deleted", out string error))
+            if (!_repo.DeletePlane(planeId, out var err))
             {
-                _view.ShowError(error);
+                _view.ShowError("Delete failed: " + err);
                 return;
             }
 
-            LoadPlanes();
+            _view.ShowInfo("Plane deleted successfully.");
+            LoadPlanes(); // ✅ refresh
         }
 
         private void OnAddPlane(object? sender, EventArgs e)
         {
-            // We only need: model + type + status (seat counts are fixed by type)
             if (!_view.TryGetNewPlaneInput(out string model,
                                           out string type,
                                           out string status,
@@ -59,8 +59,8 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 return;
             }
 
-            // ✅ FIXED: Generate seats based ONLY on type (fixed mapping)
-            List<Seat> seats = SeatGenerator.BuildSeats(type);
+            // ✅ build seats WITHOUT SeatGenerator (3 fixed types)
+            List<Seat> seats = BuildSeatsByType(type);
 
             if (!_repo.InsertSeats(planeId, seats, out error))
             {
@@ -70,6 +70,25 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             _view.ShowInfo("Plane added successfully.");
             LoadPlanes();
+        }
+
+        // ----------------------------
+        // Fixed seat mapping (3 types)
+        // ----------------------------
+        private static List<Seat> BuildSeatsByType(string type)
+        {
+            type = (type ?? "").Trim();
+
+            Plane p = type switch
+            {
+                "HighLevel" => new HighLevel(-1, "active"),
+                "A320" => new MidRangeA320(-1, "active"),
+                "PrivateJet" => new PrivateJet(-1, "active"),
+                _ => new MidRangeA320(-1, "active")
+            };
+
+            p.GenerateSeats();
+            return p.Seats;
         }
     }
 }

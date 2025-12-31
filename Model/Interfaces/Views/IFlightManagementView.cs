@@ -6,17 +6,18 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
 {
     public interface IFlightManagementView
     {
-        // ===== Events =====
         event EventHandler ViewLoaded;
         event EventHandler AddClicked;
         event EventHandler UpdateClicked;
         event EventHandler CancelEditClicked;
-        event Action<int> EditRequested;
-        event Action<int> DeleteRequested;
-        event Action<int>? ViewCrewRequested;
         event EventHandler FilterChanged;
 
-        // ===== Inputs =====
+        event Action<int> EditRequested;
+        event Action<int> DeleteRequested;
+        event Action<int> ViewCrewRequested;
+
+        event Action<int> PlaneChanged;
+
         string FromCity { get; }
         string ToCity { get; }
         DateTime Departure { get; }
@@ -24,11 +25,10 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         int? SelectedPlaneId { get; }
         string CurrentFilter { get; }
 
-        // ===== Edit state =====
-        bool IsEditMode { get; set; }
-        int? EditingFlightId { get; set; }
+        decimal EconomyPrice { get; }
+        decimal BusinessPrice { get; }
+        decimal FirstPrice { get; }
 
-        // ===== Outputs =====
         void SetPlanes(List<Plane> planes);
         void SetFlights(List<Flight> flights);
 
@@ -37,7 +37,19 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         bool Confirm(string message);
 
         void ClearForm();
-        void EnterEditMode(Flight f);
+
+        bool IsEditMode { get; }
+        int? EditingFlightId { get; }
+        void EnterEditMode(
+    Flight flight,
+    Dictionary<string, decimal> seatPrices
+);
+
         void ExitEditMode();
+
+        void SetSeatClassAvailability(HashSet<string> classesLower);
+
+        // ✅ NEW: change the label next to txtFirstPrice ("First" -> "VIP")
+        void SetFirstLabel(string text);
     }
 }
