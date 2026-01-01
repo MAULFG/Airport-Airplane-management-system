@@ -142,6 +142,20 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 active++;
             }
 
+            // ✅ NEW
+            if (dto.CrewAssignedToPastFlights > 0)
+            {
+                alertsList.Controls.Add(MakeAlertRow(
+                    $"{dto.CrewAssignedToPastFlights} Crew assigned to past flights",
+                    "Some crew members are linked to flights that already ended",
+                    back: Color.FromArgb(236, 245, 255),
+                    border: Color.FromArgb(205, 225, 255),
+                    fore: Color.FromArgb(35, 93, 220),
+                    icon: "👥"
+                ));
+                active++;
+            }
+
             if (dto.InactivePlanes > 0)
             {
                 alertsList.Controls.Add(MakeAlertRow(
@@ -155,16 +169,30 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 active++;
             }
 
+            // ✅ NEW
+            if (dto.PlanesNotAssignedToAnyFlight > 0)
+            {
+                alertsList.Controls.Add(MakeAlertRow(
+                    $"{dto.PlanesNotAssignedToAnyFlight} Planes not assigned to any flight",
+                    "Some planes have no flights linked at all",
+                    back: Color.FromArgb(255, 244, 234),
+                    border: Color.FromArgb(255, 225, 195),
+                    fore: Color.FromArgb(190, 120, 0),
+                    icon: "✈"
+                ));
+                active++;
+            }
+
             lblAlertsRight.Text = $"{active} Active";
 
             alertsList.ResumeLayout(true);
             ForceRowsFullWidth(alertsList);
 
-            // hard-disable horizontal scroll
             alertsList.HorizontalScroll.Enabled = false;
             alertsList.HorizontalScroll.Visible = false;
             alertsList.AutoScrollMinSize = new Size(0, 0);
         }
+
 
         // =========================
         //  UI BUILD (FIGMA)

@@ -46,20 +46,61 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             var now = DateTime.Now;
 
+            // =========================
+            // Flights KPI
+            // =========================
             int inAir = flights.Count(f => f.Departure <= now && now < f.Arrival);
             int upcoming = flights.Count(f => f.Departure > now);
             int past = flights.Count(f => f.Arrival <= now);
 
+            // =========================
+            // Planes KPI
+            // =========================
             int totalPlanes = planes.Count;
-            int activePlanes = planes.Count(IsPlaneActive);    // ✅ centralized logic
+            int activePlanes = planes.Count(IsPlaneActive);
             int inactivePlanes = totalPlanes - activePlanes;
 
+            // ✅ NEW: Planes with NO flights at all
+            var planeIdsWithAnyFlight = new HashSet<int>(
+                flights.Select(GetPlaneIdFromFlight).Where(id => id > 0)
+            );
+
+            int planesNotAssignedToAnyFlight = planes.Count(p =>
+                p != null &&
+                p.PlaneID > 0 &&
+                !planeIdsWithAnyFlight.Contains(p.PlaneID)
+            );
+
+            // =========================
+            // Crew KPI
+            // =========================
             int assigned = crew.Count(c => c.FlightId.HasValue);
             int unassigned = crew.Count - assigned;
 
+            // ✅ NEW: Crew assigned to PAST flights
+            // Build lookup of flights by ID (reflection-safe)
+            var flightById = flights
+                .Select(f => new { Flight = f, Id = GetFlightId(f) })
+                .Where(x => x.Id > 0)
+                .GroupBy(x => x.Id)
+                .ToDictionary(g => g.Key, g => g.First().Flight);
+
+            int crewAssignedToPastFlights = crew.Count(c =>
+            {
+                if (c?.FlightId == null) return false;
+                int fid = c.FlightId.Value;
+                if (!flightById.TryGetValue(fid, out var f)) return false;
+                return f.Arrival <= now;
+            });
+
+            // =========================
+            // Alerts count (KPI)
+            // =========================
             int alertsCount = 0;
             if (unassigned > 0) alertsCount++;
             if (inactivePlanes > 0) alertsCount++;
+            if (crewAssignedToPastFlights > 0) alertsCount++;
+            if (planesNotAssignedToAnyFlight > 0) alertsCount++;
 
             var kpi = new MainAKpiDto
             {
@@ -103,6 +144,11 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             {
                 UnassignedCrew = unassigned,
                 InactivePlanes = inactivePlanes,
+
+                // ✅ NEW
+                CrewAssignedToPastFlights = crewAssignedToPastFlights,
+                PlanesNotAssignedToAnyFlight = planesNotAssignedToAnyFlight,
+
                 ActiveAlerts = alertsCount
             });
         }
@@ -126,15 +172,43 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private static bool IsPlaneActive(Plane p)
         {
             if (p == null) return false;
-
-            if (string.IsNullOrWhiteSpace(p.Status))
-                return false;
+            if (string.IsNullOrWhiteSpace(p.Status)) return false;
 
             return p.Status.Trim()
                            .Equals("Active", StringComparison.OrdinalIgnoreCase);
         }
 
+        // ===== Reflection-safe ID readers =====
 
+        private static int GetFlightId(Flight f)
+        {
+            if (f == null) return 0;
+            var idObj = ReadAny(f, "FlightID", "Id", "ID", "id");
+            if (idObj == null) return 0;
+            return ToInt(idObj);
+        }
+
+        private static int GetPlaneIdFromFlight(Flight f)
+        {
+            if (f == null) return 0;
+
+            // your Flight class commonly has PlaneIDFromDb or PlaneID
+            var pidObj = ReadAny(f, "PlaneIDFromDb", "PlaneID", "plane_id", "PlaneId", "planeId");
+            if (pidObj == null) return 0;
+
+            return ToInt(pidObj);
+        }
+
+        private static int ToInt(object v)
+        {
+            try
+            {
+                if (v is int i) return i;
+                if (v is long l) return (int)l;
+                return Convert.ToInt32(v);
+            }
+            catch { return 0; }
+        }
 
         private static object? ReadAny(object obj, params string[] props)
         {

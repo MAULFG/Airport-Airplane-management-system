@@ -256,11 +256,29 @@ namespace Airport_Airplane_management_system.Model.Repositories
                     return affected > 0;
                 }
             }
+
             catch (Exception ex)
             {
                 error = ex.Message;
                 return false;
             }
+        }
+        public int CountPlanesNotAssignedToAnyFlight()
+        {
+            const string sql = @"
+        SELECT COUNT(*)
+        FROM planes p
+        LEFT JOIN flights f ON f.plane_id = p.id
+        WHERE f.id IS NULL;
+    ";
+
+            using var con = new MySqlConnection(_connStr);
+            con.Open();
+            using var cmd = new MySqlCommand(sql, con);
+
+            var obj = cmd.ExecuteScalar();
+            if (obj == null || obj == DBNull.Value) return 0;
+            return Convert.ToInt32(obj);
         }
 
     }

@@ -4,7 +4,6 @@ using Guna.UI2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Airport_Airplane_management_system.View.Forms.AdminPages
@@ -17,9 +16,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event Action<ReportItemRow> ReportCardClicked;
 
         // ===== Navigation event (View -> Main container) =====
-        // Your MainA (or Dashboard) should subscribe and open the page.
         public event Action<string> NavigateRequested;
-
 
         public Reports()
         {
@@ -63,10 +60,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 {
                     ReportCardClicked?.Invoke(row);
 
-                    // Also request navigation immediately (simple + practical)
                     if (!string.IsNullOrWhiteSpace(row.TargetPageKey))
                         NavigateRequested?.Invoke(row.TargetPageKey);
-
                 };
 
                 listPanel.Controls.Add(card);
@@ -84,7 +79,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private class ReportCard : Guna2Panel
         {
             public event Action Clicked;
-
             private readonly ReportItemRow _row;
 
             public ReportCard(ReportItemRow row)
@@ -106,26 +100,44 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             private void Build()
             {
-                // left icon circle
-                var icon = new Panel
+                // ----- Left icon circle -----
+                var iconCircle = new Panel
                 {
-                    Size = new Size(48, 48),
-                    Location = new Point(18, 18),
-                    BackColor = Color.FromArgb(245, 245, 245)
+                    Size = new Size(44, 44),
+                    BackColor = Color.FromArgb(245, 245, 245),
+                    Location = new Point(22, 22)
                 };
-                icon.Paint += (s, e) =>
+
+                iconCircle.Paint += (s, e) =>
                 {
                     e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    using var gp = new System.Drawing.Drawing2D.GraphicsPath();
-                    gp.AddEllipse(0, 0, icon.Width - 1, icon.Height - 1);
-                    icon.Region = new Region(gp);
-
-                    using var pen = new Pen(Color.FromArgb(220, 220, 220), 1);
-                    e.Graphics.DrawEllipse(pen, 0, 0, icon.Width - 1, icon.Height - 1);
+                    using var brush = new SolidBrush(iconCircle.BackColor);
+                    e.Graphics.FillEllipse(brush, 0, 0, iconCircle.Width - 1, iconCircle.Height - 1);
                 };
-                Controls.Add(icon);
 
-                // Title
+                // Emoji based on type
+                string emoji = "📄";
+                var badgeKey = (_row.BadgeText ?? "").Trim().ToUpperInvariant();
+                if (badgeKey == "CREW") emoji = "👥";
+                else if (badgeKey == "PLANE") emoji = "✈️";
+                else if (badgeKey == "FLIGHT") emoji = "🛫";
+
+                var lblEmoji = new Label
+                {
+                    Text = emoji,
+                    AutoSize = false,
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Font = new Font("Segoe UI Emoji", 18f, FontStyle.Regular),
+                    BackColor = Color.Transparent,
+                    Cursor = Cursors.Hand
+                };
+                lblEmoji.Click += (s, e) => Clicked?.Invoke();
+
+                iconCircle.Controls.Add(lblEmoji);
+                Controls.Add(iconCircle);
+
+                // ----- Title -----
                 var lblTitle = new Label
                 {
                     AutoSize = true,
@@ -136,7 +148,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 };
                 Controls.Add(lblTitle);
 
-                // Subtitle
+                // ----- Subtitle -----
                 var lblSub = new Label
                 {
                     AutoSize = true,
@@ -147,8 +159,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 };
                 Controls.Add(lblSub);
 
-                // Badge
-                var badge = new Label
+                // ----- Badge (right) -----
+                var lblBadge = new Label
                 {
                     AutoSize = true,
                     Text = string.IsNullOrWhiteSpace(_row.BadgeText) ? "ISSUE" : _row.BadgeText.ToUpper(),
@@ -157,9 +169,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     BackColor = Color.FromArgb(245, 245, 245),
                     Padding = new Padding(10, 5, 10, 5)
                 };
-                Controls.Add(badge);
+                Controls.Add(lblBadge);
 
-                // Chevron
+                // ----- Chevron -----
                 var chevron = new Guna2Button
                 {
                     Size = new Size(34, 34),
@@ -175,14 +187,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Controls.Add(chevron);
 
                 // Layout positions on resize
-                Resize += (s, e) =>
+                void Reposition()
                 {
                     chevron.Location = new Point(Width - 52, 27);
-                    badge.Location = new Point(Width - 220, 32);
-                };
+                    lblBadge.Location = new Point(Width - 220, 32);
+                }
 
-                chevron.Location = new Point(Width - 52, 27);
-                badge.Location = new Point(Width - 220, 32);
+                Resize += (s, e) => Reposition();
+                Reposition();
             }
 
             private void WireClickRecursive(Control root)

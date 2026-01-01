@@ -17,5 +17,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
 
         bool InsertSeats(int planeId, List<Seat> seats, out string error);
         bool DeletePlane(int planeId, out string error);
+        int CountPlanesNotAssignedToAnyFlight();
+
     }
 }
