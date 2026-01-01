@@ -18,7 +18,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
     public partial class UserNotifications : UserControl, IUserNotificationsView
     {
-        // MVP
+        
         private bool _initialized;
         private INavigationService _navigation;
 
@@ -203,7 +203,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 BackColor = Color.Transparent,
                 Font = new Font("Segoe UI", 9.5F),
                 ForeColor = Color.FromArgb(60, 70, 85),
-                Text = Shorten(n.Message, 100),
+                //   Text = Shorten(n.Message, 100),
+                Text = n.Message,
                 Location = new Point(16, 38),
                 AutoSize = true
             };

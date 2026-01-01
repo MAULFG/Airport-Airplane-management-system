@@ -95,17 +95,23 @@ namespace Airport_Airplane_management_system.Model.Services
             var bookings = _bookingRepo.GetActiveBookingsForFlight(flightID);
 
             // 1) Insert notifications BEFORE deleting anything
-            foreach (var (bookingId, userId) in bookings)
+            // ✅ notify once per user (avoid duplicates when user booked multiple passengers)
+            var uniqueUsers = bookings.Select(x => x.userId).Distinct();
+
+            foreach (var userId in uniqueUsers)
             {
-                // Option A: booking_id null (safe even if booking row later deleted)
                 _notifRepo.InsertNotification(
                     userId,
-                    bookingId: null,
+                    bookingId: null, // keep Option A safe
                     type: "FlightCancelled",
-                    title: "Flight Cancelled",
-                    message: $"Your flight from {f?.From ?? "-"} to {f?.To ?? "-"} on {f?.Departure:yyyy-MM-dd HH:mm} was cancelled."
+                    title: "⚠️ Flight cancelled by admin",
+                    message:
+                        $"The admin cancelled flight #{flightID} for ALL passengers.\n" +
+                        $"Route: {f?.From ?? "-"} → {f?.To ?? "-"}\n"+
+                        $"Schedule: {f?.Departure:yyyy-MM-dd HH:mm} → {f?.Arrival:yyyy-MM-dd HH:mm} "
                 );
             }
+    
 
             // 2) Cancel bookings (your existing logic)
             var bookingIds = bookings.Select(x => x.bookingId).ToList();
@@ -237,19 +243,30 @@ namespace Airport_Airplane_management_system.Model.Services
             // notify booked users
             var bookings = _bookingRepo.GetActiveBookingsForFlight(flightId);
 
-            foreach (var (bookingId, userId) in bookings)
+            // ✅ notify once per user (avoid duplicates when user booked multiple passengers)
+            var uniqueUsers = bookings.Select(x => x.userId).Distinct();
+
+            foreach (var userId in uniqueUsers)
             {
                 _notifRepo.InsertNotification(
                     userId,
-                    bookingId: null, // Option A safe
+                    bookingId: null, // keep your friend's "Option A safe"
                     type: "FlightDelayed",
-                    title: "Flight Time Updated",
-                    message: $"Your flight {old.From} → {old.To} changed from {old.Departure:yyyy-MM-dd HH:mm} to {newDep:yyyy-MM-dd HH:mm}."
+                    title: "⏱ Flight schedule updated",
+                    // ✅ include BOTH departure & arrival, old -> new
+                    message:
+    $"Your flight {old.From} → {old.To} schedule was updated.\n" +
+    (old.Departure != newDep && old.Arrival != newArr
+        ? $"Flight date changed to: {newDep:yyyy-MM-dd HH:mm} → {newArr:yyyy-MM-dd HH:mm}"
+        : old.Departure != newDep
+            ? $"Departure time changed to: {newDep:yyyy-MM-dd HH:mm}"
+            : $"Arrival time changed to: {newArr:yyyy-MM-dd HH:mm}")
                 );
             }
 
             return true;
         }
+
 
     }
 }

@@ -1,8 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Airport_Airplane_management_system.Model.Core.Classes;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Repositories;
+using Airport_Airplane_management_system.Model.Services;
+using Microsoft.VisualBasic.ApplicationServices;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Airport_Airplane_management_system.Repositories
 {
@@ -118,13 +122,22 @@ ORDER BY f.departure DESC;";
             con.Open();
             using var tx = con.BeginTransaction();
 
+            // ✅ keep these outside so we can use them after commit
+            int userId = 0;
+            int? passengerId = null;
+
             try
             {
-                // Lock booking row, get seat id and status
                 int seatId;
                 string status;
 
-                const string readSql = @"SELECT flight_seat_id, status FROM bookings WHERE booking_id=@bid FOR UPDATE;";
+                // ✅ modified: also read user_id and passenger_id
+                const string readSql = @"
+SELECT flight_seat_id, status, user_id, passenger_id
+FROM bookings
+WHERE booking_id=@bid
+FOR UPDATE;";
+
                 using (var cmd = new MySqlCommand(readSql, con, tx))
                 {
                     cmd.Parameters.AddWithValue("@bid", bookingId);
@@ -139,16 +152,18 @@ ORDER BY f.departure DESC;";
 
                     seatId = Convert.ToInt32(r["flight_seat_id"]);
                     status = r["status"]?.ToString() ?? "Pending";
+
+                    // ✅ capture who to notify
+                    userId = Convert.ToInt32(r["user_id"]);
+                    passengerId = (r["passenger_id"] == DBNull.Value) ? (int?)null : Convert.ToInt32(r["passenger_id"]);
                 }
 
-                // If already cancelled, nothing to do
                 if (string.Equals(status, "Cancelled", StringComparison.OrdinalIgnoreCase))
                 {
                     tx.Commit();
                     return true;
                 }
 
-                // Cancel booking
                 const string cancelSql = @"UPDATE bookings SET status='Cancelled' WHERE booking_id=@bid;";
                 using (var cmd = new MySqlCommand(cancelSql, con, tx))
                 {
@@ -156,7 +171,6 @@ ORDER BY f.departure DESC;";
                     cmd.ExecuteNonQuery();
                 }
 
-                // Free seat (IMPORTANT: passenger_id NULL + is_booked=0)
                 const string freeSeatSql = @"UPDATE flight_seats SET is_booked=0, passenger_id=NULL WHERE id=@sid;";
                 using (var cmd = new MySqlCommand(freeSeatSql, con, tx))
                 {
@@ -165,6 +179,29 @@ ORDER BY f.departure DESC;";
                 }
 
                 tx.Commit();
+
+                // ✅ notification AFTER commit (so booking is definitely cancelled)
+                try
+                {
+                    var notifRepo = new MySqlNotificationWriterRepository(_connectionString);
+                    var notifService = new NotificationWriterService(notifRepo);
+
+                    // you can keep your own wording, but include passengerId
+                    notifRepo.AddUserNotification(
+                        userId,
+                        type: "BookingCancelled",
+                        title: "❌ Booking cancelled by admin",
+                        message: passengerId.HasValue
+                            ? $"Your booking #{bookingId} was cancelled by the admin for passenger #{passengerId.Value}."
+                            : $"Your booking #{bookingId} was cancelled by the admin.",
+                        bookingId: bookingId
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Notification insert failed: " + ex);
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -174,5 +211,6 @@ ORDER BY f.departure DESC;";
                 return false;
             }
         }
+
     }
 }

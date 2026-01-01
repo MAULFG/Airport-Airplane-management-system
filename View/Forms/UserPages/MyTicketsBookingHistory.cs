@@ -447,27 +447,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             _focusBookingId = null;
         }
-        //private void ForceFlowScrollRecalc()
-        //{
-        //    if (flowTickets == null) return;
-
-        //    int totalHeight = flowTickets.Padding.Vertical;
-
-        //    foreach (Control c in flowTickets.Controls)
-        //    {
-        //        if (!c.Visible) continue;
-        //        totalHeight += c.Height + c.Margin.Vertical;
-        //    }
-
-        //    // + extra bottom space so last expanded ticket is 100% reachable
-        //    totalHeight += 120;
-
-        //    // Force scrollable area
-        //    flowTickets.AutoScrollMinSize = new Size(0, totalHeight);
-
-        //    // Re-layout
-        //    flowTickets.PerformLayout();
-        //}
+        
 
     }
 }
