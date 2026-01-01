@@ -13,7 +13,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Ticket_Booking_System_OOP.Model.Repositories;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 
 namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
@@ -51,6 +51,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private CrewManagementPresenter _crewPresenter;
         private PassengerManagementPresenter _passengerPresenter;
         private PlaneManagementPresenter _planePresenter;
+        private ReportsPresenter _reportsPresenter;
+
 
         // ✅ MainA MVP Presenter
         private MainAPresenter _mainAPresenter;
@@ -81,6 +83,15 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _flightService = new FlightService(_flightRepo, _userRepo, _bookingRepo, _planeRepo);
             _crewService = new CrewService(_crewRepo, _flightRepo);
             _passengerService = new PassengerService(_passengerRepo);
+            // =========================
+            // Reports (REAL DATA)
+            // =========================
+            ReportsService reportsService =
+                new ReportsService(_flightRepo, _planeRepo, _crewRepo);
+
+            _reportsPresenter =
+                new ReportsPresenter(reports1, reportsService);
+
 
             // ===== MVP presenters =====
             _planePresenter = new PlaneManagementPresenter(planeManagements1, _planeRepo);
@@ -141,6 +152,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // UI init
             HideAllPanels();
             InitializeButtonEvents();
+            WireReportsNavigation();   // ✅ ADD THIS
             MainA();
         }
 
@@ -320,6 +332,32 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             HideAllPanels();
             SetActiveButton(btnlogoutA);
         }
+        private void WireReportsNavigation()
+        {
+            reports1.NavigateRequested += pageKey =>
+            {
+                switch (pageKey)
+                {
+                    case "PlaneManagement":
+                        PlaneMangement();
+                        break;
+
+                    case "CrewManagement":
+                        CrewMangement();
+                        break;
+
+                    case "FlightMangement":
+                        FlightMangement();
+                        break;
+
+                    case "PassengerMangement":
+                        PassengerMangement();
+                        break;
+                }
+            };
+        }
+
+
 
         public void Reports() => ShowOnly(reports1, btnreport);
 

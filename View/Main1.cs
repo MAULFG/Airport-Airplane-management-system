@@ -9,8 +9,6 @@ using Airport_Airplane_management_system.View.Forms.AdminPages;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
 using Airport_Airplane_management_system.View.Forms.UserPages;
 using Airport_Airplane_management_system.View.Interfaces;
-using Ticket_Booking_System_OOP.Model.Repositories;
-
 public partial class Main1 : Form, INavigationService
 {
     private readonly LoginPage loginPage;
