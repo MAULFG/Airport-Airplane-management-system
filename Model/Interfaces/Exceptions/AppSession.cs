@@ -7,9 +7,9 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Exceptions
 {
     public class AppSession : IAppSession
     {
-        public User CurrentUser { get; private set; }
-        public List<Flight> Flights { get; private set; }
-        public List<Plane> Planes { get; private set; }
+        public User CurrentUser { get; set; }
+        public List<Flight> Flights { get;  set; }
+        public List<Plane> Planes { get; set; }
         public List<PassengerSummaryRow> PassengersSummary { get; set; }
         public bool IsLoggedIn => CurrentUser != null;
 

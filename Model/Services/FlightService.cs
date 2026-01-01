@@ -100,7 +100,108 @@ namespace Airport_Airplane_management_system.Model.Services
                 flight.FlightSeats.Add(seat);
             }
         }
+        public bool CancelFlight(int flightID, out string error)
+        {
+            error = "";
 
+            var bookingIds = _bookingRepo.GetActiveBookingIdsForFlight(flightID);
+            foreach (var bookingId in bookingIds)
+            {
+                if (!_bookingRepo.CancelBooking(bookingId, out error))
+                    return false;
+            }
+
+            if (!_flightRepo.DeleteFlight(flightID, out error))
+                return false;
+
+            return true;
+        }
+        public bool AddFlight(
+           Flight flight,
+           decimal economyPrice,
+           decimal businessPrice,
+           decimal firstPrice,
+           out int newId,
+           out string error)
+        {
+            error = "";
+            newId = -1;
+
+            if (flight == null)
+            {
+                error = "Invalid flight.";
+                return false;
+            }
+
+            if (flight.Plane == null)
+            {
+                error = "Please select a plane.";
+                return false;
+            }
+
+            if (flight.Arrival <= flight.Departure)
+            {
+                error = "Arrival must be after departure.";
+                return false;
+            }
+
+            // conflict check
+            if (_flightRepo.PlaneHasTimeConflict(flight.Plane.PlaneID, flight.Departure, flight.Arrival))
+            {
+                error = "Plane has a scheduling conflict.";
+                return false;
+            }
+
+            return _flightRepo.InsertFlightWithSeats(
+                flight,
+                economyPrice,
+                businessPrice,
+                firstPrice,
+                out newId,
+                out error
+            );
+        }
+        public bool UpdateFlightDates(int flightId, DateTime dep, DateTime arr, out string error)
+            => _flightRepo.UpdateFlightDates(flightId, dep, arr, out error);
+        public List<Flight> SearchFlights(string from, string to, int? year = null, int? month = null, int? day = null)
+        {
+            var flights = _flightRepo.GetAllFlights() ?? new List<Flight>();
+
+            if (!string.IsNullOrWhiteSpace(from))
+                flights = flights.Where(f => (f.From ?? "").Trim()
+                    .Equals(from.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (!string.IsNullOrWhiteSpace(to))
+                flights = flights.Where(f => (f.To ?? "").Trim()
+                    .Equals(to.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+
+            // If date parts are provided, filter by that date
+            if (year.HasValue && month.HasValue && day.HasValue)
+            {
+                DateTime date;
+                try
+                {
+                    date = new DateTime(year.Value, month.Value, day.Value);
+                }
+                catch
+                {
+                    // invalid date -> return empty
+                    return new List<Flight>();
+                }
+
+                flights = flights.Where(f => f.Departure.Date == date.Date).ToList();
+            }
+
+            return flights;
+        }
+        public Dictionary<string, decimal> GetSeatPricesForFlight(int flightId)
+            => _flightRepo.GetSeatPricesForFlight(flightId);
+        public bool UpdateSeatPricesForFlight(int flightId, decimal economy, decimal business, decimal firstOrVip, out string error)
+            => _flightRepo.UpdateSeatPricesForFlight(flightId, economy, business, firstOrVip, out error);
+
+
+
+    
         public List<Flight> SearchFlights(
             string from = null,
             string to = null,
@@ -149,32 +250,6 @@ namespace Airport_Airplane_management_system.Model.Services
         {
             return _flightRepo.CountUpcomingFlightsNotFullyBooked();
         }
-
-        // -----------------------------
-        // CANCEL FLIGHT (PROFESSIONAL)
-        // -----------------------------
-
-        public bool CancelFlight(int flightID, out string error)
-        {
-            error = "";
-
-            // 1) Get booking IDs
-            var bookingIds = _bookingRepo.GetActiveBookingIdsForFlight(flightID);
-
-            // 2) Cancel bookings in DB
-            foreach (var bookingId in bookingIds)
-            {
-                if (!_bookingRepo.CancelBooking(bookingId, out error))
-                    return false;
-            }
-
-            // 3) Delete flight
-            if (!_flightRepo.DeleteFlight(flightID, out error))
-                return false;
-
-            return true;
-        }
-        
 
 
     }
