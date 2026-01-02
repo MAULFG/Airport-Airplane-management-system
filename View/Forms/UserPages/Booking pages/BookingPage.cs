@@ -94,21 +94,28 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 totalColumns = 11;
                 firstMap = new Dictionary<int, string> { { 2, "A" }, { 4, "B" }, { 6, "C" }, { 8, "D" } };
                 businessMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, { 4, "C" }, { 6, "D" }, { 8, "E" }, { 9, "F" } };
-                economyMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" }, { 2, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" }, { 8, "G" }, { 9, "H" }, { 10, "J" } };
+                economyMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" }, { 2, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" }, { 8, "G" }, { 9, "H" }, { 10, "I" } };
             }
-            else if (model.Contains("g650"))
+            else if (model.Contains("650"))
             {
-                // G650 is a private jet, usually 1-1 or 2-2 seating
+                // 650 is a private jet, usually 1-1 or 2-2 seating
                 totalColumns = 4; // simple layout
                 firstMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" } };
                 businessMap = null;
                 economyMap = null; // usually not used
+            }else
+            {
+                totalColumns = 9;
+                firstMap = new Dictionary<int, string> { { 2, "A" }, { 3, "B" }, { 4, "C" }, { 5, "D" } };
+                businessMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, {3, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" } };
+                economyMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" }, { 2, "C" }, { 3, "D" }, { 4, "E" }, { 5, "F" }, { 6, "G" }, { 7, "H" }, { 8, "I" } };
+
             }
             _currentFlight = flight;
             // Create table
             var table = new TableLayoutPanel
             {
-                RowCount = model.Contains("g650") ? 6 : 43,
+                RowCount = model.Contains("650") ? 6 : 43,
                 ColumnCount = totalColumns,
                 AutoSize = true
             };
@@ -248,12 +255,22 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     _ => false
                 };
             }
-            else if (model.Contains("g650"))
+            else if (model.Contains("650"))
             {
                 return seatLetter == "A" || seatLetter == "B";
             }
+            else
+            {
+                return seat.ClassType switch
+                {
+                    "First" => seatLetter == "A" || seatLetter == "D",
+                    "Business" => seatLetter == "A" || seatLetter == "F",
+                    "Economy" => seatLetter == "A" || seatLetter == "J",
+                    _ => false
+                };
+            }
 
-            return false;
+            
         }
 
 

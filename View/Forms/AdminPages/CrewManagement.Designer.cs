@@ -141,6 +141,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             leftCard.Controls.Add(lblFlight);
             leftCard.Controls.Add(btnAddOrUpdate);
             leftCard.Controls.Add(btnCancelEdit);
+            leftCard.Dock = DockStyle.Left;
             leftCard.FillColor = Color.White;
             leftCard.Location = new Point(3, 3);
             leftCard.Name = "leftCard";
@@ -347,6 +348,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             rightCard.BackColor = Color.Transparent;
             rightCard.Controls.Add(cmbFilter);
             rightCard.Controls.Add(lblCount);
+            rightCard.Dock = DockStyle.Fill;
             rightCard.FillColor = Color.White;
             rightCard.Location = new Point(433, 3);
             rightCard.Name = "rightCard";

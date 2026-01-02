@@ -41,20 +41,20 @@ namespace Airport_Airplane_management_system.Model.Services
             }
 
             bool success = _repo.CreateBooking(
-    user.UserID,
-    flight.FlightID,
-    seat.Id,
-    seat.ClassType,
-    passengerId,
-    seat.SeatPrice,   // ✅ pass the seat-specific price
-    out int bookingId,
-    out error);
+     user.UserID,
+     flight.FlightID,
+     seat.Id,      // flight_seat_id
+     passengerId,
+     out int bookingId,
+     out error
+ );
 
 
             if (success)
             {
-                seat.AssignPassenger(user); // mark seat as booked in memory
+                seat.AssignPassenger(user);
                 seat.Book(user);
+
                 booking = new Booking(user, flight, seat, seat.ClassType);
                 booking.SetDbId(bookingId);
                 booking.Confirm();
@@ -62,6 +62,8 @@ namespace Airport_Airplane_management_system.Model.Services
 
             return success;
         }
+
+
 
         public bool CancelBooking(Booking booking, out string error)
         {

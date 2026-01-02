@@ -32,30 +32,47 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
         }
 
+        private Guna2Panel headerPanel;
+
         private void InitializeComponent()
         {
             flowFlights = new FlowLayoutPanel();
+            headerPanel = new Guna2Panel();
+
             SuspendLayout();
-            // 
-            // flowFlights
-            // 
+
+            // ----------- HEADER PANEL -----------
+            headerPanel.Height = 80;
+            headerPanel.Dock = DockStyle.Top;
+            headerPanel.FillColor = Color.DarkCyan; // Dark theme
+            headerPanel.Padding = new Padding(20);
+            headerPanel.BorderRadius = 20;
+            
+            var lblHeader = new Label
+            {
+                Text = "Upcoming Flights",
+                Font = new Font("Segoe UI", 18, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor=Color.Transparent,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            headerPanel.Controls.Add(lblHeader);
+
+            // ----------- FLOW PANEL -----------
             flowFlights.AutoScroll = true;
-            flowFlights.Dock = DockStyle.Fill;
+            flowFlights.Dock = DockStyle.Fill; // fills remaining space below header
             flowFlights.FlowDirection = FlowDirection.TopDown;
-            flowFlights.Location = new Point(0, 0);
-            flowFlights.Name = "flowFlights";
-            flowFlights.Padding = new Padding(10);
-      
-            flowFlights.TabIndex = 0;
             flowFlights.WrapContents = false;
-            flowFlights.Paint += flowFlights_Paint;
-            // 
-            // UpcomingFlights
-            // 
-            BackColor = SystemColors.ControlDark;
-            Controls.Add(flowFlights);
-            Name = "UpcomingFlights";
-            Size = new Size(1819, 761);
+            flowFlights.Padding = new Padding(10);
+
+            // ----------- ADD TO CONTROL -----------
+            Controls.Add(flowFlights);      // Add first (z-order bottom)
+            Controls.Add(headerPanel);      // Add second (z-order top)
+            
+            BackColor = Color.White; // dark background
+            Size = new Size(1280, 720);
+            Padding = new Padding(20);
             ResumeLayout(false);
         }
 

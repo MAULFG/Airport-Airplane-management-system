@@ -1,5 +1,4 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes;
-using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+﻿using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;
 using System;
@@ -12,7 +11,6 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
         private readonly IMainUserPageView _view;
         private readonly IAppSession _session;
         private readonly FlightService _flightService;
-
         private readonly BookingService _bookingService;
 
         public MainUserPagePresenter(
@@ -29,7 +27,6 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             LoadDashboard();
         }
 
-
         private void LoadDashboard()
         {
             var user = _session.CurrentUser;
@@ -39,32 +36,28 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _view.ClearStatistics();
 
             _flightService.Preload();
-
-            // 🔥 THIS WAS MISSING
             _bookingService.LoadBookingsForCurrentUser();
+
+            var now = DateTime.Now;
 
             var bookings = user.BookedFlights
                 .Where(b => b.Status == "Confirmed")
                 .ToList();
 
-            var now = DateTime.Now;
-
-            int totalBookings = bookings.Count;
-            int upcomingFlights = bookings.Count(b => b.Flight.Departure > now);
-            int completedFlights = bookings.Count(b => b.Flight.Arrival < now);
+            int upcoming = bookings.Count(b => b.Flight.Departure > now);
+            int completed = bookings.Count(b => b.Flight.Arrival < now);
+            int total = bookings.Count;
 
             string favoriteRoute = bookings
                 .GroupBy(b => $"{b.Flight.From} → {b.Flight.To}")
                 .OrderByDescending(g => g.Count())
                 .Select(g => g.Key)
-                .FirstOrDefault() ?? "Beirut → Dubai";
+                .FirstOrDefault() ?? "-";
 
-            _view.AddStatCard("Upcoming Flights", upcomingFlights.ToString());
-            _view.AddStatCard("Completed Flights", completedFlights.ToString());
-            _view.AddStatCard("Total Bookings", totalBookings.ToString());
+            _view.AddStatCard("Upcoming Flights", upcoming.ToString());
+            _view.AddStatCard("Completed Flights", completed.ToString());
+            _view.AddStatCard("Total Bookings", total.ToString());
             _view.AddStatCard("Favorite Route", favoriteRoute);
         }
-
-
     }
 }

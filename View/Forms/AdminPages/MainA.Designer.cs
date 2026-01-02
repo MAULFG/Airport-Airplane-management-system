@@ -88,24 +88,24 @@
             root.Name = "root";
             root.Padding = new Padding(28, 22, 28, 22);
             root.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            root.Size = new Size(1280, 720);
+            root.Size = new Size(1030, 720);
             root.TabIndex = 0;
             // 
             // bottomGrid
             // 
             bottomGrid.BackColor = Color.Transparent;
             bottomGrid.ColumnCount = 2;
-            bottomGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 61.5196075F));
-            bottomGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38.4803925F));
+            bottomGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 59.7535934F));
+            bottomGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40.2464066F));
             bottomGrid.Controls.Add(flightsCard, 0, 0);
             bottomGrid.Controls.Add(alertsCard, 1, 0);
             bottomGrid.Dock = DockStyle.Fill;
-            bottomGrid.Location = new Point(28, 478);
+            bottomGrid.Location = new Point(28, 457);
             bottomGrid.Name = "bottomGrid";
             bottomGrid.Padding = new Padding(0, 26, 0, 0);
             bottomGrid.RowCount = 1;
             bottomGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            bottomGrid.Size = new Size(1224, 220);
+            bottomGrid.Size = new Size(974, 241);
             bottomGrid.TabIndex = 0;
             // 
             // flightsCard
@@ -121,7 +121,9 @@
             flightsCard.Padding = new Padding(18, 16, 18, 16);
             flightsCard.Radius = 12;
             flightsCard.ShadowColor = Color.Black;
-            flightsCard.Size = new Size(737, 194);
+            flightsCard.ShadowDepth = 0;
+            flightsCard.ShadowShift = 0;
+            flightsCard.Size = new Size(566, 215);
             flightsCard.TabIndex = 0;
             // 
             // flightsList
@@ -130,11 +132,11 @@
             flightsList.BackColor = Color.Transparent;
             flightsList.Dock = DockStyle.Fill;
             flightsList.FlowDirection = FlowDirection.TopDown;
-            flightsList.Location = new Point(18, 60);
+            flightsList.Location = new Point(18, 47);
             flightsList.Margin = new Padding(0);
             flightsList.Name = "flightsList";
             flightsList.Padding = new Padding(0, 6, 0, 0);
-            flightsList.Size = new Size(701, 118);
+            flightsList.Size = new Size(530, 152);
             flightsList.TabIndex = 0;
             flightsList.WrapContents = false;
             // 
@@ -150,7 +152,7 @@
             flightsHeader.ShadowColor = Color.Transparent;
             flightsHeader.ShadowDepth = 0;
             flightsHeader.ShadowShift = 0;
-            flightsHeader.Size = new Size(701, 44);
+            flightsHeader.Size = new Size(530, 31);
             flightsHeader.TabIndex = 1;
             // 
             // lblFlightsTitle
@@ -158,7 +160,7 @@
             lblFlightsTitle.AutoSize = true;
             lblFlightsTitle.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
             lblFlightsTitle.ForeColor = Color.FromArgb(30, 30, 30);
-            lblFlightsTitle.Location = new Point(4, 10);
+            lblFlightsTitle.Location = new Point(4, 3);
             lblFlightsTitle.Name = "lblFlightsTitle";
             lblFlightsTitle.Size = new Size(189, 21);
             lblFlightsTitle.TabIndex = 0;
@@ -171,7 +173,7 @@
             lnkViewAllFlights.AutoSize = true;
             lnkViewAllFlights.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lnkViewAllFlights.LinkColor = Color.FromArgb(0, 150, 140);
-            lnkViewAllFlights.Location = new Point(568, 12);
+            lnkViewAllFlights.Location = new Point(397, 4);
             lnkViewAllFlights.Name = "lnkViewAllFlights";
             lnkViewAllFlights.Size = new Size(122, 19);
             lnkViewAllFlights.TabIndex = 1;
@@ -186,13 +188,15 @@
             alertsCard.Controls.Add(alertsHeader);
             alertsCard.Dock = DockStyle.Fill;
             alertsCard.FillColor = Color.White;
-            alertsCard.Location = new Point(753, 26);
+            alertsCard.Location = new Point(582, 26);
             alertsCard.Margin = new Padding(0);
             alertsCard.Name = "alertsCard";
             alertsCard.Padding = new Padding(18, 16, 18, 16);
             alertsCard.Radius = 12;
             alertsCard.ShadowColor = Color.Black;
-            alertsCard.Size = new Size(471, 194);
+            alertsCard.ShadowDepth = 0;
+            alertsCard.ShadowShift = 0;
+            alertsCard.Size = new Size(392, 215);
             alertsCard.TabIndex = 1;
             // 
             // alertsList
@@ -201,11 +205,11 @@
             alertsList.BackColor = Color.Transparent;
             alertsList.Dock = DockStyle.Fill;
             alertsList.FlowDirection = FlowDirection.TopDown;
-            alertsList.Location = new Point(18, 60);
+            alertsList.Location = new Point(18, 47);
             alertsList.Margin = new Padding(0);
             alertsList.Name = "alertsList";
             alertsList.Padding = new Padding(0, 10, 0, 0);
-            alertsList.Size = new Size(435, 118);
+            alertsList.Size = new Size(356, 152);
             alertsList.TabIndex = 0;
             alertsList.WrapContents = false;
             // 
@@ -221,7 +225,7 @@
             alertsHeader.ShadowColor = Color.Transparent;
             alertsHeader.ShadowDepth = 0;
             alertsHeader.ShadowShift = 0;
-            alertsHeader.Size = new Size(435, 44);
+            alertsHeader.Size = new Size(356, 31);
             alertsHeader.TabIndex = 1;
             // 
             // lblAlertsTitle
@@ -229,7 +233,7 @@
             lblAlertsTitle.AutoSize = true;
             lblAlertsTitle.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
             lblAlertsTitle.ForeColor = Color.FromArgb(30, 30, 30);
-            lblAlertsTitle.Location = new Point(4, 10);
+            lblAlertsTitle.Location = new Point(4, 3);
             lblAlertsTitle.Name = "lblAlertsTitle";
             lblAlertsTitle.Size = new Size(147, 21);
             lblAlertsTitle.TabIndex = 0;
@@ -241,7 +245,7 @@
             lblAlertsRight.AutoSize = true;
             lblAlertsRight.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblAlertsRight.ForeColor = Color.FromArgb(120, 120, 120);
-            lblAlertsRight.Location = new Point(235, 12);
+            lblAlertsRight.Location = new Point(289, 4);
             lblAlertsRight.Name = "lblAlertsRight";
             lblAlertsRight.Size = new Size(63, 19);
             lblAlertsRight.TabIndex = 1;
@@ -255,13 +259,13 @@
             kpiGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333F));
             kpiGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333F));
             kpiGrid.Dock = DockStyle.Top;
-            kpiGrid.Location = new Point(28, 108);
+            kpiGrid.Location = new Point(28, 87);
             kpiGrid.Name = "kpiGrid";
             kpiGrid.Padding = new Padding(0, 8, 0, 0);
             kpiGrid.RowCount = 2;
             kpiGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             kpiGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            kpiGrid.Size = new Size(1224, 370);
+            kpiGrid.Size = new Size(974, 370);
             kpiGrid.TabIndex = 1;
             // 
             // header
@@ -270,12 +274,14 @@
             header.Controls.Add(lblTitle);
             header.Controls.Add(lblSub);
             header.Dock = DockStyle.Top;
-            header.FillColor = Color.White;
+            header.FillColor = Color.Transparent;
             header.Location = new Point(28, 22);
             header.Name = "header";
             header.Radius = 10;
             header.ShadowColor = Color.Black;
-            header.Size = new Size(1224, 86);
+            header.ShadowDepth = 0;
+            header.ShadowShift = 0;
+            header.Size = new Size(974, 65);
             header.TabIndex = 2;
             // 
             // lblTitle
@@ -283,7 +289,7 @@
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(20, 20, 20);
-            lblTitle.Location = new Point(9, 11);
+            lblTitle.Location = new Point(9, 3);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(286, 37);
             lblTitle.TabIndex = 0;
@@ -294,7 +300,7 @@
             lblSub.AutoSize = true;
             lblSub.Font = new Font("Segoe UI", 11F);
             lblSub.ForeColor = Color.FromArgb(110, 110, 110);
-            lblSub.Location = new Point(9, 48);
+            lblSub.Location = new Point(12, 37);
             lblSub.Name = "lblSub";
             lblSub.Size = new Size(320, 20);
             lblSub.TabIndex = 1;
