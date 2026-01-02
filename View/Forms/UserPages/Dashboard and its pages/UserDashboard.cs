@@ -28,15 +28,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private readonly UserDashboardPresenter _presenter;
         private readonly FlightService _flightService;
         private readonly PassengerService _passengerService;
+        private readonly MyTicketsService _myTicketsService;
         private readonly BookingService _bookingService;
         private UpcomingFlightsPresenter _upcomingFlightsPresenter;
         private SearchAndBookingPresenter _searchandbookingpresenter;
         private MainUserPagePresenter _mainUserPagePresenter;
-
+        private MyTicketsPresenter _myTicketsPresenter;
         private BookingPresenter _bookingpresenter;
         private Panel panelMain;
         private readonly IAppSession _session;
-        public UserDashboard(INavigationService navigation, FlightService flightService, BookingService bookingService, PassengerService passengerService, IAppSession session)
+        public UserDashboard(MyTicketsService myticketservice ,INavigationService navigation, FlightService flightService, BookingService bookingService, PassengerService passengerService, IAppSession session)
         {
             InitializeComponent();
 
@@ -44,6 +45,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _flightService = flightService;
             _bookingService = bookingService;
             _passengerService = passengerService ?? throw new ArgumentNullException(nameof(passengerService));
+            _myTicketsService = myticketservice;
             _session = session ?? throw new ArgumentNullException(nameof(session));
 
             // Initialize main panel
@@ -67,7 +69,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             _upcomingFlightsPresenter = new UpcomingFlightsPresenter(upcomingFlights1, _flightService,_presenter);
             _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1, _flightService, _navigation, _presenter);
-
+            _myTicketsPresenter = new MyTicketsPresenter(myTicketsBookingHistory1, _myTicketsService);
             // Add all designer panels to panelMain
             panelMain.Controls.Add(mainUserPage1);
             panelMain.Controls.Add(upcomingFlights1);

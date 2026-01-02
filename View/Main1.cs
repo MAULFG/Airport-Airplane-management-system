@@ -29,10 +29,12 @@ public partial class Main1 : Form, INavigationService
     private readonly IFlightRepository flightRepo;
     private readonly IBookingRepository bookingRepo;
     private readonly IPlaneRepository planeRepo;
+    private readonly IMyTicketsRepository myTicketsRepo;
     private readonly IAppSession session;
     private readonly FlightService flightService;
     private readonly BookingService bookingService;
     private readonly PassengerService passengerService;
+    private readonly MyTicketsService myTicketsService;
     public Main1()
     {
         InitializeComponent();
@@ -45,6 +47,7 @@ public partial class Main1 : Form, INavigationService
         flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+        myTicketsRepo = new MySqlMyTicketsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         var passengerRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
 
         // Services
@@ -55,7 +58,7 @@ public partial class Main1 : Form, INavigationService
 
         // Pages
         loginPage = new LoginPage(this, userService, flightService, session);
-        userDashboard = new UserDashboard(this, flightService, bookingService, passengerService, session);
+        userDashboard = new UserDashboard(myTicketsService,this, flightService, bookingService, passengerService, session);
         adminDashboard = new AdminDashboard(this);
         signUpPage = new Signupusercontrol(this);
         forgotPasswordPage = new ForgetUserControl(this);
@@ -91,7 +94,7 @@ public partial class Main1 : Form, INavigationService
             Controls.Remove(userDashboard);
 
         // Recreate with same service instances
-        userDashboard = new UserDashboard(this, flightService, bookingService, passengerService, session)
+        userDashboard = new UserDashboard(myTicketsService,this, flightService, bookingService, passengerService, session)
         {
             Dock = DockStyle.Fill
         };

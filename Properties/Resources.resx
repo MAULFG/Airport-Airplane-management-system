@@ -199,9 +199,6 @@
   <data name="airplane2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\airplane2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="20251207_1546_Bright Aircraft Projection_remix_01kbwgxc06e188phq5btzm9v2n (1)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\..\Downloads\20251207_1546_Bright Aircraft Projection_remix_01kbwgxc06e188phq5btzm9v2n (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="baseball-team_2657220" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\baseball-team_2657220.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

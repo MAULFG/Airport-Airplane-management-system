@@ -156,6 +156,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowTickets.Size = new Size(968, 578);
             flowTickets.TabIndex = 0;
             flowTickets.WrapContents = false;
+
             // 
             // panelSearch
             // 
