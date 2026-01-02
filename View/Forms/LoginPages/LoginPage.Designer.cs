@@ -236,7 +236,7 @@
             Controls.Add(panel2);
             Margin = new Padding(2);
             Name = "LoginPage";
-            Size = new Size(1213, 683);
+            Size = new Size(1280, 720);
             panel2.ResumeLayout(false);
             guna2CustomGradientPanel1.ResumeLayout(false);
             guna2CustomGradientPanel1.PerformLayout();

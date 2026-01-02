@@ -12,110 +12,279 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private readonly IFlightManagementView _view;
         private readonly FlightService _service;
 
-        private bool _isEditMode;
-        private int? _editingFlightId;
+        private List<Plane> _planes = new List<Plane>();
 
-        public FlightManagementPresenter(IFlightManagementView view, FlightService service)
+        private readonly Action<int>? _openCrewForFlight;
+
+        public FlightManagementPresenter(IFlightManagementView view, FlightService service, Action<int>? openCrewForFlight = null)
         {
             _view = view;
             _service = service;
+            _openCrewForFlight = openCrewForFlight;
+            _view.ViewLoaded += (_, __) => OnLoad();
 
-            // Wire events
-            _view.LoadFlightsRequested += OnLoadFlights;
-            _view.AddOrUpdateClicked += OnAddOrUpdateFlight;
-            _view.CancelEditClicked += ExitEditMode;
-            _view.EditRequested += EnterEditMode;
-            _view.DeleteRequested += DeleteFlight;
+            _view.FilterChanged += (_, __) => RefreshFlights();
+
+            _view.AddClicked += (_, __) => AddFlight();
+            _view.UpdateClicked += (_, __) => UpdateFlight();
+            _view.CancelEditClicked += (_, __) => _view.ExitEditMode();
+
+            _view.EditRequested += flightId => EnterEditMode(flightId);
+            _view.DeleteRequested += flightId => DeleteFlight(flightId);
+
+            _view.PlaneChanged += planeId => OnPlaneChanged(planeId);
         }
 
-        private void OnLoadFlights(object sender, EventArgs e)
+        private void OnLoad()
         {
+            LoadPlanes();
             RefreshFlights();
+
+            // apply seat class availability once on load (if plane selected)
+            if (_view.SelectedPlaneId.HasValue)
+                OnPlaneChanged(_view.SelectedPlaneId.Value);
+        }
+
+        private void LoadPlanes()
+        {
+            _planes = _service.GetPlanes() ?? new List<Plane>();
+            _view.SetPlanes(_planes);
         }
 
         private void RefreshFlights()
         {
-            var flights = _service.GetFlights();
-            _view.RenderFlights(flights);
+            var flights = _service.GetFlights() ?? new List<Flight>();
+            flights = ApplyFilter(flights, _view.CurrentFilter);
+            _view.SetFlights(flights);
         }
 
-        private void OnAddOrUpdateFlight()
+        private List<Flight> ApplyFilter(List<Flight> flights, string filter)
         {
-            try
-            {
-                if (!_isEditMode)
-                {
-                    // Add new flight
-                    _service.AddFlight(
-                        _view.FlightNumber,
-                        _view.Origin,
-                        _view.Destination,
-                        _view.Date,
-                        _view.Arrival,
-                        _view.PlaneID
-                    );
-                }
-                else
-                {
-                    // Update existing flight
-                    if (_editingFlightId.HasValue)
-                    {
-                        _service.UpdateFlight(
-                            _editingFlightId.Value,
-                            _view.FlightNumber,
-                            _view.Origin,
-                            _view.Destination,
-                            _view.Departure,
-                            _view.Arrival,
-                            _view.PlaneID
-                        );
-                    }
-                }
+            filter ??= "All Flights";
+            var now = DateTime.Now;
 
-                ExitEditMode();
-                RefreshFlights();
-            }
-            catch (Exception ex)
+            if (filter == "All Flights") return flights;
+
+            if (filter == "Upcoming")
+                return flights.Where(f => f.Departure > now).ToList();
+
+            if (filter == "Past")
+                return flights.Where(f => f.Arrival < now).ToList();
+
+            // optional: "Plane #ID" filter pattern (if you use it)
+            if (filter.StartsWith("Plane #"))
             {
-                _view.ShowError(ex.Message);
+                var s = filter.Replace("Plane #", "").Trim();
+                if (int.TryParse(s, out int planeId))
+                    return flights.Where(f => f.PlaneIDFromDb == planeId).ToList();
             }
+
+            return flights;
         }
 
-        private void EnterEditMode(Flight f)
+        private void OnPlaneChanged(int planeId)
         {
-            if (f == null) return;
+            var classes = _service.GetSeatClassesForFlight(planeId)
+                          ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            _isEditMode = true;
-            _editingFlightId = f.FlightID;
-
-            _view.SetEditMode(true);
-            _view.FillForm(f);
+            // view decides what to show/hide + VIP label logic
+            _view.SetSeatClassAvailability(classes);
         }
 
-        private void ExitEditMode()
+        private void AddFlight()
         {
-            _isEditMode = false;
-            _editingFlightId = null;
-            _view.SetEditMode(false);
+            if (string.IsNullOrWhiteSpace(_view.FromCity) || string.IsNullOrWhiteSpace(_view.ToCity))
+            {
+                _view.ShowError("From and To are required.");
+                return;
+            }
+
+            if (_view.Arrival <= _view.Departure)
+            {
+                _view.ShowError("Arrival must be after Departure.");
+                return;
+            }
+
+            if (!_view.SelectedPlaneId.HasValue)
+            {
+                _view.ShowError("Please select a plane.");
+                return;
+            }
+
+            int planeId = _view.SelectedPlaneId.Value;
+
+            // time conflict
+            if (_service.PlaneHasTimeConflict(planeId, _view.Departure, _view.Arrival, excludeFlightId: null))
+            {
+                _view.ShowError("This plane already has another flight in the same time period.");
+                return;
+            }
+
+            var plane = _planes.FirstOrDefault(p => p.PlaneID == planeId);
+            if (plane == null)
+            {
+                _view.ShowError("Selected plane not found. Reload planes.");
+                return;
+            }
+
+            // validate prices only for classes that exist
+            var classes = _service.GetSeatClassesForFlight(planeId)
+                          ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            decimal eco = _view.EconomyPrice;
+            decimal bus = _view.BusinessPrice;
+            decimal top = _view.FirstPrice; // First OR VIP
+
+            if (classes.Contains("economy") && eco <= 0)
+            {
+                _view.ShowError("Please set Economy price.");
+                return;
+            }
+
+            if (classes.Contains("business") && bus <= 0)
+            {
+                _view.ShowError("Please set Business price.");
+                return;
+            }
+
+            bool needsTop = classes.Contains("first") || classes.Contains("vip");
+            if (needsTop && top <= 0)
+            {
+                _view.ShowError("Please set VIP/First price.");
+                return;
+            }
+
+            var flight = new Flight(
+                0,
+                plane,
+                _view.FromCity.Trim(),
+                _view.ToCity.Trim(),
+                _view.Departure,
+                _view.Arrival,
+                new Dictionary<string, decimal>()
+            )
+            {
+                PlaneIDFromDb = planeId
+            };
+
+
+            if (!_service.AddFlight(flight, eco, bus, top, out int newId, out string err))
+            {
+                _view.ShowError(err);
+                return;
+            }
+
+            _view.ShowInfo($"Flight added (ID #{newId}).");
+            _view.ClearForm();
+            RefreshFlights();
         }
 
-        private void DeleteFlight(Flight f)
+        private void EnterEditMode(int flightId)
         {
-            if (f == null) return;
-
-            try
+            var flight = _service.GetFlightById(flightId);
+            if (flight == null)
             {
-                _service.(f.FlightID);
-
-                if (_editingFlightId == f.FlightID)
-                    ExitEditMode();
-
-                RefreshFlights();
+                _view.ShowError("Flight not found.");
+                return;
             }
-            catch (Exception ex)
+
+            // ✅ load prices from DB and pass them to the view
+            var prices = _service.GetSeatPricesForFlight(flightId)
+                         ?? new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
+
+            _view.EnterEditMode(flight, prices);
+
+            // refresh availability + VIP label for selected plane
+            if (_view.SelectedPlaneId.HasValue)
+                OnPlaneChanged(_view.SelectedPlaneId.Value);
+        }
+
+        private void UpdateFlight()
+        {
+            if (!_view.IsEditMode || !_view.EditingFlightId.HasValue)
             {
-                _view.ShowError(ex.Message);
+                _view.ShowError("Not in edit mode.");
+                return;
             }
+
+            int flightId = _view.EditingFlightId.Value;
+
+            if (_view.Arrival <= _view.Departure)
+            {
+                _view.ShowError("Arrival must be after Departure.");
+                return;
+            }
+
+            if (!_view.SelectedPlaneId.HasValue)
+            {
+                _view.ShowError("Plane is required.");
+                return;
+            }
+
+            int planeId = _view.SelectedPlaneId.Value;
+
+            // time conflict (exclude this flight)
+            if (_service.PlaneHasTimeConflict(planeId, _view.Departure, _view.Arrival, excludeFlightId: flightId))
+            {
+                _view.ShowError("This plane already has another flight in the same time period.");
+                return;
+            }
+
+            // update dates
+            if (!_service.UpdateFlightDates(flightId, _view.Departure, _view.Arrival, out string dateErr))
+            {
+                _view.ShowError("Failed to update flight: " + dateErr);
+                return;
+            }
+
+            // ✅ update seat prices too
+            var classes = _service.GetSeatClassesForFlight(planeId)
+                          ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            decimal eco = _view.EconomyPrice;
+            decimal bus = _view.BusinessPrice;
+            decimal top = _view.FirstPrice; // First OR VIP
+
+            if (classes.Contains("economy") && eco <= 0)
+            {
+                _view.ShowError("Please set Economy price.");
+                return;
+            }
+            if (classes.Contains("business") && bus <= 0)
+            {
+                _view.ShowError("Please set Business price.");
+                return;
+            }
+            if ((classes.Contains("first") || classes.Contains("vip")) && top <= 0)
+            {
+                _view.ShowError("Please set VIP/First price.");
+                return;
+            }
+
+            if (!_service.UpdateSeatPricesForFlight(flightId, eco, bus, top, out string priceErr))
+            {
+                _view.ShowError("Failed to update seat prices: " + priceErr);
+                return;
+            }
+
+            _view.ShowInfo("Flight updated.");
+            _view.ExitEditMode();
+            RefreshFlights();
+        }
+
+        private void DeleteFlight(int flightId)
+        {
+            if (!_view.Confirm("Delete this flight? This will remove its seats and bookings."))
+                return;
+
+            if (!_service.CancelFlight(flightId, out string err))
+            {
+                _view.ShowError("Delete failed: " + err);
+                return;
+            }
+
+            _view.ShowInfo("Flight deleted.");
+            RefreshFlights();
         }
     }
 }

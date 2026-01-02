@@ -225,5 +225,117 @@ WHERE employee_id LIKE 'EMP%';";
                 return $"EMP{next:000}";
             }
         }
+
+        public List<Crew> GetCrewNotAssignedToAnyFlight()
+        {
+            const string sql = @"
+                SELECT full_name, role, status, employee_id, email, phone, flight_id
+                FROM crew_members
+                WHERE flight_id IS NULL OR flight_id = 0;
+            ";
+            return QueryCrew(sql);
+        }
+
+        public List<Crew> GetCrewAssignedToPastFlights()
+        {
+            const string sql = @"
+                SELECT cm.full_name, cm.role, cm.status, cm.employee_id, cm.email, cm.phone, cm.flight_id
+                FROM crew_members cm
+                INNER JOIN flights f ON f.id = cm.flight_id
+                WHERE cm.flight_id IS NOT NULL
+                  AND cm.flight_id <> 0
+                  AND f.arrival < NOW();
+            ";
+            return QueryCrew(sql);
+        }
+
+        // (Optional) counts if your ReportsService still calls them
+        public int CountCrewNotAssignedToAnyFlight()
+        {
+            const string sql = @"SELECT COUNT(*) FROM crew_members WHERE flight_id IS NULL OR flight_id = 0;";
+            return ExecuteScalarInt(sql);
+        }
+
+        public int CountCrewAssignedToPastFlightsOnly()
+        {
+            const string sql = @"
+                SELECT COUNT(*)
+                FROM crew_members cm
+                INNER JOIN flights f ON f.id = cm.flight_id
+                WHERE cm.flight_id IS NOT NULL
+                  AND cm.flight_id <> 0
+                  AND f.arrival < NOW();
+            ";
+            return ExecuteScalarInt(sql);
+        }
+
+        // =========================================================
+        // Helpers
+        // =========================================================
+
+        private List<Crew> QueryCrew(string sql)
+        {
+            var list = new List<Crew>();
+
+            using var con = new MySqlConnection(_connStr);
+            con.Open();
+
+            using var cmd = new MySqlCommand(sql, con);
+            using var rd = cmd.ExecuteReader();
+
+            while (rd.Read())
+            {
+                // Crew model in your project requires constructor:
+                // Crew(string fullName, string role, string status, string employeeId, string email, string phone)
+                var fullName = rd["full_name"].ToString();
+                var role = rd["role"].ToString();
+                var status = rd["status"].ToString();
+                var employeeId = rd["employee_id"].ToString();
+                var email = rd["email"].ToString();
+                var phone = rd["phone"].ToString();
+
+                var crew = new Crew(fullName, role, status, employeeId, email, phone);
+
+                // FlightId is nullable in your model (and has public set)
+                object flightObj = rd["flight_id"];
+                if (flightObj == DBNull.Value) crew.FlightId = null;
+                else
+                {
+                    var fid = Convert.ToInt32(flightObj);
+                    crew.FlightId = fid <= 0 ? null : fid;
+                }
+
+                list.Add(crew);
+            }
+
+            return list;
+        }
+
+        private void FillCrewParams(MySqlCommand cmd, Crew crew)
+        {
+            cmd.Parameters.AddWithValue("@full_name", crew.FullName);
+            cmd.Parameters.AddWithValue("@role", crew.Role);
+            cmd.Parameters.AddWithValue("@status", crew.Status);
+            cmd.Parameters.AddWithValue("@employee_id", crew.EmployeeId);
+            cmd.Parameters.AddWithValue("@email", crew.Email);
+            cmd.Parameters.AddWithValue("@phone", crew.Phone);
+
+            if (crew.FlightId.HasValue && crew.FlightId.Value > 0)
+                cmd.Parameters.AddWithValue("@flight_id", crew.FlightId.Value);
+            else
+                cmd.Parameters.AddWithValue("@flight_id", DBNull.Value);
+        }
+
+        private int ExecuteScalarInt(string sql)
+        {
+            using var con = new MySqlConnection(_connStr);
+            con.Open();
+
+            using var cmd = new MySqlCommand(sql, con);
+            var obj = cmd.ExecuteScalar();
+            if (obj == null || obj == DBNull.Value) return 0;
+
+            return Convert.ToInt32(obj);
+        }
     }
 }

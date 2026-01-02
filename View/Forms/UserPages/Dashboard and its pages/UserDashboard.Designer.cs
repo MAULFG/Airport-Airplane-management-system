@@ -320,7 +320,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             
             Controls.Add(guna2Panel1);
             Name = "UserDashboard";
-            Size = new Size(1213, 683);
+            Size = new Size(1280,720);
             Load += UserDashboard_Load;
             guna2Panel1.ResumeLayout(false);
             ResumeLayout(false);

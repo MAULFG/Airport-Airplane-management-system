@@ -68,6 +68,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             root = new Guna2Panel();
+            layout = new TableLayoutPanel();
             leftCard = new Guna2ShadowPanel();
             cmbFlight = new Guna2ComboBox();
             cmbStatus = new Guna2ComboBox();
@@ -88,26 +89,42 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbFilter = new Guna2ComboBox();
             lblCount = new Guna2HtmlLabel();
             root.SuspendLayout();
+            layout.SuspendLayout();
             leftCard.SuspendLayout();
             rightCard.SuspendLayout();
             SuspendLayout();
             // 
             // root
             // 
-            root.Controls.Add(leftCard);
-            root.Controls.Add(rightCard);
+            root.Controls.Add(layout);
             root.CustomizableEdges = customizableEdges19;
             root.Dock = DockStyle.Fill;
             root.Location = new Point(0, 0);
             root.Name = "root";
-            root.Padding = new Padding(10);
+            root.Padding = new Padding(15);
             root.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            root.Size = new Size(963, 683);
+            root.Size = new Size(1030, 720);
             root.TabIndex = 0;
+            root.Paint += root_Paint;
+            // 
+            // layout
+            // 
+            layout.BackColor = Color.Transparent;
+            layout.ColumnCount = 2;
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 430F));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            layout.Controls.Add(leftCard, 0, 0);
+            layout.Controls.Add(rightCard, 1, 0);
+            layout.Dock = DockStyle.Fill;
+            layout.Location = new Point(15, 15);
+            layout.Name = "layout";
+            layout.RowCount = 1;
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.Size = new Size(1000, 690);
+            layout.TabIndex = 2;
             // 
             // leftCard
             // 
-            leftCard.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             leftCard.BackColor = Color.Transparent;
             leftCard.Controls.Add(cmbFlight);
             leftCard.Controls.Add(cmbStatus);
@@ -125,13 +142,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             leftCard.Controls.Add(btnAddOrUpdate);
             leftCard.Controls.Add(btnCancelEdit);
             leftCard.FillColor = Color.White;
-            leftCard.Location = new Point(10, 10);
+            leftCard.Location = new Point(3, 3);
             leftCard.Name = "leftCard";
             leftCard.Padding = new Padding(10);
             leftCard.Radius = 14;
             leftCard.ShadowColor = Color.Black;
             leftCard.ShadowDepth = 18;
-            leftCard.Size = new Size(353, 660);
+            leftCard.Size = new Size(400, 684);
             leftCard.TabIndex = 0;
             // 
             // cmbFlight
@@ -148,7 +165,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbFlight.Location = new Point(26, 430);
             cmbFlight.Name = "cmbFlight";
             cmbFlight.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            cmbFlight.Size = new Size(308, 36);
+            cmbFlight.Size = new Size(350, 36);
             cmbFlight.TabIndex = 12;
             // 
             // cmbStatus
@@ -166,7 +183,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbStatus.Location = new Point(26, 368);
             cmbStatus.Name = "cmbStatus";
             cmbStatus.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            cmbStatus.Size = new Size(308, 36);
+            cmbStatus.Size = new Size(350, 36);
             cmbStatus.TabIndex = 10;
             // 
             // txtPhone
@@ -181,7 +198,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtPhone.PlaceholderText = "+961 70 555 000";
             txtPhone.SelectedText = "";
             txtPhone.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            txtPhone.Size = new Size(308, 42);
+            txtPhone.Size = new Size(350, 42);
             txtPhone.TabIndex = 8;
             // 
             // txtEmail
@@ -196,7 +213,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtEmail.PlaceholderText = "example@airline.com";
             txtEmail.SelectedText = "";
             txtEmail.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            txtEmail.Size = new Size(308, 42);
+            txtEmail.Size = new Size(350, 42);
             txtEmail.TabIndex = 6;
             // 
             // cmbRole
@@ -214,7 +231,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbRole.Location = new Point(26, 168);
             cmbRole.Name = "cmbRole";
             cmbRole.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            cmbRole.Size = new Size(308, 36);
+            cmbRole.Size = new Size(350, 36);
             cmbRole.TabIndex = 4;
             // 
             // txtFullName
@@ -229,7 +246,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtFullName.PlaceholderText = "Enter FullName";
             txtFullName.SelectedText = "";
             txtFullName.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            txtFullName.Size = new Size(308, 42);
+            txtFullName.Size = new Size(350, 42);
             txtFullName.TabIndex = 2;
             // 
             // lblTitle
@@ -244,6 +261,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblFullName
             // 
+            lblFullName.Font = new Font("Segoe UI", 9.5F);
             lblFullName.Location = new Point(26, 68);
             lblFullName.Name = "lblFullName";
             lblFullName.Size = new Size(100, 23);
@@ -252,6 +270,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblRole
             // 
+            lblRole.Font = new Font("Segoe UI", 9.5F);
             lblRole.Location = new Point(26, 143);
             lblRole.Name = "lblRole";
             lblRole.Size = new Size(100, 23);
@@ -260,6 +279,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblEmail
             // 
+            lblEmail.Font = new Font("Segoe UI", 9.5F);
             lblEmail.Location = new Point(26, 207);
             lblEmail.Name = "lblEmail";
             lblEmail.Size = new Size(100, 23);
@@ -268,6 +288,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblPhone
             // 
+            lblPhone.Font = new Font("Segoe UI", 9.5F);
             lblPhone.Location = new Point(26, 275);
             lblPhone.Name = "lblPhone";
             lblPhone.Size = new Size(100, 23);
@@ -276,6 +297,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblStatus
             // 
+            lblStatus.Font = new Font("Segoe UI", 9.5F);
             lblStatus.Location = new Point(26, 344);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(100, 23);
@@ -284,6 +306,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             // lblFlight
             // 
+            lblFlight.Font = new Font("Segoe UI", 9.5F);
             lblFlight.Location = new Point(26, 406);
             lblFlight.Name = "lblFlight";
             lblFlight.Size = new Size(100, 23);
@@ -294,12 +317,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             btnAddOrUpdate.BorderRadius = 12;
             btnAddOrUpdate.CustomizableEdges = customizableEdges13;
-            btnAddOrUpdate.Font = new Font("Segoe UI", 9F);
+            btnAddOrUpdate.FillColor = Color.FromArgb(35, 93, 220);
+            btnAddOrUpdate.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             btnAddOrUpdate.ForeColor = Color.White;
             btnAddOrUpdate.Location = new Point(26, 483);
             btnAddOrUpdate.Name = "btnAddOrUpdate";
             btnAddOrUpdate.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnAddOrUpdate.Size = new Size(308, 40);
+            btnAddOrUpdate.Size = new Size(350, 40);
             btnAddOrUpdate.TabIndex = 13;
             btnAddOrUpdate.Text = "Add Crew Member";
             // 
@@ -307,30 +331,30 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             btnCancelEdit.BorderRadius = 12;
             btnCancelEdit.CustomizableEdges = customizableEdges15;
-            btnCancelEdit.Font = new Font("Segoe UI", 9F);
-            btnCancelEdit.ForeColor = Color.White;
+            btnCancelEdit.FillColor = Color.FromArgb(235, 235, 235);
+            btnCancelEdit.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            btnCancelEdit.ForeColor = Color.FromArgb(60, 60, 60);
             btnCancelEdit.Location = new Point(26, 538);
             btnCancelEdit.Name = "btnCancelEdit";
             btnCancelEdit.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            btnCancelEdit.Size = new Size(304, 40);
+            btnCancelEdit.Size = new Size(350, 40);
             btnCancelEdit.TabIndex = 14;
             btnCancelEdit.Text = "Cancel Edit";
             btnCancelEdit.Visible = false;
             // 
             // rightCard
             // 
-            rightCard.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             rightCard.BackColor = Color.Transparent;
             rightCard.Controls.Add(cmbFilter);
             rightCard.Controls.Add(lblCount);
             rightCard.FillColor = Color.White;
-            rightCard.Location = new Point(369, 10);
+            rightCard.Location = new Point(433, 3);
             rightCard.Name = "rightCard";
             rightCard.Padding = new Padding(10);
             rightCard.Radius = 14;
             rightCard.ShadowColor = Color.Black;
             rightCard.ShadowDepth = 18;
-            rightCard.Size = new Size(584, 660);
+            rightCard.Size = new Size(564, 684);
             rightCard.TabIndex = 1;
             rightCard.Paint += rightCard_Paint;
             // 
@@ -367,13 +391,16 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             BackColor = Color.FromArgb(245, 246, 250);
             Controls.Add(root);
             Name = "CrewManagement";
-            Size = new Size(963, 683);
+            Size = new Size(1030, 720);
             root.ResumeLayout(false);
+            layout.ResumeLayout(false);
             leftCard.ResumeLayout(false);
             leftCard.PerformLayout();
             rightCard.ResumeLayout(false);
             rightCard.PerformLayout();
             ResumeLayout(false);
         }
+
+        private TableLayoutPanel layout;
     }
 }

@@ -35,6 +35,7 @@ namespace Ticket_Booking_System_OOP.WinFormsApp.Forms.UserPages
             Dock = DockStyle.Fill;                          // ✅ IMPORTANT
             Controls.Add(flowFlights);
             Name = "UpcomingFlights";
+            Size = new Size(1030, 720);
 
 
 

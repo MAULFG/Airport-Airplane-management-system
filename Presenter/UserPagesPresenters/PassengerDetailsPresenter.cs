@@ -41,10 +41,42 @@ namespace Airport_Airplane_management_system.Presenter
         {
             _view.ShowSelectedSeat(_seat);
 
-            decimal tax = _price * 0.1m; // example tax
-            decimal total = _price + tax;
+            decimal seatPrice = _seat.SeatPrice; // base seat price
 
-            _view.ShowPrice(_price, tax, total);
+            // Optional: add window seat surcharge (+20%)
+            if (IsWindowSeat(_seat, _flight))
+                seatPrice += seatPrice * 0.20m;
+
+            decimal tax = seatPrice * 0.10m; // 10% tax
+            decimal total = seatPrice + tax;
+
+            _view.ShowPrice(seatPrice, tax, total);
+        }
+
+        // Helper: detect window seat
+        private bool IsWindowSeat(FlightSeats seat, Flight flight)
+        {
+            string seatLetter = new string(seat.SeatNumber.SkipWhile(char.IsDigit).ToArray()).ToUpper();
+            string model = flight.Plane.Model.ToLower();
+
+            if (model.Contains("a320"))
+                return seatLetter == "A" || seatLetter == "F";
+
+            if (model.Contains("777"))
+            {
+                return seat.ClassType switch
+                {
+                    "First" => seatLetter == "A" || seatLetter == "D",
+                    "Business" => seatLetter == "A" || seatLetter == "F",
+                    "Economy" => seatLetter == "A" || seatLetter == "J",
+                    _ => false
+                };
+            }
+
+            if (model.Contains("g650"))
+                return seatLetter == "A" || seatLetter == "B";
+
+            return false;
         }
 
         private void OnCompleteBooking()
@@ -52,12 +84,10 @@ namespace Airport_Airplane_management_system.Presenter
             if (!ValidatePassenger())
                 return;
 
-            // 1️⃣ Create passenger
+            // 1️⃣ Get or create passenger
             int? passengerId = _passengerService.GetPassengerIdByPhone(_view.Phone);
-
             if (passengerId == null)
             {
-                // Passenger doesn't exist → create new
                 if (!_passengerService.AddPassenger(
                     _view.FullName,
                     _view.Email,
@@ -72,18 +102,33 @@ namespace Airport_Airplane_management_system.Presenter
             }
 
             var loggedInUser = _session.CurrentUser;
-            // 2️⃣ Make booking
 
-            if (!_bookingService.MakeBooking(loggedInUser, passengerId.Value, _flight, _seat, out Booking booking, out string bookingError))
+            // 2️⃣ Compute final seat price (surcharge + tax)
+            decimal seatPrice = _seat.SeatPrice;
+            if (IsWindowSeat(_seat, _flight))
+                seatPrice += seatPrice * 0.20m;
+            decimal tax = seatPrice * 0.10m;
+            decimal totalPrice = seatPrice + tax;
+
+            // 3️⃣ Make booking
+            if (!_bookingService.MakeBooking(
+                loggedInUser,
+                passengerId.Value,
+                _flight,
+                _seat,
+                out Booking booking,
+                out string bookingError))
             {
                 _view.ShowMessage(bookingError);
                 return;
             }
-            _view.ShowMessage("Booking completed successfully.");
-            PassengerDetailsClosed?.Invoke();  // Notify BookingPage
-            _view.CloseView();
 
+            // 4️⃣ Show success and close
+            _view.ShowMessage($"Booking completed successfully.\nTotal: ${totalPrice:0.00}");
+            PassengerDetailsClosed?.Invoke();
+            _view.CloseView();
         }
+
 
         public event Action PassengerDetailsClosed;
 

@@ -33,34 +33,41 @@ namespace Airport_Airplane_management_system.Presenter
             // Clear the view first
             _view.DisplayFlights(new List<Flight>()); // clear existing cards
 
-            // Call the service to search flights
-            var flights = _flightService?.SearchFlights(
-             from: _view?.From ?? "",
-               to: _view?.To ?? "",
-                year: (_view?.IsDateSelected == true && _view.DepartureDate.HasValue) ? _view.DepartureDate.Value.Year : (int?)null,
-               month: (_view?.IsDateSelected == true && _view.DepartureDate.HasValue) ? _view.DepartureDate.Value.Month : (int?)null,
-                day: (_view?.IsDateSelected == true && _view.DepartureDate.HasValue) ? _view.DepartureDate.Value.Day : (int?)null
-                 );
+            // Load flights WITH seats
+            var flights = _flightService.LoadFlightsWithSeats().AsEnumerable();
 
+            // Filter by "From" and "To"
+            if (!string.IsNullOrWhiteSpace(_view.From))
+                flights = flights.Where(f => f.From.Equals(_view.From, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrWhiteSpace(_view.To))
+                flights = flights.Where(f => f.To.Equals(_view.To, StringComparison.OrdinalIgnoreCase));
 
-            // Optional: filter by class + passengers
-            if (!string.IsNullOrWhiteSpace(_view.Class))
+            // Filter by date if selected
+            if (_view.IsDateSelected && _view.DepartureDate.HasValue)
             {
-                flights = flights
-                    .Where(f => f.GetAvailableSeats(_view.Class).Count >= _view.Passengers)
-                    .ToList();
+                var date = _view.DepartureDate.Value.Date;
+                flights = flights.Where(f => f.Departure.Date == date);
             }
 
-            if (!flights.Any())
+            // Filter by class + passengers
+            if (!string.IsNullOrWhiteSpace(_view.Class))
+            {
+                flights = flights.Where(f => f.GetAvailableSeats(_view.Class).Count >= _view.Passengers);
+            }
+
+            var finalFlights = flights.ToList();
+
+            if (!finalFlights.Any())
             {
                 _view.ShowMessage("No flights match your criteria.");
-                // Already cleared above, so display is empty
                 return;
             }
 
             // Pass the Flight objects to the view
-            _view.DisplayFlights(flights);
+            _view.DisplayFlights(finalFlights);
         }
+
+
         private void OpenBookingPage(int flightId)
         {
             _userdashpresenter.OpenBookingp(flightId);

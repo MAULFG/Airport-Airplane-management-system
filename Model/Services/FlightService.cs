@@ -72,7 +72,7 @@ namespace Airport_Airplane_management_system.Model.Services
             return flights;
         }
 
-
+        public Flight GetFlightById(int flightId) => _flightRepo.GetFlightById(flightId);
 
         public List<Flight> GetFlights()
         {
@@ -100,6 +100,7 @@ namespace Airport_Airplane_management_system.Model.Services
                 flight.FlightSeats.Add(seat);
             }
         }
+        public int GetUpcomingFlightsNotFullyBooked() => _flightRepo.CountUpcomingFlightsNotFullyBooked();
         public bool CancelFlight(int flightID, out string error)
         {
             error = "";
@@ -116,6 +117,13 @@ namespace Airport_Airplane_management_system.Model.Services
 
             return true;
         }
+        public List<Plane> GetPlanes() => _planeRepo.GetAllPlanesf();
+
+ 
+
+        // ✅ for "depends on plane chosen"
+        public HashSet<string> GetSeatClassesForFlight(int planeId)
+            => _flightRepo.GetSeatClassesForFlight(planeId);
         public bool AddFlight(
            Flight flight,
            decimal economyPrice,
@@ -146,6 +154,7 @@ namespace Airport_Airplane_management_system.Model.Services
             }
 
             // conflict check
+            
             if (_flightRepo.PlaneHasTimeConflict(flight.Plane.PlaneID, flight.Departure, flight.Arrival))
             {
                 error = "Plane has a scheduling conflict.";
@@ -161,6 +170,8 @@ namespace Airport_Airplane_management_system.Model.Services
                 out error
             );
         }
+        public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId)
+            => _flightRepo.PlaneHasTimeConflict(planeId, dep, arr, excludeFlightId);
         public bool UpdateFlightDates(int flightId, DateTime dep, DateTime arr, out string error)
             => _flightRepo.UpdateFlightDates(flightId, dep, arr, out error);
         public List<Flight> SearchFlights(string from, string to, int? year = null, int? month = null, int? day = null)
@@ -246,11 +257,7 @@ namespace Airport_Airplane_management_system.Model.Services
 
 
 
-        public int GetUpcomingFlightsNotFullyBooked()
-        {
-            return _flightRepo.CountUpcomingFlightsNotFullyBooked();
-        }
-
+      
 
     }
 }

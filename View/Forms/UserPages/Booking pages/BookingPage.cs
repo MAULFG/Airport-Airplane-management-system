@@ -204,26 +204,25 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btn.Click += (_, _) => SeatSelected?.Invoke(seat);
             return btn;
         }
-        public void ShowSelectedSeat(FlightSeats seat, decimal basePrice)
+        public void ShowSelectedSeat(FlightSeats seat, decimal ignoredBasePrice = 0)
         {
-
             lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
             lblSeatValue.Text = seat.SeatNumber;
             lblClassValue.Text = seat.ClassType;
-            lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
-            decimal tax = basePrice * 0.10m;
-            decimal total = basePrice + tax;
-            decimal finalPrice = basePrice;
+
+            decimal price = seat.SeatPrice; // ✅ always use the seat-specific price
+            decimal tax = price * 0.10m;
+            decimal total = price + tax;
+
+            // Optional: window seat surcharge
             if (IsWindowSeat(seat, _currentFlight))
-            {
-                finalPrice += basePrice * 0.20m;
-            }
+                total += price * 0.20m;
 
-
-            lblBasePriceValue.Text = $"Base: ${basePrice:0.00}";
+            lblBasePriceValue.Text = $"Base: ${price:0.00}";
             lblTaxValue.Text = $"Tax: ${tax:0.00}";
-            lblTotalValue.Text = $"Total: ${(finalPrice):0.00}";
+            lblTotalValue.Text = $"Total: ${total:0.00}";
         }
+
 
 
         private bool IsWindowSeat(FlightSeats seat, Flight flight)

@@ -19,7 +19,7 @@
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(1197, 644);
+        ClientSize = new Size(1264, 681);
         Margin = new Padding(3, 2, 3, 2);
         Name = "Main1";
         Text = "Airport Management System";

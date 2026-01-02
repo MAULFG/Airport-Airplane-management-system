@@ -45,7 +45,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowFlights.Location = new Point(0, 0);
             flowFlights.Name = "flowFlights";
             flowFlights.Padding = new Padding(10);
-            flowFlights.Size = new Size(963, 592);
+      
             flowFlights.TabIndex = 0;
             flowFlights.WrapContents = false;
             flowFlights.Paint += flowFlights_Paint;

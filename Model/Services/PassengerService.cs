@@ -88,39 +88,7 @@ namespace Airport_Airplane_management_system.Model.Services
         // -----------------------------
         // CANCEL BOOKING
         // -----------------------------
-        public bool CancelBooking(Booking booking, out string error)
-        {
-            error = "";
-
-            if (booking == null)
-            {
-                error = "Booking cannot be null.";
-                return false;
-            }
-
-            // Cancel in database
-            if (!_repo.CancelBooking(booking.BookingID, out error))
-                return false;
-
-            // Cancel in memory (release seat)
-            booking.Cancel();
-
-            // Update cached flights
-            if (_session.Flights != null)
-            {
-                var flight = _session.Flights
-                    .FirstOrDefault(f => f.FlightID == booking.Flight.FlightID);
-                if (flight != null)
-                {
-                    var seat = flight.FlightSeats.FirstOrDefault(s => s.Id == booking.Seat.Id);
-                    seat?.RemovePassenger();
-                }
-            }
-
-            // Invalidate passenger summary cache
-            _session.PassengersSummary = null;
-
-            return true;
-        }
+        public bool CancelBooking(int bookingId, out string error)
+             => _repo.CancelBooking(bookingId, out error);
     }
 }

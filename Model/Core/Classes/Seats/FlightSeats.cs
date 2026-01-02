@@ -14,6 +14,8 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
         public string SeatNumber { get; private set; }
         public string ClassType { get; private set; }
 
+        // Add this property
+        public decimal SeatPrice { get; set; }
         // Constructor for creating from Plane.Seat
         public FlightSeats(Seat planeSeat, int planeSeatIndex)
         {
@@ -25,7 +27,7 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
         }
 
         // Constructor for loading from DB
-        public FlightSeats(int id, int flightId, int planeSeatIndex, string seatNumber, string classType, bool isBooked, int? passengerId)
+        public FlightSeats(int id, int flightId, int planeSeatIndex, string seatNumber, string classType, bool isBooked, int? passengerId, decimal seatPrice = 0)
         {
             Id = id;
             FlightId = flightId;
@@ -34,7 +36,9 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
             ClassType = classType;
             IsBooked = isBooked;
             PassengerId = passengerId;
+            SeatPrice = seatPrice;
         }
+
 
         // -----------------------------
         // ASSIGN PASSENGER

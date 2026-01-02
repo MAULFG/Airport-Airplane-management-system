@@ -49,7 +49,7 @@ public partial class Main1 : Form, INavigationService
 
         // Services
         var userService = new UserService(userRepo, session);
-        flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo, session);
+        flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo,session);
         bookingService = new BookingService(bookingRepo, session);
         passengerService = new PassengerService(passengerRepo, session);
 

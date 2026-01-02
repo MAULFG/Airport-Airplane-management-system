@@ -382,5 +382,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
 
         }
+
+        private void root_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

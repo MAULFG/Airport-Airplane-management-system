@@ -28,8 +28,8 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
             out string error
         );
 
-        // ✅ used to decide which price rows to show depending on selected plane
-        HashSet<string> GetSeatClassesForPlane(int planeId);
+  
+        HashSet<string> GetSeatClassesForFlight(int flightId);
 
         Dictionary<string, decimal> GetSeatPricesForFlight(int flightId);
         bool UpdateSeatPricesForFlight(int flightId, decimal economy, decimal business, decimal firstOrVip, out string error);
@@ -39,6 +39,10 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
         bool DeleteFlight(int flightId, out string error);
 
         bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId = null);
+
+
+
+
     }
 
 

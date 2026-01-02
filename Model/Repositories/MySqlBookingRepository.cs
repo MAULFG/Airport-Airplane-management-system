@@ -16,13 +16,14 @@ namespace Airport_Airplane_management_system.Model.Repositories
         }
 
         public bool CreateBooking(
-     int userId,
-     int flightId,
-     int flightSeatId,
-     string category,
-     int passengerId,
-     out int bookingId,
-     out string error)
+    int userId,
+    int flightId,
+    int flightSeatId,
+    string category,
+    int passengerId,
+    decimal seatPrice,   // new parameter for seat price
+    out int bookingId,
+    out string error)
         {
             bookingId = 0;
             error = "";
@@ -33,8 +34,8 @@ WHERE id=@sid AND flight_id=@fid AND is_booked=0
 FOR UPDATE;";
 
             const string insertBooking = @"
-INSERT INTO bookings (user_id, flight_id, seat_id, flight_seat_id, passenger_id, status)
-VALUES (@uid, @fid, @sid, @sid, @pid, 'Confirmed');";
+INSERT INTO bookings (user_id, flight_id, seat_id, flight_seat_id, passenger_id, status, seat_price)
+VALUES (@uid, @fid, @sid, @sid, @pid, 'Confirmed', @price);";
 
             const string bookSeat = @"
 UPDATE flight_seats SET is_booked=1, passenger_id=@pid WHERE id=@sid;";
@@ -60,13 +61,15 @@ UPDATE flight_seats SET is_booked=1, passenger_id=@pid WHERE id=@sid;";
                     }
                 }
 
-                // 2️⃣ Insert booking
+                // 2️⃣ Insert booking with seat price
                 using (var cmd = new MySqlCommand(insertBooking, conn, tx))
                 {
                     cmd.Parameters.AddWithValue("@uid", userId);
                     cmd.Parameters.AddWithValue("@fid", flightId);
                     cmd.Parameters.AddWithValue("@sid", flightSeatId);
                     cmd.Parameters.AddWithValue("@pid", passengerId);
+                    cmd.Parameters.AddWithValue("@price", seatPrice); // ✅ correct
+
                     cmd.ExecuteNonQuery();
                     bookingId = (int)cmd.LastInsertedId;
                 }
@@ -89,13 +92,14 @@ UPDATE flight_seats SET is_booked=1, passenger_id=@pid WHERE id=@sid;";
             }
         }
 
+
         public List<Booking> GetBookingsForUser(User user)
         {
             var list = new List<Booking>();
 
             const string sql = @"
 SELECT 
-    b.id AS booking_id,    -- ← change this if the column is 'id'
+    b.id AS id,    -- ← change this if the column is 'id'
     b.status,
     f.id AS flight_id,
     f.from_city,
@@ -141,7 +145,7 @@ WHERE b.user_id = @uid;
                 );
 
                 var booking = new Booking(
-                    r.GetInt32("booking_id"),
+                    r.GetInt32("id"),
                     user,          // ✅ injected properly
                     flight,
                     seat,
@@ -160,10 +164,10 @@ WHERE b.user_id = @uid;
             error = "";
 
             const string getSeat = @"
-SELECT flight_seat_id FROM bookings WHERE booking_id=@bid FOR UPDATE;";
+SELECT flight_seat_id FROM bookings WHERE id=@bid FOR UPDATE;";
 
             const string cancelBooking = @"
-UPDATE bookings SET status='Cancelled' WHERE booking_id=@bid;";
+UPDATE bookings SET status='Cancelled' WHERE id=@bid;";
 
             const string freeSeat = @"
 UPDATE flight_seats SET is_booked=0, passenger_id=NULL WHERE id=@sid;";
@@ -215,7 +219,7 @@ UPDATE flight_seats SET is_booked=0, passenger_id=NULL WHERE id=@sid;";
             var list = new List<int>();
 
             const string sql = @"
-SELECT booking_id
+SELECT id
 FROM bookings
 WHERE flight_id = @fid AND status <> 'Cancelled';";
 
@@ -226,7 +230,7 @@ WHERE flight_id = @fid AND status <> 'Cancelled';";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
-                list.Add(reader.GetInt32("booking_id"));
+                list.Add(reader.GetInt32("id"));
 
             return list;
         }

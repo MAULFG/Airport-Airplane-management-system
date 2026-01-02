@@ -115,7 +115,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             BackColor = Color.White;
             Controls.Add(panelMain);
             Name = "MainUserPage";
-            Size = new Size(963, 683);
+            Size = new Size(1030, 720);
             panelMain.ResumeLayout(false);
             panelFooter.ResumeLayout(false);
             panelFooter.PerformLayout();

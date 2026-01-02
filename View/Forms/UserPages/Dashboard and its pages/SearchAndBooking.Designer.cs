@@ -59,7 +59,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelSearch.Name = "panelSearch";
             panelSearch.Padding = new Padding(15);
             panelSearch.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            panelSearch.Size = new Size(963, 91);
+            panelSearch.Size = new Size(1030, 91);
             panelSearch.TabIndex = 1;
             // 
             // flowFilters
@@ -76,7 +76,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowFilters.Location = new Point(15, 15);
             flowFilters.Name = "flowFilters";
             flowFilters.Padding = new Padding(5);
-            flowFilters.Size = new Size(933, 61);
+            flowFilters.Size = new Size(1000, 61);
             flowFilters.TabIndex = 0;
             // 
             // cbFrom
@@ -90,7 +90,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cbFrom.Font = new Font("Segoe UI", 10F);
             cbFrom.ForeColor = Color.FromArgb(68, 88, 112);
             cbFrom.ItemHeight = 30;
-            cbFrom.Items.AddRange(new object[] { "Select From", "New York", "London", "Paris", "Dubai" });
+            cbFrom.Items.AddRange(new object[] {  "New York", "London", "Paris", "Dubai" });
             cbFrom.Location = new Point(10, 10);
             cbFrom.Margin = new Padding(5);
             cbFrom.Name = "cbFrom";
@@ -111,7 +111,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cbTo.Font = new Font("Segoe UI", 10F);
             cbTo.ForeColor = Color.FromArgb(68, 88, 112);
             cbTo.ItemHeight = 30;
-            cbTo.Items.AddRange(new object[] { "Select To", "Tokyo", "Berlin", "Dubai", "London" });
+            cbTo.Items.AddRange(new object[] {  "Tokyo", "Berlin", "Dubai", "London" });
             cbTo.Location = new Point(145, 10);
             cbTo.Margin = new Padding(5);
             cbTo.Name = "cbTo";
@@ -134,6 +134,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             dtDeparture.BorderRadius = 10;
             dtDeparture.CausesValidation = false;
+            dtDeparture.Checked = true;
             dtDeparture.CustomizableEdges = customizableEdges5;
             dtDeparture.FillColor = Color.DarkCyan;
             dtDeparture.Font = new Font("Segoe UI", 9F);
@@ -145,7 +146,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             dtDeparture.Name = "dtDeparture";
             dtDeparture.ShadowDecoration.CustomizableEdges = customizableEdges6;
             dtDeparture.ShowCheckBox = true;
-            dtDeparture.Checked = false;
             dtDeparture.Size = new Size(125, 36);
             dtDeparture.TabIndex = 5;
             dtDeparture.Value = new DateTime(2025, 12, 28, 12, 49, 44, 87);
@@ -189,7 +189,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cbClass.Font = new Font("Segoe UI", 10F);
             cbClass.ForeColor = Color.FromArgb(68, 88, 112);
             cbClass.ItemHeight = 30;
-            cbClass.Items.AddRange(new object[] { "Select Class", "Economy", "Business", "First" });
+            cbClass.Items.AddRange(new object[] {  "Economy", "Business", "First" });
             cbClass.Location = new Point(635, 10);
             cbClass.Margin = new Padding(5);
             cbClass.Name = "cbClass";
@@ -217,12 +217,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             flowFlights.AutoScroll = true;
             flowFlights.BackColor = Color.White;
+            flowFlights.Dock = DockStyle.Fill;
             flowFlights.FlowDirection = FlowDirection.TopDown;
             flowFlights.Location = new Point(0, 91);
             flowFlights.Name = "flowFlights";
             flowFlights.Padding = new Padding(10);
             flowFlights.RightToLeft = RightToLeft.Yes;
-            flowFlights.Size = new Size(963, 592);
+            flowFlights.Size = new Size(1030, 629);
             flowFlights.TabIndex = 0;
             flowFlights.WrapContents = false;
             flowFlights.Paint += flowFlights_Paint;
@@ -233,7 +234,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Controls.Add(flowFlights);
             Controls.Add(panelSearch);
             Name = "SearchAndBooking";
-            Size = new Size(963, 683);
+            Size = new Size(1030, 720);
             panelSearch.ResumeLayout(false);
             flowFilters.ResumeLayout(false);
             flowFilters.PerformLayout();

@@ -41,13 +41,15 @@ namespace Airport_Airplane_management_system.Model.Services
             }
 
             bool success = _repo.CreateBooking(
-                user.UserID,
-                flight.FlightID,
-                seat.Id,
-                seat.ClassType,
-                passengerId,
-                out int bookingId,
-                out error);
+    user.UserID,
+    flight.FlightID,
+    seat.Id,
+    seat.ClassType,
+    passengerId,
+    seat.SeatPrice,   // ✅ pass the seat-specific price
+    out int bookingId,
+    out error);
+
 
             if (success)
             {

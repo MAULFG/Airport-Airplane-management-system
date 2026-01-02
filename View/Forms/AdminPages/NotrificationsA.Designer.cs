@@ -30,12 +30,12 @@
         {
             SuspendLayout();
             // 
-            // AdminNotrifications
+            // NotrificationsA
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Name = "AdminNotrifications";
-            Size = new Size(963, 683);
+            Name = "NotrificationsA";
+            Size = new Size(1280, 720);
             ResumeLayout(false);
         }
 

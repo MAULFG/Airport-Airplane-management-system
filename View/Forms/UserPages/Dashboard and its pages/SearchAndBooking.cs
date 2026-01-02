@@ -21,6 +21,79 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     c.Width = flowFlights.ClientSize.Width - 50; // adjust width dynamically
                 }
             };
+            // Add placeholder items first
+            cbFrom.Items.Insert(0, "Select From");
+            cbTo.Items.Insert(0, "Select To");
+            cbClass.Items.Insert(0, "Select Class");
+
+            // Set selected index to 0 so placeholder shows initially
+            cbFrom.SelectedIndex = 0;
+            cbTo.SelectedIndex = 0;
+            cbClass.SelectedIndex = 0;
+
+            // Optional: make placeholder gray
+            cbFrom.ForeColor = Color.Gray;
+            cbTo.ForeColor = Color.Gray;
+            cbClass.ForeColor = Color.Gray;
+
+            // Handle the DrawItem event to show placeholder in gray and others in black
+            cbFrom.DrawItem += (s, e) =>
+            {
+                e.DrawBackground();
+                Color textColor = (e.Index == 0) ? Color.Gray : Color.Black;
+                using (SolidBrush br = new SolidBrush(textColor))
+                {
+                    e.Graphics.DrawString(cbFrom.Items[e.Index].ToString(), e.Font, br, e.Bounds);
+                }
+                e.DrawFocusRectangle();
+            };
+
+            cbTo.DrawItem += (s, e) =>
+            {
+                e.DrawBackground();
+                Color textColor = (e.Index == 0) ? Color.Gray : Color.Black;
+                using (SolidBrush br = new SolidBrush(textColor))
+                {
+                    e.Graphics.DrawString(cbTo.Items[e.Index].ToString(), e.Font, br, e.Bounds);
+                }
+                e.DrawFocusRectangle();
+            };
+
+            cbClass.DrawItem += (s, e) =>
+            {
+                e.DrawBackground();
+                Color textColor = (e.Index == 0) ? Color.Gray : Color.Black;
+                using (SolidBrush br = new SolidBrush(textColor))
+                {
+                    e.Graphics.DrawString(cbClass.Items[e.Index].ToString(), e.Font, br, e.Bounds);
+                }
+                e.DrawFocusRectangle();
+            };
+
+            // Optional: prevent user from selecting the placeholder as a valid option
+            cbFrom.SelectedIndexChanged += (s, e) =>
+            {
+                if (cbFrom.SelectedIndex == 0)
+                    cbFrom.ForeColor = Color.Gray;
+                else
+                    cbFrom.ForeColor = Color.Black;
+            };
+
+            cbTo.SelectedIndexChanged += (s, e) =>
+            {
+                if (cbTo.SelectedIndex == 0)
+                    cbTo.ForeColor = Color.Gray;
+                else
+                    cbTo.ForeColor = Color.Black;
+            };
+
+            cbClass.SelectedIndexChanged += (s, e) =>
+            {
+                if (cbClass.SelectedIndex == 0)
+                    cbClass.ForeColor = Color.Gray;
+                else
+                    cbClass.ForeColor = Color.Black;
+            };
 
             // Bind button click to event
             btnSearch.Click += (s, e) => SearchClicked?.Invoke(this, EventArgs.Empty);

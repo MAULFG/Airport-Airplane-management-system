@@ -1,11 +1,15 @@
-﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+﻿
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter.AdminPages;
 using Airport_Airplane_management_system.Presenter.AdminPagesPresenters;
+using Airport_Airplane_management_system.Repositories;
 using Airport_Airplane_management_system.View.Interfaces;
 using Guna.UI2.WinForms;
+using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,19 +35,50 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private readonly INavigationService _navigation;
         private readonly AdminDashboardPresenter _presenter;
         private CrewManagementPresenter _crewpresenter;
+        private FlightManagementPresenter _flightmpresenter;
+        private PassengerManagementPresenter _passengermanagementpresenter;
+        private PlaneManagementPresenter _planepresenter;
+        private ReportsPresenter _reportspresenter;
+        private MainAPresenter _mainapresenter;
         private readonly IFlightRepository flightRepo;
+        private readonly IPlaneRepository planeRepo;
+        private readonly IUserRepository userRepo;
+        private readonly IBookingRepository bookRepo;
         private readonly ICrewRepository crewRepo;
+        private readonly IPassengerRepository passRepo;
+        private readonly ReportsService reportsService;
+        private readonly IAppSession session;
         private readonly CrewService crewService;
+        private readonly FlightService flightService;
+        private readonly PlaneService planeService;
+        private readonly PassengerService passService;
+        private readonly BookingService bookingService;
         public AdminDashboard(INavigationService navigation)
         {
             
             InitializeComponent();
+            session = new AppSession();
             _navigation = navigation;
             _presenter = new AdminDashboardPresenter(this, navigation);
             flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            userRepo =new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            bookRepo =new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            passRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             crewService = new CrewService(crewRepo, flightRepo);
+            passService = new PassengerService(passRepo, session);
+            bookingService =new BookingService(bookRepo,session);
+            planeService = new PlaneService(planeRepo, flightRepo);
+            flightService = new FlightService(flightRepo, userRepo, bookRepo, planeRepo,session);
+            reportsService = new ReportsService(flightRepo, planeRepo, crewRepo);
+            _reportspresenter = new ReportsPresenter(reports1, reportsService);
+            _mainapresenter = new MainAPresenter(maina1, flightRepo, planeRepo, crewRepo, passRepo, bookRepo);
             _crewpresenter = new CrewManagementPresenter(crewManagement1, crewService);
+            _flightmpresenter = new FlightManagementPresenter(flightManagement1, flightService);
+            _passengermanagementpresenter = new PassengerManagementPresenter(passengerMangement1, passService, () => flightRepo.CountUpcomingFlightsNotFullyBooked());
+            _planepresenter = new PlaneManagementPresenter(planeManagements1, planeRepo);
+            
             HideAllPanels();
             InitializeButtonEvents();
             MainA();

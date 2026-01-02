@@ -35,7 +35,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Name = "UserAccount";
-            Size = new Size(963, 683);
+            Size = new Size(1030, 720);
             ResumeLayout(false);
         }
 

@@ -100,7 +100,7 @@ ORDER BY p.full_name;";
 
         public List<PassengerBookingRow> GetBookingsForPassenger(int passengerId)
         {
-            const string sql = @"SELECT b.booking_id, b.flight_id, b.flight_seat_id, b.category, b.status, fs.seat_number, f.from_city, f.to_city, f.departure, f.arrival
+            const string sql = @"SELECT b.id, b.flight_id, b.flight_seat_id,  b.status, fs.seat_number, f.from_city, f.to_city, f.departure, f.arrival
               FROM bookings b JOIN flights f       ON f.id = b.flight_id JOIN flight_seats fs ON fs.id = b.flight_seat_id WHERE b.passenger_id = @pid ORDER BY f.departure DESC;";
 
             var list = new List<PassengerBookingRow>();
@@ -115,10 +115,9 @@ ORDER BY p.full_name;";
             {
                 list.Add(new PassengerBookingRow
                 {
-                    BookingId = Convert.ToInt32(r["booking_id"]),
+                    BookingId = Convert.ToInt32(r["id"]),
                     FlightId = Convert.ToInt32(r["flight_id"]),
                     FlightSeatId = Convert.ToInt32(r["flight_seat_id"]),
-                    Category = r["category"]?.ToString() ?? "",
                     Status = r["status"]?.ToString() ?? "",
                     SeatNumber = r["seat_number"]?.ToString() ?? "",
                     FromCity = r["from_city"]?.ToString() ?? "",
@@ -160,7 +159,7 @@ ORDER BY p.full_name;";
                 int seatId;
                 string status;
 
-                const string readSql = @"SELECT flight_seat_id, status FROM bookings WHERE booking_id=@bid FOR UPDATE;";
+                const string readSql = @"SELECT flight_seat_id, status FROM bookings WHERE id=@bid FOR UPDATE;";
                 using (var cmd = new MySqlCommand(readSql, con, tx))
                 {
                     cmd.Parameters.AddWithValue("@bid", bookingId);
@@ -185,7 +184,7 @@ ORDER BY p.full_name;";
                 }
 
                 // Cancel booking
-                const string cancelSql = @"UPDATE bookings SET status='Cancelled' WHERE booking_id=@bid;";
+                const string cancelSql = @"UPDATE bookings SET status='Cancelled' WHERE id=@bid;";
                 using (var cmd = new MySqlCommand(cancelSql, con, tx))
                 {
                     cmd.Parameters.AddWithValue("@bid", bookingId);

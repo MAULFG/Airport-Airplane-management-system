@@ -58,11 +58,44 @@ namespace Airport_Airplane_management_system.Presenter
             }
 
             _selectedSeat = seat;
-            decimal price = _flight.GetSeatPrice(seat.ClassType);
 
-            _view.ShowSelectedSeat(seat, price);
-           
+            // Base price from flight by class
+            decimal basePrice = _flight.GetSeatPrice(seat.ClassType);
+
+            // Optional: add window seat surcharge (+20%)
+            decimal priceWithSurcharge = basePrice;
+            if (IsWindowSeat(seat, _flight))
+                priceWithSurcharge += basePrice * 0.20m;
+
+            _view.ShowSelectedSeat(seat, priceWithSurcharge);
         }
+
+        // Helper: detect window seat
+        private bool IsWindowSeat(FlightSeats seat, Flight flight)
+        {
+            string seatLetter = new string(seat.SeatNumber.SkipWhile(char.IsDigit).ToArray()).ToUpper();
+            string model = flight.Plane.Model.ToLower();
+
+            if (model.Contains("a320"))
+                return seatLetter == "A" || seatLetter == "F";
+
+            if (model.Contains("777"))
+            {
+                return seat.ClassType switch
+                {
+                    "First" => seatLetter == "A" || seatLetter == "D",
+                    "Business" => seatLetter == "A" || seatLetter == "F",
+                    "Economy" => seatLetter == "A" || seatLetter == "J",
+                    _ => false
+                };
+            }
+
+            if (model.Contains("g650"))
+                return seatLetter == "A" || seatLetter == "B";
+
+            return false;
+        }
+
 
         private void OnConfirmBooking()
         {

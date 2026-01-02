@@ -28,7 +28,7 @@ namespace Airport_Airplane_management_system
             IAppSession session = new AppSession();
           
             var userService = new UserService(userRepo, session);
-            var flightService = new FlightService(flightRepo, userRepo,bookingRepo,planeRepo, session);
+            var flightService = new FlightService(flightRepo, userRepo,bookingRepo,planeRepo,session);
             var bookingService = new BookingService(bookingRepo, session);
 
             // To customize application configuration such as set high DPI settings or default font,
