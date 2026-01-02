@@ -69,7 +69,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             _upcomingFlightsPresenter = new UpcomingFlightsPresenter(upcomingFlights1, _flightService,_presenter);
             _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1, _flightService, _navigation, _presenter);
-            _myTicketsPresenter = new MyTicketsPresenter(myTicketsBookingHistory1, _myTicketsService);
+            _myTicketsPresenter = new MyTicketsPresenter(myTicketsBookingHistory1, _myTicketsService,session);
             // Add all designer panels to panelMain
             panelMain.Controls.Add(mainUserPage1);
             panelMain.Controls.Add(upcomingFlights1);
@@ -151,7 +151,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         // Optional: you can use these if you need events from the presenter
         public void UpcomingFlights() => ShowOnly(upcomingFlights1, btnUpcomingFlights);
         public void SearchBook() => ShowOnly(searchAndBooking1, btnSearchBook);
-        public void MyTickets() => ShowOnly(myTicketsBookingHistory1, btnMyTickets);
+        public void MyTickets()
+        {
+            // Ensure the control is initialized first
+            myTicketsBookingHistory1.Initialize(_navigation, _session);
+
+            ShowOnly(myTicketsBookingHistory1, btnMyTickets);
+        }
+
         public void Notifications() => ShowOnly(notifications1, btnNotifications);
         public void UserSettings() => ShowOnly(userSettings1, Settings);
         public void UserAccount() => ShowOnly(userAccount1, Account);
