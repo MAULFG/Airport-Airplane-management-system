@@ -1,12 +1,9 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
-using Airport_Airplane_management_system.Model.Services;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using Airport_Airplane_management_system.Model.Repositories;
-
 
 namespace Airport_Airplane_management_system.Model.Repositories
 {
@@ -23,13 +20,11 @@ namespace Airport_Airplane_management_system.Model.Repositories
         {
             const string sql = @"
 SELECT
-    b.booking_id,
+    b.id AS booking_id,
     b.flight_id,
     b.flight_seat_id,
     b.passenger_id,
-    b.category,
     b.status,
-    b.created_at,
 
     f.from_city,
     f.to_city,
@@ -59,7 +54,7 @@ ORDER BY f.departure DESC;
             using var r = cmd.ExecuteReader();
             while (r.Read())
             {
-                string category = r["category"]?.ToString() ?? "";
+                string classType = r["class_type"]?.ToString() ?? "Economy";
 
                 list.Add(new MyTicketRow
                 {
@@ -81,14 +76,10 @@ ORDER BY f.departure DESC;
                     Arrival = Convert.ToDateTime(r["arrival"]),
 
                     SeatNumber = r["seat_number"].ToString(),
-                    ClassType = r["class_type"].ToString(),
-                    Category = category,
+                    ClassType = classType,
                     Status = r["status"].ToString(),
 
-                    Price = GetPriceFromConfig(category),
-                    CreatedAt = r["created_at"] == DBNull.Value
-                        ? DateTime.MinValue
-                        : Convert.ToDateTime(r["created_at"])
+                    Price = GetPriceFromConfig(classType)
                 });
             }
 
@@ -110,7 +101,7 @@ ORDER BY f.departure DESC;
                 const string readSql = @"
 SELECT flight_seat_id
 FROM bookings
-WHERE booking_id=@bid AND user_id=@uid
+WHERE id=@bid AND user_id=@uid
 FOR UPDATE;";
 
                 using (var cmd = new MySqlCommand(readSql, conn, tx))
@@ -129,7 +120,7 @@ FOR UPDATE;";
                     seatId = Convert.ToInt32(result);
                 }
 
-                const string cancelBooking = @"UPDATE bookings SET status='Cancelled' WHERE booking_id=@bid;";
+                const string cancelBooking = @"UPDATE bookings SET status='Cancelled' WHERE id=@bid;";
                 using (var cmd = new MySqlCommand(cancelBooking, conn, tx))
                 {
                     cmd.Parameters.AddWithValue("@bid", bookingId);
@@ -144,8 +135,6 @@ FOR UPDATE;";
                 }
 
                 tx.Commit();
-                // create notification after successful cancel
-                
                 return true;
             }
             catch (Exception ex)
@@ -156,9 +145,9 @@ FOR UPDATE;";
             }
         }
 
-        private decimal GetPriceFromConfig(string category)
+        private decimal GetPriceFromConfig(string classType)
         {
-            string key = category switch
+            string key = classType switch
             {
                 "Economy" => "PriceEconomy",
                 "Business" => "PriceBusiness",

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Services;
+using MySqlX.XDevAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Airport_Airplane_management_system.Model.Core.Classes;
-using Airport_Airplane_management_system.Model.Services;
-using Airport_Airplane_management_system.Model.Interfaces.Views;
 
 namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 {
@@ -11,26 +13,31 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
     {
         private readonly IMyTicketsView _view;
         private readonly MyTicketsService _service;
-
+        private readonly IAppSession _session;
         private List<MyTicketRow> _allTickets = new();
 
-        public MyTicketsPresenter(IMyTicketsView view, MyTicketsService service)
+        public MyTicketsPresenter(IMyTicketsView view, MyTicketsService service,IAppSession session)
         {
             _view = view;
             _service = service;
-
+            _session = session ?? throw new ArgumentNullException(nameof(session));
             _view.ViewLoaded += OnLoad;
             _view.RefreshClicked += OnLoad;
             _view.FilterChanged += ApplyFilter;
             _view.SearchChanged += ApplyFilter;
             _view.CancelClicked += OnCancel;
         }
-
         private void OnLoad()
         {
             try
             {
-                _allTickets = _service.LoadTickets(_view.UserId);
+                if (_session.CurrentUser == null)
+                {
+                    _view.ShowError("No user is logged in.");
+                    return;
+                }
+
+                _allTickets = _service.LoadTickets(_session.CurrentUser.UserID);
                 ApplyFilter();
             }
             catch (Exception ex)
@@ -38,6 +45,9 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
                 _view.ShowError(ex.Message);
             }
         }
+
+    
+
 
         private void ApplyFilter()
         {
@@ -51,22 +61,15 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             {
                 if (string.Equals(filter, "Upcoming", StringComparison.OrdinalIgnoreCase))
                 {
-                    rows = rows
-                        .Where(r => r.Departure >= DateTime.Now)
-                        .ToList();
+                    rows = rows.Where(r => r.Departure >= DateTime.Now).ToList();
                 }
                 else if (string.Equals(filter, "Past", StringComparison.OrdinalIgnoreCase))
                 {
-                    rows = rows
-                        .Where(r => r.Departure < DateTime.Now)
-                        .ToList();
+                    rows = rows.Where(r => r.Departure < DateTime.Now).ToList();
                 }
                 else
                 {
-                    // Confirmed / Pending / Cancelled
-                    rows = rows
-                        .Where(r => string.Equals(r.Status, filter, StringComparison.OrdinalIgnoreCase))
-                        .ToList();
+                    rows = rows.Where(r => string.Equals(r.Status, filter, StringComparison.OrdinalIgnoreCase)).ToList();
                 }
             }
 
@@ -85,7 +88,6 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _view.BindTickets(rows);
         }
 
-
         private void OnCancel()
         {
             try
@@ -100,7 +102,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
                     return;
 
                 bool ok = _service.CancelTicket(
-                    _view.UserId,
+                    _session.CurrentUser.UserID, // use session here
                     _view.SelectedBookingId.Value,
                     out string error);
 
@@ -118,6 +120,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
                 _view.ShowError(ex.Message);
             }
         }
+
         private List<MyTicketRow> ApplyFilterAndSearch(List<MyTicketRow> rows)
         {
             var filter = (_view.Filter ?? "All").Trim();
@@ -127,18 +130,11 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             if (!string.Equals(filter, "All", StringComparison.OrdinalIgnoreCase))
             {
                 if (string.Equals(filter, "Upcoming", StringComparison.OrdinalIgnoreCase))
-                {
                     rows = rows.Where(r => r.Departure >= DateTime.Now).ToList();
-                }
                 else if (string.Equals(filter, "Past", StringComparison.OrdinalIgnoreCase))
-                {
                     rows = rows.Where(r => r.Departure < DateTime.Now).ToList();
-                }
                 else
-                {
-                    // Confirmed / Pending / Cancelled
                     rows = rows.Where(r => string.Equals(r.Status, filter, StringComparison.OrdinalIgnoreCase)).ToList();
-                }
             }
 
             // ---- SEARCH ----
@@ -155,6 +151,5 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
             return rows;
         }
-
     }
 }

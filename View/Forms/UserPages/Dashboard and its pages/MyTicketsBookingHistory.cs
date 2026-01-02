@@ -59,7 +59,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _session = session ?? throw new ArgumentNullException(nameof(session));
             _repo = new MySqlMyTicketsRepository(connStr);
             _service = new MyTicketsService(_repo);
-            _presenter = new MyTicketsPresenter(this, _service);
+            _presenter = new MyTicketsPresenter(this, _service,_session);
 
             _initialized = true;
         }
@@ -79,7 +79,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         // ===================== IMyTicketsView =====================
-        public int UserId => _session.CurrentUser?.UserID ?? 0; // 0 if no user logged in
+        private IAppSession Session => _session ?? throw new InvalidOperationException("Session is not initialized");
+        public int UserId => Session.CurrentUser?.UserID ?? 0;
         public string Filter => cmbFilter.SelectedItem?.ToString() ?? "All";
         public string SearchText => txtSearch.Text ?? "";
         public int? SelectedBookingId => _selectedBookingId;
@@ -92,45 +93,30 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         public void BindTickets(List<MyTicketRow> rows)
         {
+            rows ??= new List<MyTicketRow>();
+
             flowTickets.SuspendLayout();
-            flowTickets.Visible = false; // ✅ prevents redraw flicker while rebuilding
+            flowTickets.Controls.Clear();
+            _selectedBookingId = null;
 
-            try
+            lblCount.Text = $"Tickets ({rows.Count})";
+
+            
+
+            if (rows.Count == 0)
             {
-                flowTickets.Controls.Clear();
-                _selectedBookingId = null;
-
-                lblCount.Text = $"Tickets ({rows.Count})";
-                pnlEmpty.Visible = rows.Count == 0;
-
-                if (rows.Count == 0)
-                {
-                    flowTickets.Controls.Add(pnlEmpty);
-                    return;
-                }
-
-                foreach (var r in rows)
-                    flowTickets.Controls.Add(CreateTicketCard(r));
-
-                FixCardsWidth();
-                TryFocusBookingCard();
-            }
-            finally
-            {
-                flowTickets.Visible = true;
                 flowTickets.ResumeLayout(true);
-
-                FixCardsWidth();
-                // ForceFlowScrollRecalc();   // ✅ ADD THIS
-
-                flowTickets.Invalidate();
-                flowTickets.Update();
+                return;
             }
 
+            foreach (var r in rows)
+                flowTickets.Controls.Add(CreateTicketCard(r));
+
+            FixCardsWidth();
+            TryFocusBookingCard();
+
+            flowTickets.ResumeLayout(true);
         }
-
-
-
         public bool Confirm(string message)
         {
             return MessageBox.Show(
