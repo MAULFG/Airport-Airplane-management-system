@@ -103,6 +103,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 firstMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" } };
                 businessMap = null;
                 economyMap = null; // usually not used
+            }else
+            {
+                totalColumns = 9;
+                firstMap = new Dictionary<int, string> { { 2, "A" }, { 3, "B" }, { 4, "C" }, { 5, "D" } };
+                businessMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, {3, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" } };
+                economyMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" }, { 2, "C" }, { 3, "D" }, { 4, "E" }, { 5, "F" }, { 6, "G" }, { 7, "H" }, { 8, "I" } };
+
             }
             _currentFlight = flight;
             // Create table
@@ -252,8 +259,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             {
                 return seatLetter == "A" || seatLetter == "B";
             }
+            else
+            {
+                return seat.ClassType switch
+                {
+                    "First" => seatLetter == "A" || seatLetter == "D",
+                    "Business" => seatLetter == "A" || seatLetter == "F",
+                    "Economy" => seatLetter == "A" || seatLetter == "J",
+                    _ => false
+                };
+            }
 
-            return false;
+            
         }
 
 

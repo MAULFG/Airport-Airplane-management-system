@@ -1,4 +1,5 @@
-﻿using Guna.UI2.WinForms;
+﻿using Airport_Airplane_management_system.View.Forms.UserPages.Booking_pages;
+using Guna.UI2.WinForms;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -65,6 +66,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblStatusKey = new Guna2HtmlLabel();
             lblStatusValue = new Guna2HtmlLabel();
             flowSeats = new FlowLayoutPanel();
+            passengerDetails1 = new PassengerDetails();
             panelHeader.SuspendLayout();
             panelMain.SuspendLayout();
             panelSummary.SuspendLayout();
@@ -103,6 +105,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.BackColor = Color.Transparent;
             panelMain.Controls.Add(panelSummary);
             panelMain.Controls.Add(flowSeats);
+            panelMain.Controls.Add(passengerDetails1);
             panelMain.Dock = DockStyle.Fill;
             panelMain.FillColor = Color.White;
             panelMain.Location = new Point(0, 70);
@@ -294,6 +297,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowSeats.TabIndex = 1;
             flowSeats.WrapContents = false;
             flowSeats.Paint += flowSeats_Paint;
+            // 
+            // passengerDetails1
+            // 
+            passengerDetails1.Dock = DockStyle.Fill;
+            passengerDetails1.Location = new Point(20, 20);
+            passengerDetails1.Name = "passengerDetails1";
+            passengerDetails1.Size = new Size(1142, 640);
+            passengerDetails1.TabIndex = 2;
             // 
             // BookingPage
             // 
