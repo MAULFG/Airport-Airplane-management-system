@@ -105,7 +105,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.BackColor = Color.Transparent;
             panelMain.Controls.Add(panelSummary);
             panelMain.Controls.Add(flowSeats);
-            panelMain.Controls.Add(passengerDetails1);
             panelMain.Dock = DockStyle.Fill;
             panelMain.FillColor = Color.White;
             panelMain.Location = new Point(0, 70);
@@ -301,9 +300,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // passengerDetails1
             // 
             passengerDetails1.Dock = DockStyle.Fill;
-            passengerDetails1.Location = new Point(20, 20);
+            passengerDetails1.Location = new Point(0, 0);
             passengerDetails1.Name = "passengerDetails1";
-            passengerDetails1.Size = new Size(1142, 640);
+            passengerDetails1.Size = new Size(1182, 750);
             passengerDetails1.TabIndex = 2;
             // 
             // BookingPage
@@ -312,6 +311,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             ClientSize = new Size(1182, 750);
             Controls.Add(panelMain);
             Controls.Add(panelHeader);
+            Controls.Add(passengerDetails1);
             Name = "BookingPage";
             Load += BookingPage_Load;
             panelHeader.ResumeLayout(false);
