@@ -142,9 +142,6 @@
   <data name="Settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="image1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\..\Downloads\20251207_1546_Bright Aircraft Projection_remix_01kbwgxc06e188phq5btzm9v2n (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="notrification" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\notrification.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -210,5 +207,8 @@
   </data>
   <data name="passenger" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\..\Downloads\person_200dp_1A2C3F_FILL0_wght400_GRAD0_opsz48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="image1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\20251207_1546_Bright Aircraft Projection_remix_01kbwgxc06e188phq5btzm9v2n (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
