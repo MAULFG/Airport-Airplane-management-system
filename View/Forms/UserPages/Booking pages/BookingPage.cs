@@ -216,14 +216,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
             lblSeatValue.Text = seat.SeatNumber;
             lblClassValue.Text = seat.ClassType;
+            decimal price = seat.SeatPrice;
+            if (IsWindowSeat(seat, _currentFlight))
+                price += price * 0.20m;
 
-            decimal price = seat.SeatPrice; // ✅ always use the seat-specific price
+             
             decimal tax = price * 0.10m;
             decimal total = price + tax;
+            
+            
 
-            // Optional: window seat surcharge
-            if (IsWindowSeat(seat, _currentFlight))
-                total += price * 0.20m;
 
             lblBasePriceValue.Text = $"Base: ${price:0.00}";
             lblTaxValue.Text = $"Tax: ${tax:0.00}";
@@ -243,7 +245,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             if (model.Contains("a320"))
             {
-                return seatLetter == "A" || seatLetter == "F";
+                return seat.ClassType switch
+                {
+                    "Business" => seatLetter == "A" || seatLetter == "D",
+                    "Economy" => seatLetter == "A" || seatLetter == "F",
+                    _ => false
+                };
             }
             else if (model.Contains("777"))
             {
@@ -251,7 +258,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 {
                     "First" => seatLetter == "A" || seatLetter == "D",
                     "Business" => seatLetter == "A" || seatLetter == "F",
-                    "Economy" => seatLetter == "A" || seatLetter == "J",
+                    "Economy" => seatLetter == "A" || seatLetter == "I",
                     _ => false
                 };
             }
@@ -265,7 +272,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 {
                     "First" => seatLetter == "A" || seatLetter == "D",
                     "Business" => seatLetter == "A" || seatLetter == "F",
-                    "Economy" => seatLetter == "A" || seatLetter == "J",
+                    "Economy" => seatLetter == "A" || seatLetter == "I",
                     _ => false
                 };
             }

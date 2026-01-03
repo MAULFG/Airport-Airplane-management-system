@@ -111,6 +111,7 @@ namespace Airport_Airplane_management_system.Presenter
 
             // Reload seats after booking
             LoadFlight(_flight.FlightID);
+            
         }
     }
 }
