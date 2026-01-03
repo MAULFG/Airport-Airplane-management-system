@@ -58,7 +58,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
         private void OnSettingsClicked(object sender, EventArgs e)
         {
-            _view.UserSettings();
+            _view.UserAccount();
         }
 
         private void OnAccountClicked(object sender, EventArgs e)

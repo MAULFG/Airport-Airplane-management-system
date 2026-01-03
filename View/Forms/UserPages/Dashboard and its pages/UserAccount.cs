@@ -2,7 +2,6 @@
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
-//using Airport_Airplane_management_system.View.Interfaces;
 using Airport_Airplane_management_system.Presenter;
 using Airport_Airplane_management_system.View.Interfaces;
 using System;

@@ -13,7 +13,8 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
         private readonly UserService _userService;
         private readonly FlightService _flightService;
         private readonly INavigationService _navigation;
-        public LoginPresenter(ILoginView view,UserService userService,FlightService flightService,INavigationService navigation)
+        
+       public LoginPresenter(ILoginView view,UserService userService,FlightService flightService,INavigationService navigation)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
@@ -45,6 +46,8 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
                 _view.ClearFields();
                 return;
             }
+            _navigation.SetCurrentUserId(user.UserID);
+            
 
             // 🚀 PRELOAD HEAVY DATA
             _flightService.Preload();

@@ -63,7 +63,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnUpcomingFlights = new Guna.UI2.WinForms.Guna2Button();
             panel1 = new Panel();
             userAccount1 = new UserAccount();
-            userSettings1 = new UserSettings();
+            UserAccount1 = new UserAccount();
             searchAndBooking1 = new SearchAndBooking();
             notifications1 = new Notifications();
             myTicketsBookingHistory1 = new MyTicketsBookingHistory();
@@ -264,13 +264,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             userAccount1.Size = new Size(963, 683);
             userAccount1.TabIndex = 2;
             // 
-            // userSettings1
+            // UserAccount1
             // 
-            userSettings1.Dock = DockStyle.Fill;
-            userSettings1.Location = new Point(250, 0);
-            userSettings1.Name = "userSettings1";
-            userSettings1.Size = new Size(963, 683);
-            userSettings1.TabIndex = 11;
+            UserAccount1.Dock = DockStyle.Fill;
+            UserAccount1.Location = new Point(250, 0);
+            UserAccount1.Name = "UserAccount1";
+            UserAccount1.Size = new Size(963, 683);
+            UserAccount1.TabIndex = 11;
             // 
             // searchAndBooking1
             // 
@@ -342,10 +342,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private Guna.UI2.WinForms.Guna2Button Settings;
         private Guna.UI2.WinForms.Guna2Button logoutuser;
     
-        private UserSettings settings1;
+        private UserAccount settings1;
         private UpcomingFlights upcomingFlights1;
         private UserAccount userAccount1;
-        private UserSettings userSettings1;
+        private UserAccount UserAccount1;
         private SearchAndBooking searchAndBooking1;
         private Notifications notifications1;
         private MyTicketsBookingHistory myTicketsBookingHistory1;

@@ -35,6 +35,7 @@ public partial class Main1 : Form, INavigationService
     private readonly BookingService bookingService;
     private readonly PassengerService passengerService;
     private readonly MyTicketsService myTicketsService;
+    private int _currentUserId;
     public Main1()
     {
         InitializeComponent();
@@ -82,11 +83,10 @@ public partial class Main1 : Form, INavigationService
     }
 
 
-
-
-    
-
-
+    public void SetCurrentUserId(int userId)
+    {
+        _currentUserId = userId;
+    }
 
     public void NavigateToUser()
     {
@@ -131,4 +131,10 @@ public partial class Main1 : Form, INavigationService
     {
 
     }
+    public int GetCurrentUserId()
+    {
+        
+        return _currentUserId;
+    }
+    
 }

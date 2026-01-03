@@ -76,7 +76,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.Controls.Add(searchAndBooking1);
             panelMain.Controls.Add(myTicketsBookingHistory1);
             panelMain.Controls.Add(notifications1);
-            panelMain.Controls.Add(userSettings1);
+            //panelMain.Controls.Add(UserAccount1);
             panelMain.Controls.Add(userAccount1);
 
             HideAllPanels();
@@ -155,13 +155,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             // Ensure the control is initialized first
             myTicketsBookingHistory1.Initialize(_navigation, _session);
-
+            myTicketsBookingHistory1.Activate();
             ShowOnly(myTicketsBookingHistory1, btnMyTickets);
         }
 
         public void Notifications() => ShowOnly(notifications1, btnNotifications);
-        public void UserSettings() => ShowOnly(userSettings1, Settings);
-        public void UserAccount() => ShowOnly(userAccount1, Account);
+        
+        public void UserAccount()
+        {
+            userAccount1.Initialize(_navigation);
+            userAccount1.Activate();
+            ShowOnly(userAccount1, Account);
+        }
         public void ShowMainUser()
         {
             ShowOnly(mainUserPage1, guna2Button1);
