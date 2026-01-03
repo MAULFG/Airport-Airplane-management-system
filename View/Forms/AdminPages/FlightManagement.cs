@@ -4,11 +4,10 @@ using Guna.UI2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Airport_Airplane_management_system.View.Forms.AdminPages
@@ -16,7 +15,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
     public partial class FlightManagement : UserControl, IFlightManagementView
     {
         // MVP events
-        public event Action<int>? PlaneScheduleRequested;
+        public event Action<int> PlaneScheduleRequested;
         public event EventHandler ViewLoaded;
         public event EventHandler AddClicked;
         public event EventHandler UpdateClicked;
@@ -113,7 +112,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // Resize cards
             flow.SizeChanged += (_, __) => RefreshCardsWidth();
 
-            // Plane selection
+            // Plane selection (dropdown)
             cmbPlane.SelectionChangeCommitted += (_, __) =>
             {
                 if (cmbPlane.SelectedItem is PlaneItem pi)
@@ -129,8 +128,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public string ToCity => txtTo.Text;
         public DateTime Departure => dtDeparture.Value;
         public DateTime Arrival => dtArrival.Value;
+
         public int? SelectedPlaneId =>
             cmbPlane.SelectedItem is PlaneItem pi ? pi.PlaneId : (int?)null;
+
         public string CurrentFilter => cmbFilter.SelectedItem?.ToString() ?? "All Flights";
 
         public void SetPlanes(List<Plane> planes)
@@ -193,8 +194,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtTo.Text = f.To;
 
             dtDeparture.Value = f.Departure;
-
-
             dtArrival.Value = f.Arrival;
 
             SelectPlaneInDropdown(f.PlaneIDFromDb);
@@ -272,24 +271,17 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 flow.Controls.Add(card);
             }
 
-            // Add invisible spacer to give room at bottom
-            var spacer = new Panel
-            {
-                Height = 100, // adjust the blank space you want
-                Width = 1,
-                BackColor = Color.Transparent
-            };
-            flow.Controls.Add(spacer);
+            // spacer bottom
+            flow.Controls.Add(new Panel { Height = 100, Width = 1, BackColor = Color.Transparent });
 
             flow.ResumeLayout(true);
         }
-
 
         private void RefreshCardsWidth()
         {
             if (flow == null) return;
 
-            int w = flow.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 10; // adjust for scrollbar
+            int w = flow.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 10;
             foreach (Control c in flow.Controls)
                 c.Width = w;
         }
@@ -372,7 +364,18 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             card.Controls.Add(InfoLine("Departure:", f.Departure.ToString("dd MMM yyyy  HH:mm"), 16, 56));
             card.Controls.Add(InfoLine("Arrival:", f.Arrival.ToString("dd MMM yyyy  HH:mm"), 16, 80));
-            card.Controls.Add(InfoLine("Plane:", $"#{f.PlaneIDFromDb}", 334, 56));
+
+            // ✅ CLICKABLE plane value (button-style link)
+            card.Controls.Add(
+                InfoLineClickableValue(
+                    "Plane:",
+                    $"#{f.PlaneIDFromDb}",
+                    334,
+                    56,
+                    () => PlaneScheduleRequested?.Invoke(f.PlaneIDFromDb)
+                )
+            );
+
             card.Controls.Add(InfoLine("Duration:", GetDurationText(f), 334, 80));
 
             card.SizeChanged += (_, __) =>
@@ -423,6 +426,57 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             p.Controls.Add(l2);
 
             p.SizeChanged += (_, __) => l2.Location = new Point(l1.Right + 6, 2);
+
+            return p;
+        }
+
+        // ✅ FIXED: clickable value is a real button (reliable click)
+        private Control InfoLineClickableValue(string label, string value, int x, int y, Action onValueClick)
+        {
+            var p = new Guna2Panel
+            {
+                BackColor = Color.Transparent,
+                Location = new Point(x, y),
+                Size = new Size(320, 22)
+            };
+
+            var l1 = new Guna2HtmlLabel
+            {
+                Text = label,
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9F),
+                ForeColor = Color.FromArgb(120, 120, 120),
+                Location = new Point(0, 2)
+            };
+
+            // clickable "link"
+            var btnValue = new Guna2Button
+            {
+                Text = value ?? "",
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline),
+                ForeColor = Color.FromArgb(35, 93, 220),
+                FillColor = Color.Transparent,
+                BorderThickness = 0,
+                PressedColor = Color.Transparent,
+                HoverState = { FillColor = Color.Transparent },
+                DisabledState = { FillColor = Color.Transparent },
+                Cursor = Cursors.Hand,
+                Location = new Point(l1.Right + 2, 0),
+                Height = 22,
+                Padding = new Padding(0),
+                Margin = new Padding(0)
+            };
+
+            btnValue.Click += (_, __) => onValueClick?.Invoke();
+
+            p.Controls.Add(l1);
+            p.Controls.Add(btnValue);
+
+            p.SizeChanged += (_, __) =>
+            {
+                btnValue.Location = new Point(l1.Right + 2, 0);
+            };
 
             return p;
         }
@@ -518,8 +572,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             panelScheduleHost.Controls.Clear();
             schedule.Dock = DockStyle.Fill;
             panelScheduleHost.Controls.Add(schedule);
+
             panelScheduleHost.Visible = true;
+
+            // ✅ important: keep overlay above everything
+            panelScheduleHost.BringToFront();
+            schedule.BringToFront();
         }
+
 
         public void HideDockedSchedule()
         {
@@ -547,52 +607,17 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             rowFirst.Visible = hasVip || hasFirst;
         }
 
-
         public void SetFirstLabel(string text)
         {
-            // lblFirst must exist in the designer (the label that currently shows "First")
             lblFirst.Text = text;
         }
 
-
-
-
-        private void FlightManagement_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void flow_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void lblCount_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtTo_TextChanged(object sender, EventArgs e)
-        {
-
-
-
-
-        }
-
-        private void cmbPlane_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rowFirst_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void btnAddOrUpdate_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void FlightManagement_Load(object sender, EventArgs e) { }
+        private void flow_Paint(object sender, PaintEventArgs e) { }
+        private void lblCount_Click(object sender, EventArgs e) { }
+        private void txtTo_TextChanged(object sender, EventArgs e) { }
+        private void cmbPlane_SelectedIndexChanged(object sender, EventArgs e) { }
+        private void rowFirst_Paint(object sender, PaintEventArgs e) { }
+        private void btnAddOrUpdate_Click(object sender, EventArgs e) { }
     }
 }
