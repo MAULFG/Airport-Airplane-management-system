@@ -50,6 +50,7 @@ public partial class Main1 : Form, INavigationService
         planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         myTicketsRepo = new MySqlMyTicketsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         var passengerRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+        var notifRepo = new MySqlUserNotificationsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
 
         // Services
         var userService = new UserService(userRepo, session);

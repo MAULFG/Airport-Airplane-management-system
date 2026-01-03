@@ -1,5 +1,6 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter;
@@ -37,9 +38,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private BookingPresenter _bookingpresenter;
         private Panel panelMain;
         private readonly IAppSession _session;
+        private readonly NotificationsCounterService _notifCounterService;
+        private readonly INotificationsCounterRepository _notifCounterRepo;
         public UserDashboard(MyTicketsService myticketservice ,INavigationService navigation, FlightService flightService, BookingService bookingService, PassengerService passengerService, IAppSession session)
         {
             InitializeComponent();
+
+            CreateNotificationsBadge();
+            _notifCounterRepo = new MySqlNotificationsCounterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _notifCounterService = new NotificationsCounterService(_notifCounterRepo);
 
             _navigation = navigation;
             _flightService = flightService;
@@ -79,9 +86,19 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             //panelMain.Controls.Add(UserAccount1);
             panelMain.Controls.Add(userAccount1);
 
+            RefreshNotificationsBadge();
+
             HideAllPanels();
             ShowMainUser();
             InitializeButtonEvents();
+
+            // When notifications changes, refresh the badge
+            notifications1.BadgeRefreshRequested += () => RefreshNotificationsBadge();
+            notifications1.SeeTicketRequested += (bookingId) =>
+            {
+                MyTickets(); // opens the MyTickets panel
+                myTicketsBookingHistory1.FocusBooking(bookingId); // we add this next
+            };
         }
 
 
@@ -159,8 +176,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             ShowOnly(myTicketsBookingHistory1, btnMyTickets);
         }
 
-        public void Notifications() => ShowOnly(notifications1, btnNotifications);
-        
+        public void Notifications()
+        {
+            notifications1.Initialize(_navigation);
+            notifications1.Activate();
+            ShowOnly(notifications1, btnNotifications);
+            RefreshNotificationsBadge();
+        }
+
         public void UserAccount()
         {
             userAccount1.Initialize(_navigation);
@@ -192,5 +215,74 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
 
         }
+
+        // for bell 
+        private void CreateNotificationsBadge()
+        {
+            _notifBadge = new Guna.UI2.WinForms.Guna2CircleButton
+            {
+                Size = new Size(14, 14),
+                FillColor = Color.Red,
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 7F, FontStyle.Bold),
+                Text = "0",
+                Visible = false,
+                Enabled = false,
+                BorderThickness = 0,
+                ShadowDecoration = { Enabled = false }
+            };
+
+            // put it on side panel
+            guna2Panel1.Controls.Add(_notifBadge);
+            _notifBadge.BringToFront();
+
+            // keep it positioned even if UI resizes
+            btnNotifications.LocationChanged += (_, _) => PositionNotificationsBadge();
+            btnNotifications.SizeChanged += (_, _) => PositionNotificationsBadge();
+            guna2Panel1.SizeChanged += (_, _) => PositionNotificationsBadge();
+
+            PositionNotificationsBadge();
+        }
+
+        private void PositionNotificationsBadge()
+        {
+            if (_notifBadge == null) return;
+
+            // Place it at the TOP-RIGHT corner of the Notifications button
+            int x = btnNotifications.Right - _notifBadge.Width - 18;
+            int y = btnNotifications.Top + 6;
+
+            _notifBadge.Location = new Point(x, y);
+            _notifBadge.BringToFront();
+        }
+
+
+        // ✅ IUserDashboardView implementation
+        public void SetUnreadNotificationsCount(int count)
+        {
+            if (_notifBadge == null) return;
+
+            if (count <= 0)
+            {
+                _notifBadge.Visible = false;
+                return;
+            }
+
+            _notifBadge.Text = count > 99 ? "99+" : count.ToString();
+            _notifBadge.Visible = true;
+            _notifBadge.BringToFront();
+        }
+        private void RefreshNotificationsBadge()
+        {
+            if (_notifCounterService == null) return;
+
+            int count = _notifCounterService.GetUnreadCount(_navigation.GetCurrentUserId());
+            SetUnreadNotificationsCount(count);
+        }
+
+
+
     }
+
 }
+

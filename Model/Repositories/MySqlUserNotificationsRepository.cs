@@ -1,0 +1,232 @@
+﻿using System;
+using System.Collections.Generic;
+using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using MySql.Data.MySqlClient;
+
+namespace Airport_Airplane_management_system.Model.Repositories
+{
+    public class MySqlUserNotificationsRepository : IUserNotificationsRepository
+    {
+        private readonly string _connStr;
+
+        public MySqlUserNotificationsRepository(string connStr)
+        {
+            _connStr = connStr;
+        }
+
+        public List<UserNotificationRow> GetForUser(int userId)
+        {
+            const string sql = @"
+SELECT
+  notification_id,
+  user_id,
+  booking_id,
+  type,
+  title,
+  message,
+  is_read,
+  created_at
+FROM notifications
+WHERE user_id = @uid
+ORDER BY created_at DESC;";
+
+            var list = new List<UserNotificationRow>();
+
+            using var conn = new MySqlConnection(_connStr);
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@uid", userId);
+
+            conn.Open();
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+            {
+                list.Add(new UserNotificationRow
+                {
+                    NotificationId = Convert.ToInt32(r["notification_id"]),
+                    UserId = Convert.ToInt32(r["user_id"]),
+                    BookingId = r["booking_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(r["booking_id"]),
+                    Type = r["type"]?.ToString() ?? "",
+                    Title = r["title"]?.ToString() ?? "",
+                    Message = r["message"]?.ToString() ?? "",
+                    IsRead = Convert.ToInt32(r["is_read"]) == 1,
+                    CreatedAt = Convert.ToDateTime(r["created_at"])
+                });
+            }
+
+            return list;
+        }
+
+        public int GetUnreadCount(int userId)
+        {
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            const string sql = @"SELECT COUNT(*) FROM notifications WHERE user_id=@uid AND is_read=0;";
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@uid", userId);
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+
+        public bool MarkRead(int userId, int notificationId)
+        {
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            const string sql = @"UPDATE notifications SET is_read=1 WHERE notification_id=@nid AND user_id=@uid;";
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@nid", notificationId);
+            cmd.Parameters.AddWithValue("@uid", userId);
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+
+        public bool MarkUnread(int userId, int notificationId)
+        {
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            const string sql = @"UPDATE notifications SET is_read=0 WHERE notification_id=@nid AND user_id=@uid;";
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@nid", notificationId);
+            cmd.Parameters.AddWithValue("@uid", userId);
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+
+        public bool DeleteOne(int userId, int notificationId)
+        {
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            const string sql = @"DELETE FROM notifications WHERE notification_id=@nid AND user_id=@uid;";
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@nid", notificationId);
+            cmd.Parameters.AddWithValue("@uid", userId);
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+
+        public int DeleteMany(int userId, List<int> notificationIds)
+        {
+            if (notificationIds == null || notificationIds.Count == 0) return 0;
+
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            // build IN (@p0,@p1,...)
+            var paramNames = new List<string>();
+            for (int i = 0; i < notificationIds.Count; i++)
+                paramNames.Add($"@p{i}");
+
+            string sql = $@"DELETE FROM notifications 
+                            WHERE user_id=@uid AND notification_id IN ({string.Join(",", paramNames)});";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@uid", userId);
+
+            for (int i = 0; i < notificationIds.Count; i++)
+                cmd.Parameters.AddWithValue(paramNames[i], notificationIds[i]);
+
+            return cmd.ExecuteNonQuery();
+        }
+
+        public int ClearAll(int userId)
+        {
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            const string sql = @"DELETE FROM notifications WHERE user_id=@uid;";
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@uid", userId);
+
+            return cmd.ExecuteNonQuery();
+        }
+        public void MarkRead(int userId, List<int> notificationIds)
+       => SetReadFlag(userId, notificationIds, true);
+
+        public void MarkUnread(int userId, List<int> notificationIds)
+            => SetReadFlag(userId, notificationIds, false);
+
+        private void SetReadFlag(int userId, List<int> ids, bool isRead)
+        {
+            if (ids == null || ids.Count == 0) return;
+
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            // Build IN (@id0,@id1,...)
+            var paramNames = ids.Select((_, i) => $"@id{i}").ToList();
+            string inClause = string.Join(",", paramNames);
+
+            string sql = $@"
+UPDATE notifications
+SET is_read = @isRead
+WHERE user_id = @userId
+  AND notification_id IN ({inClause});";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@isRead", isRead ? 1 : 0);
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+            for (int i = 0; i < ids.Count; i++)
+                cmd.Parameters.AddWithValue(paramNames[i], ids[i]);
+
+            cmd.ExecuteNonQuery();
+        }
+        public void InsertNotificationsBulk(List<(int userId, int? bookingId, string type, string title, string message)> rows)
+        {
+            if (rows == null || rows.Count == 0) return;
+
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+            using var tx = conn.BeginTransaction();
+
+            const string sql = @"
+INSERT INTO notifications (user_id, booking_id, type, title, message, is_read, created_at)
+VALUES (@uid, @bid, @type, @title, @msg, 0, NOW());";
+
+            using var cmd = new MySqlCommand(sql, conn, tx);
+            cmd.Parameters.Add("@uid", MySqlDbType.Int32);
+            cmd.Parameters.Add("@bid", MySqlDbType.Int32);
+            cmd.Parameters.Add("@type", MySqlDbType.VarChar);
+            cmd.Parameters.Add("@title", MySqlDbType.VarChar);
+            cmd.Parameters.Add("@msg", MySqlDbType.VarChar);
+
+            foreach (var r in rows)
+            {
+                cmd.Parameters["@uid"].Value = r.userId;
+                cmd.Parameters["@bid"].Value = r.bookingId.HasValue ? r.bookingId.Value : DBNull.Value;
+                cmd.Parameters["@type"].Value = r.type ?? "";
+                cmd.Parameters["@title"].Value = r.title ?? "";
+                cmd.Parameters["@msg"].Value = r.message ?? "";
+                cmd.ExecuteNonQuery();
+            }
+
+            tx.Commit();
+        }
+
+
+        public void InsertNotification(int userId, int? bookingId, string type, string title, string message)
+        {
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            const string sql = @"
+INSERT INTO notifications (user_id, booking_id, type, title, message, is_read, created_at)
+VALUES (@uid, @bid, @type, @title, @msg, 0, NOW());";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@uid", userId);
+            cmd.Parameters.AddWithValue("@bid", bookingId.HasValue ? bookingId.Value : DBNull.Value);
+            cmd.Parameters.AddWithValue("@type", type ?? "");
+            cmd.Parameters.AddWithValue("@title", title ?? "");
+            cmd.Parameters.AddWithValue("@msg", message ?? "");
+
+            cmd.ExecuteNonQuery();
+        }
+
+
+    }
+}

@@ -65,7 +65,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             userAccount1 = new UserAccount();
             UserAccount1 = new UserAccount();
             searchAndBooking1 = new SearchAndBooking();
-            notifications1 = new Notifications();
+            notifications1 = new UserNotifications();
             myTicketsBookingHistory1 = new MyTicketsBookingHistory();
             upcomingFlights1 = new UpcomingFlights();
             mainUserPage1 = new MainUserPage();
@@ -347,7 +347,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private UserAccount userAccount1;
         private UserAccount UserAccount1;
         private SearchAndBooking searchAndBooking1;
-        private Notifications notifications1;
+        private UserNotifications notifications1;
         private MyTicketsBookingHistory myTicketsBookingHistory1;
         private MainUserPage mainUserPage1;
     }
