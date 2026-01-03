@@ -14,13 +14,15 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
         private readonly IMyTicketsView _view;
         private readonly MyTicketsService _service;
         private readonly IAppSession _session;
+        private readonly NotificationWriterService _notifWriter;
         private List<MyTicketRow> _allTickets = new();
 
-        public MyTicketsPresenter(IMyTicketsView view, MyTicketsService service,IAppSession session)
+        public MyTicketsPresenter(IMyTicketsView view, MyTicketsService service,IAppSession session, NotificationWriterService notifWriter)
         {
             _view = view;
             _service = service;
             _session = session ?? throw new ArgumentNullException(nameof(session));
+            _notifWriter = notifWriter ?? throw new ArgumentNullException(nameof(notifWriter));
             _view.ViewLoaded += OnLoad;
             _view.RefreshClicked += OnLoad;
             _view.FilterChanged += ApplyFilter;
@@ -92,19 +94,25 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
         {
             try
             {
+                if (_session.CurrentUser == null)
+                {
+                    _view.ShowError("No user is logged in.");
+                    return;
+                }
+
                 if (_view.SelectedBookingId == null)
                 {
                     _view.ShowError("Please select a ticket to cancel.");
                     return;
                 }
 
+                int userId = _session.CurrentUser.UserID;
+                int bookingId = _view.SelectedBookingId.Value;
+
                 if (!_view.Confirm("Are you sure you want to cancel this ticket?"))
                     return;
 
-                bool ok = _service.CancelTicket(
-                    _session.CurrentUser.UserID, // use session here
-                    _view.SelectedBookingId.Value,
-                    out string error);
+                bool ok = _service.CancelTicket(userId, bookingId, out string error);
 
                 if (!ok)
                 {
@@ -112,8 +120,14 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
                     return;
                 }
 
+                // ✅ THIS IS THE MISSING PART (insert into notifications)
+                _notifWriter.NotifyBookingCancelled(userId, bookingId);
+
                 _view.ShowInfo("Ticket cancelled successfully.");
                 OnLoad();
+
+                // ✅ optional but useful (if you add it)
+                _view.RequestBadgeRefresh();
             }
             catch (Exception ex)
             {

@@ -28,6 +28,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         private int? _selectedBookingId;
         private int? _focusBookingId;
+        // ✅ Exposed event to dashboard (same idea as notifications1)
+        public event Action BadgeRefreshRequested;
 
         public MyTicketsBookingHistory()
         {
@@ -59,7 +61,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _session = session ?? throw new ArgumentNullException(nameof(session));
             _repo = new MySqlMyTicketsRepository(connStr);
             _service = new MyTicketsService(_repo);
-            _presenter = new MyTicketsPresenter(this, _service,_session);
+
+            // ✅ create notification writer service
+            var notifRepo = new MySqlNotificationWriterRepository(connStr);
+            var notifWriter = new NotificationWriterService(notifRepo);
+
+            // ✅ pass notifWriter to presenter (4th parameter)
+            _presenter = new MyTicketsPresenter(this, _service, _session, notifWriter);
+
 
             _initialized = true;
         }
@@ -434,6 +443,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             }
 
             _focusBookingId = null;
+        }
+        public void RequestBadgeRefresh()
+        {
+            BadgeRefreshRequested?.Invoke();
         }
 
 

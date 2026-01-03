@@ -40,6 +40,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private readonly IAppSession _session;
         private readonly NotificationsCounterService _notifCounterService;
         private readonly INotificationsCounterRepository _notifCounterRepo;
+        private Guna.UI2.WinForms.Guna2CircleButton _notifBadge; // bell
         public UserDashboard(MyTicketsService myticketservice ,INavigationService navigation, FlightService flightService, BookingService bookingService, PassengerService passengerService, IAppSession session)
         {
             InitializeComponent();
@@ -76,7 +77,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             _upcomingFlightsPresenter = new UpcomingFlightsPresenter(upcomingFlights1, _flightService,_presenter);
             _searchandbookingpresenter = new SearchAndBookingPresenter(searchAndBooking1, _flightService, _navigation, _presenter);
-            _myTicketsPresenter = new MyTicketsPresenter(myTicketsBookingHistory1, _myTicketsService,session);
+         //   _myTicketsPresenter = new MyTicketsPresenter(myTicketsBookingHistory1, _myTicketsService,session);
             // Add all designer panels to panelMain
             panelMain.Controls.Add(mainUserPage1);
             panelMain.Controls.Add(upcomingFlights1);
@@ -99,6 +100,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 MyTickets(); // opens the MyTickets panel
                 myTicketsBookingHistory1.FocusBooking(bookingId); // we add this next
             };
+            myTicketsBookingHistory1.BadgeRefreshRequested += () => RefreshNotificationsBadge();
         }
 
 
