@@ -1,6 +1,4 @@
-﻿using Airport_Airplane_management_system.View.Forms;
-
-namespace Airport_Airplane_management_system.View.Forms.AdminPages
+﻿namespace Airport_Airplane_management_system.View.Forms.AdminPages
 {
     partial class AdminDashboard
     {
@@ -90,10 +88,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             guna2Panel1.Dock = DockStyle.Left;
             guna2Panel1.FillColor = Color.FromArgb(26, 44, 63);
             guna2Panel1.Location = new Point(0, 0);
-            guna2Panel1.Margin = new Padding(3, 4, 3, 4);
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            guna2Panel1.Size = new Size(286, 960);
+            guna2Panel1.Size = new Size(250, 720);
             guna2Panel1.TabIndex = 2;
             guna2Panel1.Paint += guna2Panel1_Paint;
             // 
@@ -107,12 +104,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnlogoutA.ForeColor = Color.White;
             btnlogoutA.Image = Properties.Resources.logout;
             btnlogoutA.ImageAlign = HorizontalAlignment.Left;
-            btnlogoutA.Location = new Point(11, 792);
-            btnlogoutA.Margin = new Padding(3, 4, 3, 4);
+            btnlogoutA.Location = new Point(10, 594);
             btnlogoutA.Name = "btnlogoutA";
             btnlogoutA.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnlogoutA.Size = new Size(235, 60);
-            btnlogoutA.TabIndex = 8;
+            btnlogoutA.Size = new Size(206, 45);
+            btnlogoutA.TabIndex = 10;
             btnlogoutA.Text = "Logout";
             btnlogoutA.TextAlign = HorizontalAlignment.Left;
             // 
@@ -126,12 +122,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnreport.ForeColor = Color.White;
             btnreport.Image = Properties.Resources.analytics1;
             btnreport.ImageAlign = HorizontalAlignment.Left;
-            btnreport.Location = new Point(11, 535);
-            btnreport.Margin = new Padding(3, 4, 3, 4);
+            btnreport.Location = new Point(10, 401);
             btnreport.Name = "btnreport";
             btnreport.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            btnreport.Size = new Size(261, 60);
-            btnreport.TabIndex = 6;
+            btnreport.Size = new Size(214, 45);
+            btnreport.TabIndex = 9;
             btnreport.Text = "Reports";
             btnreport.TextAlign = HorizontalAlignment.Left;
             // 
@@ -145,12 +140,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnnotrificationA.ForeColor = Color.White;
             btnnotrificationA.Image = Properties.Resources.notrification1;
             btnnotrificationA.ImageAlign = HorizontalAlignment.Left;
-            btnnotrificationA.Location = new Point(11, 603);
-            btnnotrificationA.Margin = new Padding(3, 4, 3, 4);
+            btnnotrificationA.Location = new Point(10, 452);
             btnnotrificationA.Name = "btnnotrificationA";
             btnnotrificationA.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            btnnotrificationA.Size = new Size(261, 60);
-            btnnotrificationA.TabIndex = 7;
+            btnnotrificationA.Size = new Size(214, 45);
+            btnnotrificationA.TabIndex = 8;
             btnnotrificationA.Text = "Notrification";
             btnnotrificationA.TextAlign = HorizontalAlignment.Left;
             // 
@@ -164,12 +158,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnMainA.ForeColor = Color.White;
             btnMainA.Image = Properties.Resources.dashboard;
             btnMainA.ImageAlign = HorizontalAlignment.Left;
-            btnMainA.Location = new Point(11, 173);
-            btnMainA.Margin = new Padding(3, 4, 3, 4);
+            btnMainA.Location = new Point(10, 130);
             btnMainA.Name = "btnMainA";
             btnMainA.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            btnMainA.Size = new Size(261, 60);
-            btnMainA.TabIndex = 1;
+            btnMainA.Size = new Size(214, 45);
+            btnMainA.TabIndex = 0;
             btnMainA.Text = "Main";
             btnMainA.TextAlign = HorizontalAlignment.Left;
             // 
@@ -183,12 +176,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnpasenger.ForeColor = Color.White;
             btnpasenger.Image = Properties.Resources.ticket1;
             btnpasenger.ImageAlign = HorizontalAlignment.Left;
-            btnpasenger.Location = new Point(11, 467);
-            btnpasenger.Margin = new Padding(3, 4, 3, 4);
+            btnpasenger.Location = new Point(10, 350);
             btnpasenger.Name = "btnpasenger";
             btnpasenger.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            btnpasenger.Size = new Size(261, 60);
-            btnpasenger.TabIndex = 5;
+            btnpasenger.Size = new Size(214, 45);
+            btnpasenger.TabIndex = 1;
             btnpasenger.Text = "Pasenger Management";
             btnpasenger.TextAlign = HorizontalAlignment.Left;
             // 
@@ -202,12 +194,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btncrew.ForeColor = Color.White;
             btncrew.Image = Properties.Resources.crew;
             btncrew.ImageAlign = HorizontalAlignment.Left;
-            btncrew.Location = new Point(11, 393);
-            btncrew.Margin = new Padding(3, 4, 3, 4);
+            btncrew.Location = new Point(10, 295);
             btncrew.Name = "btncrew";
             btncrew.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            btncrew.Size = new Size(261, 60);
-            btncrew.TabIndex = 4;
+            btncrew.Size = new Size(214, 45);
+            btncrew.TabIndex = 2;
             btncrew.Text = "Crew Management";
             btncrew.TextAlign = HorizontalAlignment.Left;
             // 
@@ -221,11 +212,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnplane.ForeColor = Color.White;
             btnplane.Image = Properties.Resources.fleet;
             btnplane.ImageAlign = HorizontalAlignment.Left;
-            btnplane.Location = new Point(11, 320);
-            btnplane.Margin = new Padding(3, 4, 3, 4);
+            btnplane.Location = new Point(10, 240);
             btnplane.Name = "btnplane";
             btnplane.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnplane.Size = new Size(261, 60);
+            btnplane.Size = new Size(214, 45);
             btnplane.TabIndex = 3;
             btnplane.Text = "Plane Managment";
             btnplane.TextAlign = HorizontalAlignment.Left;
@@ -240,12 +230,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnFlight.ForeColor = Color.White;
             btnFlight.Image = Properties.Resources.airplane2;
             btnFlight.ImageAlign = HorizontalAlignment.Left;
-            btnFlight.Location = new Point(11, 247);
-            btnFlight.Margin = new Padding(3, 4, 3, 4);
+            btnFlight.Location = new Point(10, 185);
             btnFlight.Name = "btnFlight";
             btnFlight.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            btnFlight.Size = new Size(261, 60);
-            btnFlight.TabIndex = 2;
+            btnFlight.Size = new Size(214, 45);
+            btnFlight.TabIndex = 4;
             btnFlight.Text = "Flight Management";
             btnFlight.TextAlign = HorizontalAlignment.Left;
             // 
@@ -255,11 +244,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             panel1.BackgroundImage = Properties.Resources.icon;
             panel1.BackgroundImageLayout = ImageLayout.Stretch;
             panel1.ForeColor = Color.Transparent;
-            panel1.Location = new Point(88, 49);
-            panel1.Margin = new Padding(3, 4, 3, 4);
+            panel1.Location = new Point(77, 37);
             panel1.Name = "panel1";
-            panel1.Padding = new Padding(23, 0, 23, 0);
-            panel1.Size = new Size(100, 100);
+            panel1.Padding = new Padding(20, 0, 20, 0);
+            panel1.Size = new Size(75, 75);
             panel1.TabIndex = 0;
             // 
             // crewManagement1
@@ -267,9 +255,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             crewManagement1.BackColor = Color.FromArgb(245, 246, 250);
             crewManagement1.Dock = DockStyle.Fill;
             crewManagement1.Location = new Point(0, 0);
-            crewManagement1.Margin = new Padding(3, 4, 3, 4);
             crewManagement1.Name = "crewManagement1";
-            crewManagement1.Size = new Size(1463, 960);
+            crewManagement1.Size = new Size(1280, 720);
             crewManagement1.TabIndex = 3;
             // 
             // flightManagement1
@@ -277,9 +264,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             flightManagement1.BackColor = SystemColors.AppWorkspace;
             flightManagement1.Dock = DockStyle.Fill;
             flightManagement1.Location = new Point(0, 0);
-            flightManagement1.Margin = new Padding(3, 5, 3, 5);
+            flightManagement1.Margin = new Padding(3, 4, 3, 4);
             flightManagement1.Name = "flightManagement1";
-            flightManagement1.Size = new Size(1463, 960);
+            flightManagement1.Size = new Size(1280, 720);
             flightManagement1.TabIndex = 4;
             // 
             // planeManagements1
@@ -287,18 +274,18 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             planeManagements1.BackColor = Color.FromArgb(245, 246, 250);
             planeManagements1.Dock = DockStyle.Fill;
             planeManagements1.Location = new Point(0, 0);
-            planeManagements1.Margin = new Padding(3, 5, 3, 5);
+            planeManagements1.Margin = new Padding(3, 4, 3, 4);
             planeManagements1.Name = "planeManagements1";
-            planeManagements1.Size = new Size(1463, 960);
+            planeManagements1.Size = new Size(1280, 720);
             planeManagements1.TabIndex = 6;
             // 
             // notrificationsa1
             // 
             notrificationsa1.Dock = DockStyle.Fill;
             notrificationsa1.Location = new Point(0, 0);
-            notrificationsa1.Margin = new Padding(3, 5, 3, 5);
+            notrificationsa1.Margin = new Padding(3, 4, 3, 4);
             notrificationsa1.Name = "notrificationsa1";
-            notrificationsa1.Size = new Size(1463, 960);
+            notrificationsa1.Size = new Size(1280, 720);
             notrificationsa1.TabIndex = 9;
             // 
             // maina1
@@ -306,9 +293,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             maina1.BackColor = Color.FromArgb(245, 246, 250);
             maina1.Dock = DockStyle.Fill;
             maina1.Location = new Point(0, 0);
-            maina1.Margin = new Padding(3, 5, 3, 5);
+            maina1.Margin = new Padding(3, 4, 3, 4);
             maina1.Name = "maina1";
-            maina1.Size = new Size(1463, 960);
+            maina1.Size = new Size(1280, 720);
             maina1.TabIndex = 10;
             maina1.Load += maina1_Load;
             // 
@@ -317,9 +304,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             reports1.BackColor = Color.FromArgb(245, 246, 250);
             reports1.Dock = DockStyle.Fill;
             reports1.Location = new Point(0, 0);
-            reports1.Margin = new Padding(3, 5, 3, 5);
+            reports1.Margin = new Padding(3, 4, 3, 4);
             reports1.Name = "reports1";
-            reports1.Size = new Size(1463, 960);
+            reports1.Size = new Size(1280, 720);
             reports1.TabIndex = 10;
             reports1.Load += maina1_Load;
             // 
@@ -328,15 +315,15 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             passengerMangement1.BackColor = Color.WhiteSmoke;
             passengerMangement1.Dock = DockStyle.Fill;
             passengerMangement1.Location = new Point(0, 0);
-            passengerMangement1.Margin = new Padding(3, 5, 3, 5);
+            passengerMangement1.Margin = new Padding(3, 4, 3, 4);
             passengerMangement1.Name = "passengerMangement1";
-            passengerMangement1.Size = new Size(1463, 960);
+            passengerMangement1.Size = new Size(1280, 720);
             passengerMangement1.TabIndex = 11;
             passengerMangement1.Load += passengerMangement1_Load;
             // 
             // AdminDashboard
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(guna2Panel1);
             Controls.Add(maina1);
@@ -346,9 +333,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             Controls.Add(passengerMangement1);
             Controls.Add(notrificationsa1);
             Controls.Add(reports1);
-            Margin = new Padding(3, 4, 3, 4);
             Name = "AdminDashboard";
-            Size = new Size(1463, 960);
+            Size = new Size(1280, 720);
             guna2Panel1.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -372,6 +358,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private NotrificationsA notrificationsa1;
         private MainA maina1;
         private PassengerMangement passengerMangement1;
-   
+        private UserPages.MainUserPage mainUserPage1;
     }
 }

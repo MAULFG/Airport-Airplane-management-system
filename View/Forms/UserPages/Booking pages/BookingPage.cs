@@ -94,11 +94,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 totalColumns = 11;
                 firstMap = new Dictionary<int, string> { { 2, "A" }, { 4, "B" }, { 6, "C" }, { 8, "D" } };
                 businessMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, { 4, "C" }, { 6, "D" }, { 8, "E" }, { 9, "F" } };
-                economyMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" }, { 2, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" }, { 8, "G" }, { 9, "H" }, { 10, "I" } };
+                economyMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" }, { 2, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" }, { 8, "G" }, { 9, "H" }, { 10, "J" } };
             }
-            else if (model.Contains("650"))
+            else if (model.Contains("g650"))
             {
-                // 650 is a private jet, usually 1-1 or 2-2 seating
+                // G650 is a private jet, usually 1-1 or 2-2 seating
                 totalColumns = 4; // simple layout
                 firstMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" } };
                 businessMap = null;
@@ -115,7 +115,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // Create table
             var table = new TableLayoutPanel
             {
-                RowCount = model.Contains("650") ? 6 : 43,
+                RowCount = model.Contains("g650") ? 6 : 43,
                 ColumnCount = totalColumns,
                 AutoSize = true
             };
@@ -216,16 +216,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
             lblSeatValue.Text = seat.SeatNumber;
             lblClassValue.Text = seat.ClassType;
-            decimal price = seat.SeatPrice;
-            if (IsWindowSeat(seat, _currentFlight))
-                price += price * 0.20m;
 
-             
+            decimal price = seat.SeatPrice; // ✅ always use the seat-specific price
             decimal tax = price * 0.10m;
             decimal total = price + tax;
-            
-            
 
+            // Optional: window seat surcharge
+            if (IsWindowSeat(seat, _currentFlight))
+                total += price * 0.20m;
 
             lblBasePriceValue.Text = $"Base: ${price:0.00}";
             lblTaxValue.Text = $"Tax: ${tax:0.00}";
@@ -245,12 +243,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             if (model.Contains("a320"))
             {
-                return seat.ClassType switch
-                {
-                    "Business" => seatLetter == "A" || seatLetter == "D",
-                    "Economy" => seatLetter == "A" || seatLetter == "F",
-                    _ => false
-                };
+                return seatLetter == "A" || seatLetter == "F";
             }
             else if (model.Contains("777"))
             {
@@ -258,11 +251,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 {
                     "First" => seatLetter == "A" || seatLetter == "D",
                     "Business" => seatLetter == "A" || seatLetter == "F",
-                    "Economy" => seatLetter == "A" || seatLetter == "I",
+                    "Economy" => seatLetter == "A" || seatLetter == "J",
                     _ => false
                 };
             }
-            else if (model.Contains("650"))
+            else if (model.Contains("g650"))
             {
                 return seatLetter == "A" || seatLetter == "B";
             }
@@ -272,7 +265,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 {
                     "First" => seatLetter == "A" || seatLetter == "D",
                     "Business" => seatLetter == "A" || seatLetter == "F",
-                    "Economy" => seatLetter == "A" || seatLetter == "I",
+                    "Economy" => seatLetter == "A" || seatLetter == "J",
                     _ => false
                 };
             }

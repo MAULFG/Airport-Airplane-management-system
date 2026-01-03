@@ -68,7 +68,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
         private void OnLogoutClicked(object sender, EventArgs e)
         {
-           
+            _session.Clear();
             // Optional: any session cleanup here
             _view.Logout(); // clear UI
             _navigationService.NavigateToLogin(); // redirect to login page

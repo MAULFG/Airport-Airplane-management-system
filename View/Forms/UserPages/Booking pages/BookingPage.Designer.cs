@@ -85,7 +85,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelHeader.Padding = new Padding(20);
             panelHeader.Radius = 10;
             panelHeader.ShadowColor = Color.Black;
-            panelHeader.Size = new Size(1182, 70);
+            panelHeader.Size = new Size(1000, 70);
             panelHeader.TabIndex = 1;
             // 
             // lblFlightInfo
@@ -96,7 +96,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblFlightInfo.ForeColor = Color.White;
             lblFlightInfo.Location = new Point(20, 20);
             lblFlightInfo.Name = "lblFlightInfo";
-            lblFlightInfo.Size = new Size(129, 30);
+            lblFlightInfo.Size = new Size(104, 23);
             lblFlightInfo.TabIndex = 0;
             lblFlightInfo.Text = "Flight Details";
             // 
@@ -105,6 +105,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.BackColor = Color.Transparent;
             panelMain.Controls.Add(panelSummary);
             panelMain.Controls.Add(flowSeats);
+            panelMain.Controls.Add(passengerDetails1);
             panelMain.Dock = DockStyle.Fill;
             panelMain.FillColor = Color.White;
             panelMain.Location = new Point(0, 70);
@@ -112,7 +113,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.Padding = new Padding(20);
             panelMain.Radius = 10;
             panelMain.ShadowColor = Color.Black;
-            panelMain.Size = new Size(1182, 680);
+            panelMain.Size = new Size(1000, 680);
             panelMain.TabIndex = 0;
             // 
             // panelSummary
@@ -123,7 +124,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelSummary.Controls.Add(grpSelectedSeat);
             panelSummary.Dock = DockStyle.Right;
             panelSummary.FillColor = Color.FromArgb(245, 245, 245);
-            panelSummary.Location = new Point(853, 20);
+            panelSummary.Location = new Point(671, 20);
             panelSummary.Name = "panelSummary";
             panelSummary.Padding = new Padding(20);
             panelSummary.Radius = 10;
@@ -173,7 +174,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblBasePriceValue.BackColor = Color.Transparent;
             lblBasePriceValue.Location = new Point(10, 40);
             lblBasePriceValue.Name = "lblBasePriceValue";
-            lblBasePriceValue.Size = new Size(76, 22);
+            lblBasePriceValue.Size = new Size(60, 17);
             lblBasePriceValue.TabIndex = 0;
             lblBasePriceValue.Text = "Base: $0.00";
             // 
@@ -182,7 +183,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblTaxValue.BackColor = Color.Transparent;
             lblTaxValue.Location = new Point(10, 65);
             lblTaxValue.Name = "lblTaxValue";
-            lblTaxValue.Size = new Size(68, 22);
+            lblTaxValue.Size = new Size(54, 17);
             lblTaxValue.TabIndex = 1;
             lblTaxValue.Text = "Tax: $0.00";
             // 
@@ -191,7 +192,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblDivider.BackColor = Color.Transparent;
             lblDivider.Location = new Point(10, 85);
             lblDivider.Name = "lblDivider";
-            lblDivider.Size = new Size(115, 22);
+            lblDivider.Size = new Size(87, 17);
             lblDivider.TabIndex = 2;
             lblDivider.Text = "──────────────";
             // 
@@ -202,7 +203,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblTotalValue.ForeColor = Color.DarkCyan;
             lblTotalValue.Location = new Point(10, 105);
             lblTotalValue.Name = "lblTotalValue";
-            lblTotalValue.Size = new Size(99, 25);
+            lblTotalValue.Size = new Size(75, 19);
             lblTotalValue.TabIndex = 3;
             lblTotalValue.Text = "Total: $0.00";
             // 
@@ -232,7 +233,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblSeatKey.Font = new Font("Segoe UI", 9F);
             lblSeatKey.Location = new Point(10, 40);
             lblSeatKey.Name = "lblSeatKey";
-            lblSeatKey.Size = new Size(35, 22);
+            lblSeatKey.Size = new Size(28, 17);
             lblSeatKey.TabIndex = 0;
             lblSeatKey.Text = "Seat:";
             // 
@@ -242,7 +243,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblSeatValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblSeatValue.Location = new Point(100, 40);
             lblSeatValue.Name = "lblSeatValue";
-            lblSeatValue.Size = new Size(9, 22);
+            lblSeatValue.Size = new Size(8, 17);
             lblSeatValue.TabIndex = 1;
             lblSeatValue.Text = "-";
             // 
@@ -251,7 +252,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblClassKey.BackColor = Color.Transparent;
             lblClassKey.Location = new Point(10, 65);
             lblClassKey.Name = "lblClassKey";
-            lblClassKey.Size = new Size(39, 22);
+            lblClassKey.Size = new Size(33, 17);
             lblClassKey.TabIndex = 2;
             lblClassKey.Text = "Class:";
             // 
@@ -261,7 +262,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblClassValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblClassValue.Location = new Point(100, 65);
             lblClassValue.Name = "lblClassValue";
-            lblClassValue.Size = new Size(9, 22);
+            lblClassValue.Size = new Size(8, 17);
             lblClassValue.TabIndex = 3;
             lblClassValue.Text = "-";
             // 
@@ -270,7 +271,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblStatusKey.BackColor = Color.Transparent;
             lblStatusKey.Location = new Point(10, 90);
             lblStatusKey.Name = "lblStatusKey";
-            lblStatusKey.Size = new Size(46, 22);
+            lblStatusKey.Size = new Size(38, 17);
             lblStatusKey.TabIndex = 4;
             lblStatusKey.Text = "Status:";
             // 
@@ -280,7 +281,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblStatusValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblStatusValue.Location = new Point(100, 90);
             lblStatusValue.Name = "lblStatusValue";
-            lblStatusValue.Size = new Size(9, 22);
+            lblStatusValue.Size = new Size(8, 17);
             lblStatusValue.TabIndex = 5;
             lblStatusValue.Text = "-";
             // 
@@ -292,7 +293,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowSeats.Location = new Point(20, 20);
             flowSeats.Margin = new Padding(20);
             flowSeats.Name = "flowSeats";
-            flowSeats.Size = new Size(1142, 640);
+            flowSeats.Size = new Size(960, 640);
             flowSeats.TabIndex = 1;
             flowSeats.WrapContents = false;
             flowSeats.Paint += flowSeats_Paint;
@@ -300,18 +301,19 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // passengerDetails1
             // 
             passengerDetails1.Dock = DockStyle.Fill;
-            passengerDetails1.Location = new Point(0, 0);
+            passengerDetails1.Location = new Point(20, 20);
             passengerDetails1.Name = "passengerDetails1";
-            passengerDetails1.Size = new Size(1182, 750);
+            passengerDetails1.Size = new Size(1142, 640);
             passengerDetails1.TabIndex = 2;
             // 
             // BookingPage
             // 
             BackColor = Color.White;
-            ClientSize = new Size(1182, 750);
+            ClientSize = new Size(1000, 750);
             Controls.Add(panelMain);
-            Controls.Add(panelHeader);
             Controls.Add(passengerDetails1);
+            Controls.Add(panelHeader);
+            MaximizeBox = false;
             Name = "BookingPage";
             Load += BookingPage_Load;
             panelHeader.ResumeLayout(false);

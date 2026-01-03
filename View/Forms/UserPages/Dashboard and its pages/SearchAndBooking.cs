@@ -21,35 +21,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     c.Width = flowFlights.ClientSize.Width - 50; // adjust width dynamically
                 }
             };
-            // From
-            
-
- 
-            // Class
-            cbClass.Text = "Select Class";
-            cbClass.ForeColor = Color.Gray;
-
-            cbClass.GotFocus += (s, e) =>
-            {
-                if (cbClass.Text == "Select Class")
-                {
-                    cbClass.Text = "";
-                    cbClass.ForeColor = Color.Black;
-                }
-            };
-
-            cbClass.LostFocus += (s, e) =>
-            {
-                if (string.IsNullOrWhiteSpace(cbClass.Text))
-                {
-                    cbClass.Text = "Select Class";
-                    cbClass.ForeColor = Color.Gray;
-                }
-            };
-
-
+            // Add placeholder items first
+            cbFrom.Items.Insert(0, "Select From");
+            cbTo.Items.Insert(0, "Select To");
             cbClass.Items.Insert(0, "Select Class");
 
+            // Set selected index to 0 so placeholder shows initially
+            cbFrom.SelectedIndex = 0;
+            cbTo.SelectedIndex = 0;
             cbClass.SelectedIndex = 0;
 
             // Optional: make placeholder gray
@@ -58,7 +37,27 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cbClass.ForeColor = Color.Gray;
 
             // Handle the DrawItem event to show placeholder in gray and others in black
-           
+            cbFrom.DrawItem += (s, e) =>
+            {
+                e.DrawBackground();
+                Color textColor = (e.Index == 0) ? Color.Gray : Color.Black;
+                using (SolidBrush br = new SolidBrush(textColor))
+                {
+                    e.Graphics.DrawString(cbFrom.Items[e.Index].ToString(), e.Font, br, e.Bounds);
+                }
+                e.DrawFocusRectangle();
+            };
+
+            cbTo.DrawItem += (s, e) =>
+            {
+                e.DrawBackground();
+                Color textColor = (e.Index == 0) ? Color.Gray : Color.Black;
+                using (SolidBrush br = new SolidBrush(textColor))
+                {
+                    e.Graphics.DrawString(cbTo.Items[e.Index].ToString(), e.Font, br, e.Bounds);
+                }
+                e.DrawFocusRectangle();
+            };
 
             cbClass.DrawItem += (s, e) =>
             {
@@ -72,7 +71,21 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
 
             // Optional: prevent user from selecting the placeholder as a valid option
-      
+            cbFrom.SelectedIndexChanged += (s, e) =>
+            {
+                if (cbFrom.SelectedIndex == 0)
+                    cbFrom.ForeColor = Color.Gray;
+                else
+                    cbFrom.ForeColor = Color.Black;
+            };
+
+            cbTo.SelectedIndexChanged += (s, e) =>
+            {
+                if (cbTo.SelectedIndex == 0)
+                    cbTo.ForeColor = Color.Gray;
+                else
+                    cbTo.ForeColor = Color.Black;
+            };
 
             cbClass.SelectedIndexChanged += (s, e) =>
             {
@@ -91,9 +104,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public DateTime? DepartureDate => dtDeparture.Checked ? dtDeparture.Value : (DateTime?)null;
 
 
-        public string From => cbFrom.Text == "Select From" ? null : cbFrom.Text;
-        public string To => cbTo.Text == "Select To" ? null : cbTo.Text;
-
+        public string From => cbFrom.SelectedIndex > 0 ? cbFrom.SelectedItem.ToString() : null;
+        public string To => cbTo.SelectedIndex > 0 ? cbTo.SelectedItem.ToString() : null;
+       
         public int Passengers => (int)numPassengers.Value;
         public string Class => cbClass.SelectedIndex > 0 ? cbClass.SelectedItem.ToString() : null;
 
