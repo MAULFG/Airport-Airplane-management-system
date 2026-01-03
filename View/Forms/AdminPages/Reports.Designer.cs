@@ -30,13 +30,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private void InitializeComponent()
         {
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             root = new Guna.UI2.WinForms.Guna2Panel();
             listPanel = new FlowLayoutPanel();
             txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
@@ -46,24 +47,28 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             statsPanel = new Guna.UI2.WinForms.Guna2Panel();
             lblTotalIssuesValue = new Label();
             lblTotalIssuesText = new Label();
-
             root.SuspendLayout();
             header.SuspendLayout();
             statsPanel.SuspendLayout();
             SuspendLayout();
-
+            // 
             // root
-            root.CustomizableEdges = customizableEdges1;
+            // 
+            root.Controls.Add(listPanel);
+            root.Controls.Add(txtSearch);
+            root.Controls.Add(header);
+            root.CustomizableEdges = customizableEdges7;
             root.Dock = DockStyle.Fill;
             root.FillColor = Color.WhiteSmoke;
             root.Location = new Point(0, 0);
             root.Name = "root";
             root.Padding = new Padding(28, 20, 28, 20);
-            root.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            root.Size = new Size(1319, 680);
+            root.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            root.Size = new Size(1030, 720);
             root.TabIndex = 0;
-
+            // 
             // listPanel
+            // 
             listPanel.AutoScroll = true;
             listPanel.BackColor = Color.Transparent;
             listPanel.Dock = DockStyle.Fill;
@@ -71,16 +76,18 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             listPanel.Location = new Point(28, 167);
             listPanel.Name = "listPanel";
             listPanel.Padding = new Padding(0, 14, 0, 0);
-            listPanel.Size = new Size(1263, 493);
+            listPanel.Size = new Size(974, 533);
             listPanel.TabIndex = 0;
             listPanel.WrapContents = false;
-
+            listPanel.Paint += listPanel_Paint;
+            // 
             // txtSearch
+            // 
             txtSearch.AutoRoundedCorners = true;
             txtSearch.BorderColor = Color.FromArgb(220, 220, 220);
             txtSearch.BorderRadius = 27;
             txtSearch.Cursor = Cursors.IBeam;
-            txtSearch.CustomizableEdges = customizableEdges3;
+            txtSearch.CustomizableEdges = customizableEdges1;
             txtSearch.DefaultText = "";
             txtSearch.Dock = DockStyle.Top;
             txtSearch.Font = new Font("Segoe UI", 10.5F);
@@ -90,11 +97,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             txtSearch.Padding = new Padding(12, 0, 12, 0);
             txtSearch.PlaceholderText = "Search issues (plane, crew, past flight...)";
             txtSearch.SelectedText = "";
-            txtSearch.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            txtSearch.Size = new Size(1263, 57);
+            txtSearch.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            txtSearch.Size = new Size(974, 57);
             txtSearch.TabIndex = 1;
-
+            // 
             // header
+            // 
             header.Controls.Add(lblTitle);
             header.Controls.Add(lblSub);
             header.Controls.Add(statsPanel);
@@ -104,70 +112,72 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             header.Location = new Point(28, 20);
             header.Name = "header";
             header.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            header.Size = new Size(1263, 90);
+            header.Size = new Size(974, 90);
             header.TabIndex = 2;
-
+            // 
             // lblTitle
+            // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(20, 20, 20);
             lblTitle.Location = new Point(-1, -9);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(121, 46);
+            lblTitle.Size = new Size(118, 37);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Reports";
-
+            // 
             // lblSub
+            // 
             lblSub.AutoSize = true;
             lblSub.Font = new Font("Segoe UI", 11F);
             lblSub.ForeColor = Color.FromArgb(110, 110, 110);
             lblSub.Location = new Point(2, 48);
             lblSub.Name = "lblSub";
-            lblSub.Size = new Size(500, 25);
+            lblSub.Size = new Size(433, 20);
             lblSub.TabIndex = 1;
             lblSub.Text = "Issues that need attention (unassigned / assigned to past flights)";
-
+            // 
             // statsPanel
+            // 
             statsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             statsPanel.Controls.Add(lblTotalIssuesValue);
             statsPanel.Controls.Add(lblTotalIssuesText);
+            statsPanel.CustomizableEdges = customizableEdges3;
             statsPanel.FillColor = Color.Transparent;
-            statsPanel.Location = new Point(940, 6);
+            statsPanel.Location = new Point(651, 6);
             statsPanel.Name = "statsPanel";
+            statsPanel.ShadowDecoration.CustomizableEdges = customizableEdges4;
             statsPanel.Size = new Size(320, 70);
             statsPanel.TabIndex = 2;
-
+            // 
             // lblTotalIssuesValue
+            // 
             lblTotalIssuesValue.AutoSize = true;
             lblTotalIssuesValue.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblTotalIssuesValue.ForeColor = Color.FromArgb(20, 20, 20);
             lblTotalIssuesValue.Location = new Point(250, 10);
             lblTotalIssuesValue.Name = "lblTotalIssuesValue";
-            lblTotalIssuesValue.Size = new Size(28, 32);
+            lblTotalIssuesValue.Size = new Size(23, 25);
             lblTotalIssuesValue.TabIndex = 0;
             lblTotalIssuesValue.Text = "0";
-
+            // 
             // lblTotalIssuesText
+            // 
             lblTotalIssuesText.AutoSize = true;
             lblTotalIssuesText.Font = new Font("Segoe UI", 10F);
             lblTotalIssuesText.ForeColor = Color.FromArgb(110, 110, 110);
             lblTotalIssuesText.Location = new Point(208, 42);
             lblTotalIssuesText.Name = "lblTotalIssuesText";
-            lblTotalIssuesText.Size = new Size(92, 23);
+            lblTotalIssuesText.Size = new Size(79, 19);
             lblTotalIssuesText.TabIndex = 1;
             lblTotalIssuesText.Text = "Total Issues";
-
-            // add to root
-            root.Controls.Add(listPanel);
-            root.Controls.Add(txtSearch);
-            root.Controls.Add(header);
-
-            // Reports (UserControl)
+            // 
+            // Reports
+            // 
             BackColor = Color.WhiteSmoke;
             Controls.Add(root);
             Name = "Reports";
             Size = new Size(1030, 720);
-
             root.ResumeLayout(false);
             header.ResumeLayout(false);
             header.PerformLayout();

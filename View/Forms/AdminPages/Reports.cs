@@ -206,5 +206,24 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     WireClickRecursive(child);
             }
         }
+        // ===== Presenter -> View =====
+        public void ClearView()
+        {
+            // clear search
+            txtSearch.Clear();
+
+            // reset header
+            lblTotalIssuesValue.Text = "0";
+
+            // clear report cards
+            listPanel.SuspendLayout();
+            listPanel.Controls.Clear();
+            listPanel.ResumeLayout();
+        }
+
+        private void listPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

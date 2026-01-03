@@ -36,6 +36,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             Name = "NotrificationsA";
             Size = new Size(1280, 720);
+            Load += NotrificationsA_Load;
             ResumeLayout(false);
         }
 

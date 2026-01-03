@@ -38,7 +38,7 @@
             lblWelcome.ForeColor = Color.White;
             lblWelcome.Location = new Point(40, 35);
             lblWelcome.Name = "lblWelcome";
-            lblWelcome.Size = new Size(1200, 50);
+            lblWelcome.Size = new Size(1180, 50);
             lblWelcome.TabIndex = 1;
             lblWelcome.Text = "Welcome";
             // 
@@ -50,7 +50,7 @@
             lblSub.ForeColor = Color.FromArgb(210, 235, 235);
             lblSub.Location = new Point(40, 85);
             lblSub.Name = "lblSub";
-            lblSub.Size = new Size(1200, 28);
+            lblSub.Size = new Size(1180, 28);
             lblSub.TabIndex = 0;
             lblSub.Text = "Passenger dashboard overview";
             // 
@@ -60,8 +60,9 @@
             flowStats.Dock = DockStyle.Fill;
             flowStats.Location = new Point(30, 30);
             flowStats.Name = "flowStats";
-            flowStats.Size = new Size(1220, 516);
+            flowStats.Size = new Size(1200, 496);
             flowStats.TabIndex = 0;
+            flowStats.Paint += flowStats_Paint;
             // 
             // headerPanel
             // 
@@ -71,12 +72,12 @@
             headerPanel.CustomizableEdges = customizableEdges1;
             headerPanel.Dock = DockStyle.Top;
             headerPanel.FillColor = Color.DarkCyan;
-            headerPanel.Location = new Point(0, 0);
+            headerPanel.Location = new Point(10, 10);
             headerPanel.Name = "headerPanel";
             headerPanel.Padding = new Padding(40, 35, 40, 25);
             headerPanel.ShadowDecoration.BorderRadius = 20;
             headerPanel.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            headerPanel.Size = new Size(1280, 144);
+            headerPanel.Size = new Size(1260, 144);
             headerPanel.TabIndex = 1;
             // 
             // bodyPanel
@@ -85,19 +86,19 @@
             bodyPanel.CustomizableEdges = customizableEdges3;
             bodyPanel.Dock = DockStyle.Fill;
             bodyPanel.FillColor = Color.FromArgb(242, 244, 246);
-            bodyPanel.Location = new Point(0, 144);
+            bodyPanel.Location = new Point(10, 154);
             bodyPanel.Name = "bodyPanel";
             bodyPanel.Padding = new Padding(30);
             bodyPanel.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            bodyPanel.Size = new Size(1280, 576);
+            bodyPanel.Size = new Size(1260, 556);
             bodyPanel.TabIndex = 0;
             // 
             // MainUserPage
             // 
             Controls.Add(bodyPanel);
             Controls.Add(headerPanel);
-            Padding = new Padding(10,10,10,10);
             Name = "MainUserPage";
+            Padding = new Padding(10);
             Size = new Size(1280, 720);
             headerPanel.ResumeLayout(false);
             bodyPanel.ResumeLayout(false);

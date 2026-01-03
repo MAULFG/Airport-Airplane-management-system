@@ -52,7 +52,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             root.Margin = new Padding(3, 2, 3, 2);
             root.Name = "root";
             root.Padding = new Padding(23, 20, 23, 20);
-            root.Size = new Size(1120, 540);
+            root.Size = new Size(1030, 720);
             root.TabIndex = 0;
             // 
             // content
@@ -63,8 +63,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             content.Margin = new Padding(3, 2, 3, 2);
             content.Name = "content";
             content.Padding = new Padding(0, 9, 14, 0);
-            content.Size = new Size(1074, 418);
+            content.Size = new Size(984, 598);
             content.TabIndex = 2;
+            content.Paint += content_Paint;
             // 
             // header
             // 
@@ -76,7 +77,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             header.Location = new Point(23, 20);
             header.Margin = new Padding(3, 2, 3, 2);
             header.Name = "header";
-            header.Size = new Size(1074, 82);
+            header.Size = new Size(984, 82);
             header.TabIndex = 1;
             // 
             // lblTitle
@@ -109,7 +110,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnAddPlane.FillColor = Color.FromArgb(12, 18, 30);
             btnAddPlane.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             btnAddPlane.ForeColor = Color.White;
-            btnAddPlane.Location = new Point(899, 21);
+            btnAddPlane.Location = new Point(809, 21);
             btnAddPlane.Margin = new Padding(3, 2, 3, 2);
             btnAddPlane.Name = "btnAddPlane";
             btnAddPlane.ShadowDecoration.CustomizableEdges = customizableEdges2;

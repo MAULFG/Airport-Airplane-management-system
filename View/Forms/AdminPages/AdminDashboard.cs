@@ -78,11 +78,53 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _flightmpresenter = new FlightManagementPresenter(flightManagement1, flightService);
             _passengermanagementpresenter = new PassengerManagementPresenter(passengerMangement1, passService, () => flightRepo.CountUpcomingFlightsNotFullyBooked());
             _planepresenter = new PlaneManagementPresenter(planeManagements1, planeRepo);
-            
+            HookMainANavigation();
             HideAllPanels();
             InitializeButtonEvents();
             MainA();
         }
+        private void HookMainANavigation()
+        {
+            // Flights cards + "View all flights →"
+            maina1.GoToFlightsRequested += () =>
+            {
+                FlightMangement();
+            };
+
+            // Planes card
+            maina1.GoToPlanesRequested += () =>
+            {
+                PlaneMangement();
+            };
+
+            // Crew card
+            maina1.GoToCrewRequested += () =>
+            {
+                CrewMangement();
+            };
+
+            // Passengers card
+            maina1.GoToPassengersRequested += () =>
+            {
+                PassengerMangement();
+            };
+
+            // Alerts card
+            maina1.GoToNotificationsRequested += () =>
+            {
+                NotrificationA();
+            };
+        }
+        private void ClearPresenters()
+        {
+            _mainapresenter = null;
+            _crewpresenter = null;
+            _flightmpresenter = null;
+            _passengermanagementpresenter = null;
+            _planepresenter = null;
+            _reportspresenter = null;
+        }
+
         private void InitializeButtonEvents()
         {
             btnMainA.Click += (s, e) => MainAClicked?.Invoke(this, EventArgs.Empty);
@@ -148,9 +190,28 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         }
         public void Logout()
         {
+            // 1️⃣ Clear session
+            session.Clear();
+
+            // 2️⃣ Clear views
+            maina1.Clear();
+            flightManagement1.ClearView();
+            crewManagement1.Clear();
+            passengerMangement1.ClearView();
+            planeManagements1.ClearView();
+            reports1.ClearView();
+            notrificationsa1.ClearView();
+
+            // 3️⃣ Dispose presenters
+            ClearPresenters();
+
+            // 4️⃣ Hide UI
             HideAllPanels();
             SetActiveButton(btnlogoutA);
+
+            
         }
+
         public void MainA() => ShowOnly(maina1, btnMainA);
         public void NotrificationA() => ShowOnly(notrificationsa1, btnnotrificationA);
         public void FlightMangement() => ShowOnly(flightManagement1, btnFlight);

@@ -18,6 +18,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         bool Confirm(string message);
 
         void HighlightPlane(int planeId);
+        void ClearView();
 
         bool TryGetNewPlaneInput(
     out string model,

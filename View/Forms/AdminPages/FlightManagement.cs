@@ -140,8 +140,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             cmbPlane.Items.Clear();
             foreach (var p in _planes.OrderBy(x => x.PlaneID))
             {
-                string type = p.GetType().Name;
-                string text = $"#{p.PlaneID}  |  {type}  |  {p.Status}";
+                string model = p.Model;
+                string text = $"#{p.PlaneID}  |  {model}  |  {p.Status}";
                 cmbPlane.Items.Add(new PlaneItem(p.PlaneID, text));
             }
 
@@ -579,6 +579,51 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
 
         }
+
+        public void ClearView()
+        {
+            // reset edit state
+            IsEditMode = false;
+            EditingFlightId = null;
+
+            btnAddOrUpdate.Text = "Add Flight";
+            btnCancelEdit.Visible = false;
+            btnCancelEdit.Enabled = false;
+
+            // clear form
+            txtFrom.Clear();
+            txtTo.Clear();
+
+            dtDeparture.Value = DateTime.Now;
+            dtArrival.Value = DateTime.Now.AddHours(1);
+
+            txtEconomyPrice.Clear();
+            txtBusinessPrice.Clear();
+            txtFirstPrice.Clear();
+
+            if (cmbPlane.Items.Count > 0)
+                cmbPlane.SelectedIndex = 0;
+            else
+                cmbPlane.SelectedIndex = -1;
+
+            if (cmbFilter.Items.Count > 0)
+                cmbFilter.SelectedIndex = 0;
+            else
+                cmbFilter.SelectedIndex = -1;
+
+            // clear cards
+            flow.Controls.Clear();
+            lblCount.Text = "Flights (0)";
+
+            // clear docked schedule
+            panelScheduleHost.Controls.Clear();
+            panelScheduleHost.Visible = false;
+
+            // clear internal data
+            _planes.Clear();
+            _flights.Clear();
+        }
+
 
         private void cmbPlane_SelectedIndexChanged(object sender, EventArgs e)
         {

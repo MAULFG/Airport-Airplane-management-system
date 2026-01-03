@@ -377,6 +377,43 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
 
         }
+        public void Clear()
+        {
+            // ----- internal state -----
+            _uiEditMode = false;
+            _suppressFilterEvent = true;
+            _suppressFormSync = true;
+            _flightIdFilter = null;
+
+            // ----- form fields -----
+            txtFullName.Clear();
+            txtEmail.Clear();
+            txtPhone.Clear();
+
+            if (cmbRole.Items.Count > 0)
+                cmbRole.SelectedIndex = 0;
+
+            if (cmbStatus.Items.Count > 0)
+                cmbStatus.SelectedIndex = 0;
+
+            if (cmbFlight.Items.Count > 0)
+                cmbFlight.SelectedIndex = 0;
+
+            btnAddOrUpdate.Text = "Add Crew Member";
+            btnCancelEdit.Visible = false;
+
+            // ----- filter -----
+            cmbFilter.Items.Clear();
+            cmbFilter.Text = string.Empty;
+
+            // ----- crew list -----
+            flowCrew?.Controls.Clear();
+            lblCount.Text = "Crew Members (0)";
+
+            // ----- re-enable events -----
+            _suppressFilterEvent = false;
+            _suppressFormSync = false;
+        }
 
         private void rightCard_Paint(object sender, PaintEventArgs e)
         {

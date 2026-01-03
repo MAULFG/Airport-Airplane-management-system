@@ -14,5 +14,15 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             InitializeComponent();
         }
+        public void ClearView()
+        {
+            Controls.Clear();
+            InitializeComponent();
+        }
+
+        private void NotrificationsA_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

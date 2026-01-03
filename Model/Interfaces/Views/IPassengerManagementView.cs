@@ -16,6 +16,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         void SetHeaderCounts(int totalPassengers, int upcomingFlightsNotFullyBooked);
         void RenderPassengers(List<PassengerSummaryRow> passengers);
         void ShowPassengerBookings(int passengerId, List<PassengerBookingRow> upcoming, List<PassengerBookingRow> past);
+        void ClearView();
 
         bool Confirm(string message, string title);
         void ShowError(string message);

@@ -38,8 +38,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             var card = new Guna2ShadowPanel
             {
-                Width = 450,
-                Height = 210,
+                Width = 350,
+                Height = 150,
                 Radius = 22,
                 FillColor = Color.White,
                 ShadowDepth = 18,
@@ -55,24 +55,24 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Font = new Font("Segoe UI Emoji", 36F),
                 ForeColor = accent,
                 AutoSize = true,
-                Location = new Point(10, 55) // position at left-top
+                Location = new Point(10, 35) // position at left-top
             };
-            
+
             var lblTitle = new Label
             {
                 Text = title.ToUpper(),
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(120, 120, 120),
-                Location = new Point(100, 15), // shifted right of emoji
+                Location = new Point(80,15), // shifted right of emoji
                 AutoSize = true
             };
 
             var lblValue = new Label
             {
                 Text = value,
-                Font = new Font("Segoe UI", 30F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 18F,FontStyle.Bold),
                 ForeColor = Color.FromArgb(30, 30, 30),
-                Location = new Point(200, 50),
+                Location = new Point(100,50),
                 AutoSize = true
             };
 
@@ -108,6 +108,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             if (title.Contains("departure")) return Color.FromArgb(244, 162, 97);
 
             return Color.FromArgb(120, 120, 120);
+        }
+
+        private void flowStats_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

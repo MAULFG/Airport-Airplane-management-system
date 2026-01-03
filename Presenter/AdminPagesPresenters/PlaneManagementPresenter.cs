@@ -84,23 +84,5 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         }
 
 
-
-
-        private static List<Seat> BuildSeatsByType(
-     string type, int total, int eco, int biz, int first)
-        {
-            var seats = new List<Seat>();
-
-            for (int i = 1; i <= first; i++)
-                seats.Add(new Seat($"F{i}", "First"));
-
-            for (int i = 1; i <= biz; i++)
-                seats.Add(new Seat($"B{i}", "Business"));
-
-            for (int i = 1; i <= eco; i++)
-                seats.Add(new Seat($"E{i}", "Economy"));
-
-            return seats;
-        }
     }
 }
