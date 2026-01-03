@@ -8,6 +8,7 @@ using Airport_Airplane_management_system.Presenter.AdminPages;
 using Airport_Airplane_management_system.Presenter.AdminPagesPresenters;
 using Airport_Airplane_management_system.Repositories;
 using Airport_Airplane_management_system.View.Interfaces;
+using Airport_Airplane_management_system.View.UserControls;
 using Guna.UI2.WinForms;
 using MySqlX.XDevAPI;
 using System;
@@ -53,6 +54,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private readonly PlaneService planeService;
         private readonly PassengerService passService;
         private readonly BookingService bookingService;
+        private PlaneScheduleControl _dockedScheduleOnPlanePage;
+        private PlaneScheduleControl _dockedScheduleOnFlightPage;
         public AdminDashboard(INavigationService navigation)
         {
             
@@ -75,10 +78,21 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             _reportspresenter = new ReportsPresenter(reports1, reportsService);
             _mainapresenter = new MainAPresenter(maina1, flightRepo, planeRepo, crewRepo, passRepo, bookRepo);
             _crewpresenter = new CrewManagementPresenter(crewManagement1, crewService);
-            _flightmpresenter = new FlightManagementPresenter(flightManagement1, flightService);
+            _flightmpresenter = new FlightManagementPresenter(
+    flightManagement1,
+    flightService,
+    openCrewForFlight: null,
+    openScheduleForPlane: OpenPlaneScheduleDockedOnFlightPage
+);
+
             _passengermanagementpresenter = new PassengerManagementPresenter(passengerMangement1, passService, () => flightRepo.CountUpcomingFlightsNotFullyBooked());
-            _planepresenter = new PlaneManagementPresenter(planeManagements1, planeRepo);
-            
+            _planepresenter = new PlaneManagementPresenter(
+    planeManagements1,
+    planeRepo,
+    OpenPlaneScheduleDockedOnPlanePage // ✅ wire See Schedule -> open docked schedule
+);
+
+
             HideAllPanels();
             InitializeButtonEvents();
             MainA();
@@ -102,7 +116,123 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnlogoutA.Click += (s, e) => LogoutAClicked?.Invoke(this, EventArgs.Empty);
         }
 
+        private void OpenPlaneScheduleDockedOnPlanePage(int planeId)
+        {
+            PlaneMangement();
+            CloseDockedScheduleOnPlanePage();
 
+            var plane = planeRepo.GetAllPlanes().FirstOrDefault(p => p.PlaneID == planeId);
+            if (plane == null)
+            {
+                MessageBox.Show("Plane not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var schedule = new PlaneScheduleControl();
+            schedule.Dock = DockStyle.Fill;
+
+            schedule.SetMode(false);
+            schedule.SetAircraftTitle($"{plane.Model} Schedule");
+
+            var flights = flightRepo.GetAllFlights();
+
+            schedule.BindPlaneSchedule(
+                planeId,
+                flights,
+                DateTime.Today.AddDays(-2),
+                360
+            );
+
+            schedule.CloseClicked += (_, __) => CloseDockedScheduleOnPlanePage();
+
+            planeManagements1.Controls.Add(schedule);
+            schedule.BringToFront();
+            _dockedScheduleOnPlanePage = schedule;
+        }
+        private void OpenPlaneScheduleDockedOnFlightPage(int planeId)
+        {
+            // ✅ DO NOT call FlightMangement() here (it hides + re-shows the page and can remove the overlay)
+            // If you really want safety, only navigate if we are not already on it:
+            if (!flightManagement1.Visible)
+                FlightMangement();
+
+            CloseDockedScheduleOnFlightPage();
+
+            var plane = planeRepo.GetAllPlanes().FirstOrDefault(p => p.PlaneID == planeId);
+            if (plane == null)
+            {
+                MessageBox.Show("Plane not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var schedule = new PlaneScheduleControl
+            {
+                Dock = DockStyle.Fill
+            };
+
+            schedule.SetMode(true);
+            schedule.SetAircraftTitle($"{plane.Model} Schedule");
+
+            var flights = flightRepo.GetAllFlights();
+
+            schedule.BindPlaneSchedule(
+                planeId,
+                flights,
+                DateTime.Today.AddDays(-2),
+                360
+            );
+
+            schedule.CloseClicked += (_, __) => CloseDockedScheduleOnFlightPage();
+
+            schedule.SlotSelected += (_, info) =>
+            {
+                DateTime suggestedDate = info.date.Date;
+                DateTime suggestedDeparture = suggestedDate.AddHours(info.hour);
+                DateTime suggestedArrival = suggestedDeparture.AddHours(3);
+
+                using (var dlg = new SlotDialog(suggestedDate, suggestedDeparture, suggestedArrival))
+                {
+                    if (dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        flightManagement1.SetTimes(dlg.SelectedDeparture, dlg.SelectedArrival);
+                        CloseDockedScheduleOnFlightPage();
+                        // ✅ no need to call FlightMangement() here either
+                    }
+                }
+            };
+
+            flightManagement1.ShowDockedSchedule(schedule);
+            _dockedScheduleOnFlightPage = schedule;
+        }
+
+        private void CloseDockedScheduleOnFlightPage()
+        {
+            if (_dockedScheduleOnFlightPage == null || _dockedScheduleOnFlightPage.IsDisposed) return;
+
+            try
+            {
+                flightManagement1.HideDockedSchedule();
+                _dockedScheduleOnFlightPage.Dispose();
+            }
+            catch { }
+
+            _dockedScheduleOnFlightPage = null;
+        }
+        private void CloseDockedScheduleOnPlanePage()
+        {
+            if (_dockedScheduleOnPlanePage == null || _dockedScheduleOnPlanePage.IsDisposed) return;
+
+            try
+            {
+                if (planeManagements1.Controls.Contains(_dockedScheduleOnPlanePage))
+                    planeManagements1.Controls.Remove(_dockedScheduleOnPlanePage);
+
+                _dockedScheduleOnPlanePage.Dispose();
+            }
+            catch { }
+
+            _dockedScheduleOnPlanePage = null;
+        }
         private void HideAllPanels()
         {
             maina1.Hide();

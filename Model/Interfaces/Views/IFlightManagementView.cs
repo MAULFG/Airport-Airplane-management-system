@@ -15,7 +15,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         event Action<int> EditRequested;
         event Action<int> DeleteRequested;
         event Action<int> ViewCrewRequested;
-
+        event Action<int> PlaneScheduleRequested;
         event Action<int> PlaneChanged;
 
         string FromCity { get; }

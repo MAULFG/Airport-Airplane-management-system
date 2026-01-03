@@ -11,17 +11,36 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private readonly IPlaneManagementView _view;
         private readonly IPlaneRepository _repo;
 
-        public PlaneManagementPresenter(IPlaneManagementView view, IPlaneRepository repo)
+        // ✅ callback owned by the shell (AdminDashboard) to open schedule UI
+        private readonly Action<int>? _openSchedule;
+
+        public PlaneManagementPresenter(
+            IPlaneManagementView view,
+            IPlaneRepository repo,
+            Action<int>? openSchedule = null)
         {
             _view = view;
             _repo = repo;
+            _openSchedule = openSchedule;
 
             _view.ViewLoaded += (_, __) => LoadPlanes();
             _view.AddPlaneClicked += OnAddPlane;
             _view.DeleteRequested += OnDeletePlane;
+
+            // ✅ THIS was missing: button "See Schedule" triggers PlaneSelected in the view
+            _view.PlaneSelected += OnPlaneSelected;
         }
 
-    
+        private void OnPlaneSelected(int planeId)
+        {
+            if (_openSchedule == null)
+            {
+                _view.ShowError("Schedule action is not wired from AdminDashboard.");
+                return;
+            }
+
+            _openSchedule.Invoke(planeId);
+        }
 
         private void OnDeletePlane(int planeId)
         {
@@ -34,7 +53,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             }
 
             _view.ShowInfo("Plane deleted successfully.");
-            LoadPlanes(); // ✅ refresh
+            LoadPlanes(); // refresh
         }
 
         private void LoadPlanes()
@@ -83,11 +102,8 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             LoadPlanes();
         }
 
-
-
-
-        private static List<Seat> BuildSeatsByType(
-     string type, int total, int eco, int biz, int first)
+        // (You can delete this if unused)
+        private static List<Seat> BuildSeatsByType(string type, int total, int eco, int biz, int first)
         {
             var seats = new List<Seat>();
 
