@@ -100,7 +100,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             {
                 // G650 is a private jet, usually 1-1 or 2-2 seating
                 totalColumns = 4; // simple layout
-                firstMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" } };
+                firstMap = new Dictionary<int, string> { { 0, "V" }, { 1, "V" } };
                 businessMap = null;
                 economyMap = null; // usually not used
             }else
@@ -257,7 +257,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             }
             else if (model.Contains("g650"))
             {
-                return seatLetter == "A" || seatLetter == "B";
+                return seatLetter == "V" || seatLetter == "V";
             }
             else
             {

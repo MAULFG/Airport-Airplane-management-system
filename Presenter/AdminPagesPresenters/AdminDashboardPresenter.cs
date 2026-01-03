@@ -28,7 +28,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
             _view.CrewManagementClicked += CrewClicked;
             _view.FlightManagementClicked += FlightClicked;
             _view.MainAClicked += MianClicked;
-            _view.NotrificationAClicked += NotrificationClicked;
             _view.PassengerManagementClicked += PassengerClicked;
         }
 
@@ -58,10 +57,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
         {
             _view.MainA();
         }
-        private void NotrificationClicked(object sender, EventArgs e)
-        {
-            _view.NotrificationA();
-        }
+
         private void PassengerClicked(object sender, EventArgs e)
         {
             _view.PassengerMangement();

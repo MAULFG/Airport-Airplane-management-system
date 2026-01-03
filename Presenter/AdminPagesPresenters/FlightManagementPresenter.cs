@@ -52,7 +52,15 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 _openCrewForFlight?.Invoke(flightId);
             };
         }
+        public void RefreshData()
+        {
+            LoadPlanes();
+            RefreshFlights();
 
+            // Reapply current plane selection if any
+            if (_view.SelectedPlaneId.HasValue)
+                OnPlaneChanged(_view.SelectedPlaneId.Value);
+        }
         private void OnLoad()
         {
             LoadPlanes();
@@ -189,6 +197,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _view.ShowInfo($"Flight added (ID #{newId}).");
             _view.ClearForm();
             RefreshFlights();
+            RefreshData();
         }
 
         private void EnterEditMode(int flightId)
@@ -277,6 +286,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _view.ShowInfo("Flight updated.");
             _view.ExitEditMode();
             RefreshFlights();
+            RefreshData();
         }
 
         private void DeleteFlight(int flightId)
@@ -292,6 +302,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             _view.ShowInfo("Flight deleted.");
             RefreshFlights();
+            RefreshData();
         }
     }
 }

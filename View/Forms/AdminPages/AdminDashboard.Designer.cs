@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -44,12 +44,9 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             btnlogoutA = new Guna.UI2.WinForms.Guna2Button();
             btnreport = new Guna.UI2.WinForms.Guna2Button();
-            btnnotrificationA = new Guna.UI2.WinForms.Guna2Button();
             btnMainA = new Guna.UI2.WinForms.Guna2Button();
             btnpasenger = new Guna.UI2.WinForms.Guna2Button();
             btncrew = new Guna.UI2.WinForms.Guna2Button();
@@ -59,7 +56,6 @@
             crewManagement1 = new CrewManagement();
             flightManagement1 = new FlightManagement();
             planeManagements1 = new PlaneManagements();
-            notrificationsa1 = new NotrificationsA();
             maina1 = new MainA();
             reports1 = new Reports();
             passengerMangement1 = new PassengerMangement();
@@ -73,26 +69,24 @@
             guna2Panel1.BorderThickness = 2;
             guna2Panel1.Controls.Add(btnlogoutA);
             guna2Panel1.Controls.Add(btnreport);
-            guna2Panel1.Controls.Add(btnnotrificationA);
             guna2Panel1.Controls.Add(btnMainA);
             guna2Panel1.Controls.Add(btnpasenger);
             guna2Panel1.Controls.Add(btncrew);
             guna2Panel1.Controls.Add(btnplane);
             guna2Panel1.Controls.Add(btnFlight);
             guna2Panel1.Controls.Add(panel1);
-            customizableEdges17.BottomLeft = false;
-            customizableEdges17.BottomRight = false;
-            customizableEdges17.TopLeft = false;
-            customizableEdges17.TopRight = false;
-            guna2Panel1.CustomizableEdges = customizableEdges17;
+            customizableEdges15.BottomLeft = false;
+            customizableEdges15.BottomRight = false;
+            customizableEdges15.TopLeft = false;
+            customizableEdges15.TopRight = false;
+            guna2Panel1.CustomizableEdges = customizableEdges15;
             guna2Panel1.Dock = DockStyle.Left;
             guna2Panel1.FillColor = Color.FromArgb(26, 44, 63);
             guna2Panel1.Location = new Point(0, 0);
             guna2Panel1.Name = "guna2Panel1";
-            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges16;
             guna2Panel1.Size = new Size(250, 720);
             guna2Panel1.TabIndex = 2;
-            guna2Panel1.Paint += guna2Panel1_Paint;
             // 
             // btnlogoutA
             // 
@@ -130,29 +124,11 @@
             btnreport.Text = "Reports";
             btnreport.TextAlign = HorizontalAlignment.Left;
             // 
-            // btnnotrificationA
-            // 
-            btnnotrificationA.BackColor = Color.Transparent;
-            btnnotrificationA.BorderRadius = 10;
-            btnnotrificationA.CustomizableEdges = customizableEdges5;
-            btnnotrificationA.FillColor = Color.Transparent;
-            btnnotrificationA.Font = new Font("Tajawal", 12F, FontStyle.Bold);
-            btnnotrificationA.ForeColor = Color.White;
-            btnnotrificationA.Image = Properties.Resources.notrification1;
-            btnnotrificationA.ImageAlign = HorizontalAlignment.Left;
-            btnnotrificationA.Location = new Point(10, 452);
-            btnnotrificationA.Name = "btnnotrificationA";
-            btnnotrificationA.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            btnnotrificationA.Size = new Size(214, 45);
-            btnnotrificationA.TabIndex = 8;
-            btnnotrificationA.Text = "Notrification";
-            btnnotrificationA.TextAlign = HorizontalAlignment.Left;
-            // 
             // btnMainA
             // 
             btnMainA.BackColor = Color.Transparent;
             btnMainA.BorderRadius = 15;
-            btnMainA.CustomizableEdges = customizableEdges7;
+            btnMainA.CustomizableEdges = customizableEdges5;
             btnMainA.FillColor = Color.Transparent;
             btnMainA.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btnMainA.ForeColor = Color.White;
@@ -160,7 +136,7 @@
             btnMainA.ImageAlign = HorizontalAlignment.Left;
             btnMainA.Location = new Point(10, 130);
             btnMainA.Name = "btnMainA";
-            btnMainA.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            btnMainA.ShadowDecoration.CustomizableEdges = customizableEdges6;
             btnMainA.Size = new Size(214, 45);
             btnMainA.TabIndex = 0;
             btnMainA.Text = "Main";
@@ -170,7 +146,7 @@
             // 
             btnpasenger.BackColor = Color.Transparent;
             btnpasenger.BorderRadius = 10;
-            btnpasenger.CustomizableEdges = customizableEdges9;
+            btnpasenger.CustomizableEdges = customizableEdges7;
             btnpasenger.FillColor = Color.Transparent;
             btnpasenger.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btnpasenger.ForeColor = Color.White;
@@ -178,7 +154,7 @@
             btnpasenger.ImageAlign = HorizontalAlignment.Left;
             btnpasenger.Location = new Point(10, 350);
             btnpasenger.Name = "btnpasenger";
-            btnpasenger.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            btnpasenger.ShadowDecoration.CustomizableEdges = customizableEdges8;
             btnpasenger.Size = new Size(214, 45);
             btnpasenger.TabIndex = 1;
             btnpasenger.Text = "Pasenger Management";
@@ -188,7 +164,7 @@
             // 
             btncrew.BackColor = Color.Transparent;
             btncrew.BorderRadius = 10;
-            btncrew.CustomizableEdges = customizableEdges11;
+            btncrew.CustomizableEdges = customizableEdges9;
             btncrew.FillColor = Color.Transparent;
             btncrew.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btncrew.ForeColor = Color.White;
@@ -196,7 +172,7 @@
             btncrew.ImageAlign = HorizontalAlignment.Left;
             btncrew.Location = new Point(10, 295);
             btncrew.Name = "btncrew";
-            btncrew.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            btncrew.ShadowDecoration.CustomizableEdges = customizableEdges10;
             btncrew.Size = new Size(214, 45);
             btncrew.TabIndex = 2;
             btncrew.Text = "Crew Management";
@@ -206,7 +182,7 @@
             // 
             btnplane.BackColor = Color.Transparent;
             btnplane.BorderRadius = 10;
-            btnplane.CustomizableEdges = customizableEdges13;
+            btnplane.CustomizableEdges = customizableEdges11;
             btnplane.FillColor = Color.Transparent;
             btnplane.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btnplane.ForeColor = Color.White;
@@ -214,7 +190,7 @@
             btnplane.ImageAlign = HorizontalAlignment.Left;
             btnplane.Location = new Point(10, 240);
             btnplane.Name = "btnplane";
-            btnplane.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            btnplane.ShadowDecoration.CustomizableEdges = customizableEdges12;
             btnplane.Size = new Size(214, 45);
             btnplane.TabIndex = 3;
             btnplane.Text = "Plane Managment";
@@ -224,7 +200,7 @@
             // 
             btnFlight.BackColor = Color.Transparent;
             btnFlight.BorderRadius = 10;
-            btnFlight.CustomizableEdges = customizableEdges15;
+            btnFlight.CustomizableEdges = customizableEdges13;
             btnFlight.FillColor = Color.Transparent;
             btnFlight.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btnFlight.ForeColor = Color.White;
@@ -232,7 +208,7 @@
             btnFlight.ImageAlign = HorizontalAlignment.Left;
             btnFlight.Location = new Point(10, 185);
             btnFlight.Name = "btnFlight";
-            btnFlight.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            btnFlight.ShadowDecoration.CustomizableEdges = customizableEdges14;
             btnFlight.Size = new Size(214, 45);
             btnFlight.TabIndex = 4;
             btnFlight.Text = "Flight Management";
@@ -278,15 +254,7 @@
             planeManagements1.Name = "planeManagements1";
             planeManagements1.Size = new Size(1280, 720);
             planeManagements1.TabIndex = 6;
-            // 
-            // notrificationsa1
-            // 
-            notrificationsa1.Dock = DockStyle.Fill;
-            notrificationsa1.Location = new Point(0, 0);
-            notrificationsa1.Margin = new Padding(3, 4, 3, 4);
-            notrificationsa1.Name = "notrificationsa1";
-            notrificationsa1.Size = new Size(1280, 720);
-            notrificationsa1.TabIndex = 9;
+
             // 
             // maina1
             // 
@@ -297,7 +265,6 @@
             maina1.Name = "maina1";
             maina1.Size = new Size(1280, 720);
             maina1.TabIndex = 10;
-            maina1.Load += maina1_Load;
             // 
             // reports1
             // 
@@ -308,7 +275,6 @@
             reports1.Name = "reports1";
             reports1.Size = new Size(1280, 720);
             reports1.TabIndex = 10;
-            reports1.Load += maina1_Load;
             // 
             // passengerMangement1
             // 
@@ -319,7 +285,6 @@
             passengerMangement1.Name = "passengerMangement1";
             passengerMangement1.Size = new Size(1280, 720);
             passengerMangement1.TabIndex = 11;
-            passengerMangement1.Load += passengerMangement1_Load;
             // 
             // AdminDashboard
             // 
@@ -331,7 +296,6 @@
             Controls.Add(planeManagements1);
             Controls.Add(crewManagement1);
             Controls.Add(passengerMangement1);
-            Controls.Add(notrificationsa1);
             Controls.Add(reports1);
             Name = "AdminDashboard";
             Size = new Size(1280, 720);
@@ -350,12 +314,10 @@
         private Guna.UI2.WinForms.Guna2Button btnplane;
         private Guna.UI2.WinForms.Guna2Button btnFlight;
         private Panel panel1;
-        private Guna.UI2.WinForms.Guna2Button btnnotrificationA;
         private CrewManagement crewManagement1;
         private FlightManagement flightManagement1;
         private Reports reports1;
         private PlaneManagements planeManagements1;
-        private NotrificationsA notrificationsa1;
         private MainA maina1;
         private PassengerMangement passengerMangement1;
         private UserPages.MainUserPage mainUserPage1;

@@ -25,17 +25,18 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             IPassengerRepository passengerRepo,
             IBookingRepository bookingRepo)
         {
-            _view = view;
-            _flightRepo = flightRepo;
-            _planeRepo = planeRepo;
-            _crewRepo = crewRepo;
-            _passengerRepo = passengerRepo;
-            _bookingRepo = bookingRepo;
-
-            Load();
+            _view = view ?? throw new ArgumentNullException(nameof(view));
+            _flightRepo = flightRepo ?? throw new ArgumentNullException(nameof(flightRepo));
+            _planeRepo = planeRepo ?? throw new ArgumentNullException(nameof(planeRepo));
+            _crewRepo = crewRepo ?? throw new ArgumentNullException(nameof(crewRepo));
+            _passengerRepo = passengerRepo ?? throw new ArgumentNullException(nameof(passengerRepo));
+            _bookingRepo = bookingRepo ?? throw new ArgumentNullException(nameof(bookingRepo));
         }
 
-        public void Load()
+        /// <summary>
+        /// 🔥 Call this every time the AdminDashboard opens the MainA page
+        /// </summary>
+        public void RefreshData()
         {
             var flights = InvokeList<Flight>(_flightRepo, "GetAllFlights", "GetFlights", "GetAll") ?? new List<Flight>();
             var planes = InvokeList<Plane>(_planeRepo, "GetAllPlanes", "GetPlanes", "GetAll") ?? new List<Plane>();
@@ -60,7 +61,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             int activePlanes = planes.Count(IsPlaneActive);
             int inactivePlanes = totalPlanes - activePlanes;
 
-            // ✅ NEW: Planes with NO flights at all
             var planeIdsWithAnyFlight = new HashSet<int>(
                 flights.Select(GetPlaneIdFromFlight).Where(id => id > 0)
             );
@@ -77,8 +77,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             int assigned = crew.Count(c => c.FlightId.HasValue);
             int unassigned = crew.Count - assigned;
 
-            // ✅ NEW: Crew assigned to PAST flights
-            // Build lookup of flights by ID (reflection-safe)
             var flightById = flights
                 .Select(f => new { Flight = f, Id = GetFlightId(f) })
                 .Where(x => x.Id > 0)
@@ -144,11 +142,8 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             {
                 UnassignedCrew = unassigned,
                 InactivePlanes = inactivePlanes,
-
-                // ✅ NEW
                 CrewAssignedToPastFlights = crewAssignedToPastFlights,
                 PlanesNotAssignedToAnyFlight = planesNotAssignedToAnyFlight,
-
                 ActiveAlerts = alertsCount
             });
         }
@@ -178,8 +173,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                            .Equals("Active", StringComparison.OrdinalIgnoreCase);
         }
 
-        // ===== Reflection-safe ID readers =====
-
         private static int GetFlightId(Flight f)
         {
             if (f == null) return 0;
@@ -191,8 +184,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private static int GetPlaneIdFromFlight(Flight f)
         {
             if (f == null) return 0;
-
-            // your Flight class commonly has PlaneIDFromDb or PlaneID
             var pidObj = ReadAny(f, "PlaneIDFromDb", "PlaneID", "plane_id", "PlaneId", "planeId");
             if (pidObj == null) return 0;
 

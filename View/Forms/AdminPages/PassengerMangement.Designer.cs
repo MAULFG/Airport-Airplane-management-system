@@ -76,8 +76,9 @@
             root.Name = "root";
             root.Padding = new Padding(28, 20, 28, 20);
             root.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            root.Size = new Size(1280, 720);
+            root.Size = new Size(1030, 720);
             root.TabIndex = 0;
+            root.Paint += root_Paint;
             // 
             // listPanel
             // 
@@ -88,7 +89,7 @@
             listPanel.Location = new Point(28, 167);
             listPanel.Name = "listPanel";
             listPanel.Padding = new Padding(0, 14, 0, 0);
-            listPanel.Size = new Size(1224, 533);
+            listPanel.Size = new Size(974, 533);
             listPanel.TabIndex = 0;
             listPanel.WrapContents = false;
             listPanel.Paint += listPanel_Paint;
@@ -110,7 +111,7 @@
             txtSearch.PlaceholderText = "Search by name, email, or phone...";
             txtSearch.SelectedText = "";
             txtSearch.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            txtSearch.Size = new Size(1224, 57);
+            txtSearch.Size = new Size(974, 57);
             txtSearch.TabIndex = 1;
             // 
             // header
@@ -124,7 +125,7 @@
             header.Location = new Point(28, 20);
             header.Name = "header";
             header.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            header.Size = new Size(1224, 90);
+            header.Size = new Size(974, 90);
             header.TabIndex = 2;
             // 
             // lblTitle
@@ -156,7 +157,7 @@
             statsPanel.Controls.Add(lblTotalPassengersText);
             statsPanel.CustomizableEdges = customizableEdges3;
             statsPanel.FillColor = Color.Transparent;
-            statsPanel.Location = new Point(896, 8);
+            statsPanel.Location = new Point(646, 8);
             statsPanel.Name = "statsPanel";
             statsPanel.ShadowDecoration.CustomizableEdges = customizableEdges4;
             statsPanel.Size = new Size(320, 70);

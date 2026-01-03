@@ -20,16 +20,22 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             PassengerService service,
             Func<int> countUpcomingFlightsNotFullyBooked)
         {
-            _view = view;
-            _service = service;
-            _countUpcomingFlightsNotFullyBooked = countUpcomingFlightsNotFullyBooked;
+            _view = view ?? throw new ArgumentNullException(nameof(view));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _countUpcomingFlightsNotFullyBooked = countUpcomingFlightsNotFullyBooked ?? throw new ArgumentNullException(nameof(countUpcomingFlightsNotFullyBooked));
 
+            // Event bindings
             _view.ViewLoaded += OnLoad;
             _view.SearchChanged += OnSearch;
             _view.PassengerToggleRequested += OnTogglePassenger;
             _view.CancelBookingRequested += OnCancelBooking;
         }
-        
+
+        // 🔥 Public method for AdminDashboard to refresh the page every time
+        public void RefreshData()
+        {
+            RefreshAll();
+        }
 
         private void OnLoad()
         {

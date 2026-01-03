@@ -11,7 +11,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private readonly IPlaneManagementView _view;
         private readonly IPlaneRepository _repo;
 
-        // ✅ callback owned by the shell (AdminDashboard) to open schedule UI
+        // Callback from AdminDashboard to open schedule UI
         private readonly Action<int>? _openSchedule;
 
         public PlaneManagementPresenter(
@@ -19,16 +19,21 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             IPlaneRepository repo,
             Action<int>? openSchedule = null)
         {
-            _view = view;
-            _repo = repo;
+            _view = view ?? throw new ArgumentNullException(nameof(view));
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
             _openSchedule = openSchedule;
 
+            // Event bindings
             _view.ViewLoaded += (_, __) => LoadPlanes();
             _view.AddPlaneClicked += OnAddPlane;
             _view.DeleteRequested += OnDeletePlane;
-
-            // ✅ THIS was missing: button "See Schedule" triggers PlaneSelected in the view
             _view.PlaneSelected += OnPlaneSelected;
+        }
+
+        // 🔥 Public method for AdminDashboard to refresh planes every time
+        public void RefreshData()
+        {
+            LoadPlanes();
         }
 
         private void OnPlaneSelected(int planeId)
@@ -58,7 +63,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         private void LoadPlanes()
         {
-            var planes = _repo.GetAllPlanes();
+            var planes = _repo.GetAllPlanes() ?? new List<Plane>();
 
             // Load seats for each plane
             foreach (var p in planes)
@@ -100,23 +105,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             _view.ShowInfo("Plane added successfully.");
             LoadPlanes();
-        }
-
-        // (You can delete this if unused)
-        private static List<Seat> BuildSeatsByType(string type, int total, int eco, int biz, int first)
-        {
-            var seats = new List<Seat>();
-
-            for (int i = 1; i <= first; i++)
-                seats.Add(new Seat($"F{i}", "First"));
-
-            for (int i = 1; i <= biz; i++)
-                seats.Add(new Seat($"B{i}", "Business"));
-
-            for (int i = 1; i <= eco; i++)
-                seats.Add(new Seat($"E{i}", "Economy"));
-
-            return seats;
         }
     }
 }

@@ -766,5 +766,22 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             }
             return null;
         }
+        public void Clear()
+        {
+            _kpiFlightsBig.Text = "-";
+            _kpiPlanesBig.Text = "-";
+            _kpiCrewBig.Text = "-";
+            _kpiPassengersBig.Text = "-";
+            _kpiAlertsBig.Text = "-";
+            _kpiOpsBig.Text = "-";
+
+            flightsList.Controls.Clear();
+            alertsList.Controls.Clear();
+        }
+
+        private void kpiGrid_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

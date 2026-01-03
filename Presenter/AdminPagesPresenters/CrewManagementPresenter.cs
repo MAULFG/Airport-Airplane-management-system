@@ -28,12 +28,24 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             
 
         }
-
+        public void RefreshData()
+        {
+            LoadFlights();
+            RefreshCrew();
+             // reset edit mode whenever page opens
+        }
+        private void LoadFlights()
+        {
+            var flights = _service.GetFlights();
+            _view.RenderFlights(flights);
+            _view.RenderFilterFlights(flights);
+        }
         private void OnLoad(object sender, EventArgs e)
         {
             _view.RenderFlights(_service.GetFlights());
             _view.RenderFilterFlights(_service.GetFlights());
-            RefreshCrew();
+  
+            RefreshData();
         }
 
         private void RefreshCrew()
@@ -79,7 +91,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 }
 
                 ExitEditMode();
-                RefreshCrew();
+                RefreshData();
             }
             catch (Exception ex)
             {
@@ -110,6 +122,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _isEditMode = false;
             _editingEmployeeId = null;
             _view.SetEditMode(false);
+     
         }
 
         private void DeleteCrew(Crew crew)
@@ -123,7 +136,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 if (_editingEmployeeId == crew.EmployeeId)
                     ExitEditMode();
 
-                RefreshCrew();
+                RefreshData();
             }
             catch (Exception ex)
             {

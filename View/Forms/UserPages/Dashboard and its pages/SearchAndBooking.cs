@@ -218,8 +218,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             details.Controls.Add(CreateRow("Arrival:", f.Arrival, 55, details.Width));
 
             // Seats
-            int firstTotal = 0, businessTotal = 0, economyTotal = 0;
-            int firstAvailable = 0, businessAvailable = 0, economyAvailable = 0;
+            int firstTotal = 0, businessTotal = 0, economyTotal = 0,vipTotal=0;
+            int firstAvailable = 0, businessAvailable = 0, economyAvailable = 0,vipAvailable=0;
 
             foreach (var s in f.FlightSeats ?? Enumerable.Empty<FlightSeats>())
             {
@@ -239,6 +239,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                         economyTotal++;
                         if (!s.IsBooked) economyAvailable++;
                         break;
+                    case "vip":
+                        vipTotal++;
+                        if (!s.IsBooked) vipAvailable++;
+                        break;
                 }
             }
 
@@ -249,7 +253,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             if (firstTotal > 0) { details.Controls.Add(CreateSeatLabel($"First Class: {firstAvailable}/{firstTotal}", x, y)); x += seatSpacing; }
             if (businessTotal > 0) { details.Controls.Add(CreateSeatLabel($"Business Class: {businessAvailable}/{businessTotal}", x, y)); x += seatSpacing; }
             if (economyTotal > 0) { details.Controls.Add(CreateSeatLabel($"Economy Class: {economyAvailable}/{economyTotal}", x, y)); }
-
+            if (vipTotal > 0) { details.Controls.Add(CreateSeatLabel($"VIP: {vipAvailable}/{vipTotal}", x, y)); }
             // ===== BOOK BUTTON =====
             var btnBook = new Guna2Button
             {

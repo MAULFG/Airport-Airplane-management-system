@@ -9,7 +9,7 @@ public interface ICrewManagementView
     string Role { get; }
     string Status { get; }
     int? SelectedFlightId { get; }
-
+    void Clear();
     // Rendering
     void RenderCrew(IEnumerable<Crew> crew);
     void RenderFlights(List<Flight> flights);

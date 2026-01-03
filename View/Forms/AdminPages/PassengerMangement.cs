@@ -164,9 +164,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     Location = new Point(18, 18),
                     SizeMode = PictureBoxSizeMode.Zoom,
                     BackColor = Color.FromArgb(245, 245, 245),
-                   // Image = Properties.Resources.passenger
+                    Image = Properties.Resources.passenger
                 };
                 Controls.Add(picAvatar);
+
 
                 // Name
                 _lblName = new Label
@@ -711,6 +712,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     return wrap;
                 }
 
+
                 private Control MakeMini(string icon, string text)
                 {
                     return new Label
@@ -725,8 +727,28 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 }
             }
         }
+        public void ClearView()
+        {
+            // clear search box
+            txtSearch.Clear();
 
+            // reset expanded state
+            _expandedCard = null;
+
+            // clear passenger cards
+            listPanel.SuspendLayout();
+            listPanel.Controls.Clear();
+            listPanel.ResumeLayout();
+
+            // reset header values
+            lblTotalPassengersValue.Text = "0";
+        }
         private void listPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void root_Paint(object sender, PaintEventArgs e)
         {
 
         }

@@ -90,7 +90,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private void BuildFlow()
         {
-            
+
 
             // 2️⃣ Create a new panel in the same location/size as the designer panel
             flowPlanes = new Panel
@@ -381,6 +381,34 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             };
 
         }
+        // ===== Presenter -> View =====
+        public void ClearView()
+        {
+            // close add plane form if open
+            if (addplane != null && !addplane.IsDisposed)
+            {
+                addplane.Close();
+                addplane = null;
+            }
+
+            // reset internal state
+            _planes.Clear();
+            planeCards.Clear();
+            HighlightedPlaneId = null;
+
+            _pendingPlaneName = "";
+            _pendingPlaneType = "";
+            _pendingPlaneStatus = "";
+            _pendingTotal = _pendingEco = _pendingBiz = _pendingFirst = 0;
+
+            // clear UI
+            if (flowPlanes != null)
+            {
+                flowPlanes.SuspendLayout();
+                flowPlanes.Controls.Clear();
+                flowPlanes.ResumeLayout();
+            }
+        }
 
         private static void GetCountsByType(string type, out int total, out int eco, out int biz, out int first, out int vip)
         {
@@ -398,6 +426,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         }
 
         private void header_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void content_Paint(object sender, PaintEventArgs e)
         {
 
         }

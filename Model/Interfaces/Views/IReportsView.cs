@@ -14,6 +14,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         // Presenter -> View
         void RenderReports(List<ReportItemRow> items);
         void SetHeaderCounts(int totalIssues);
+        void ClearView();
 
         void ShowError(string message);
     }

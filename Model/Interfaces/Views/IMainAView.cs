@@ -10,7 +10,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         event Action GoToCrewRequested;
         event Action GoToPassengersRequested;
         event Action GoToNotificationsRequested;
-
+        void Clear();
         void ShowKpis(MainAKpiDto dto);
         void ShowFlights(MainAFlightsDto dto);
         void ShowAlerts(MainAAlertsDto dto);

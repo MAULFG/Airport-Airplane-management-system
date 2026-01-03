@@ -1,5 +1,4 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
-
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;
 using System;
@@ -17,14 +16,18 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
 
         public ReportsPresenter(IReportsView view, ReportsService service)
         {
-            _view = view;
-            _service = service;
+            _view = view ?? throw new ArgumentNullException(nameof(view));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
 
-            // ✅ ViewLoaded is Action (0 params)
+            // Bind events
             _view.ViewLoaded += Load;
-
-            // SearchChanged should also be Action<string>
             _view.SearchChanged += OnSearch;
+        }
+
+        // 🔥 Public method to refresh reports
+        public void RefreshData()
+        {
+            Load();
         }
 
         private void Load()
