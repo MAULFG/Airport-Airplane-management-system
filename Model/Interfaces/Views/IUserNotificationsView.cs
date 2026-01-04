@@ -18,6 +18,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         event Action RefreshClicked;
         event Action ClearAllClicked;
         event Action DeleteSelectedClicked;
+        event Action SelectAllClicked;
 
         event Action FilterChanged;
         event Action SearchChanged;
@@ -34,6 +35,8 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         void ShowInfo(string message);
         void ShowError(string message);
         bool Confirm(string message);
+        void SelectAllUI();
+        void ClearSelectionPublic();
 
         // ask dashboard to refresh bell badge
         void RequestBadgeRefresh();

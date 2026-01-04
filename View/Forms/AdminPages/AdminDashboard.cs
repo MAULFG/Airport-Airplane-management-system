@@ -66,17 +66,25 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             passRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            var notifWriterRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            var notifWriter = new NotificationWriterService(notifWriterRepo);
             crewService = new CrewService(crewRepo, flightRepo);
             passService = new PassengerService(passRepo, session);
             bookingService =new BookingService(bookRepo,session);
             planeService = new PlaneService(planeRepo, flightRepo);
-            flightService = new FlightService(flightRepo, userRepo, bookRepo, planeRepo,session);
+            flightService = new FlightService(flightRepo, userRepo, bookRepo, planeRepo, session, notifWriter);
             reportsService = new ReportsService(flightRepo, planeRepo, crewRepo);
             _reportspresenter = new ReportsPresenter(reports1, reportsService);
             _mainapresenter = new MainAPresenter(maina1, flightRepo, planeRepo, crewRepo, passRepo, bookRepo);
             _crewpresenter = new CrewManagementPresenter(crewManagement1, crewService);
             _flightmpresenter = new FlightManagementPresenter(flightManagement1, flightService);
-            _passengermanagementpresenter = new PassengerManagementPresenter(passengerMangement1, passService, () => flightRepo.CountUpcomingFlightsNotFullyBooked());
+            _passengermanagementpresenter = new PassengerManagementPresenter(
+                passengerMangement1,
+                passService,
+                () => flightRepo.CountUpcomingFlightsNotFullyBooked(),
+                bookRepo,
+                notifWriter
+            );
             _planepresenter = new PlaneManagementPresenter(planeManagements1, planeRepo);
             
             HideAllPanels();

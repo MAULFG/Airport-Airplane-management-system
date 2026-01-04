@@ -3,6 +3,7 @@ using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using MySqlX.XDevAPI;
 using System.Linq;
+using System;
 
 namespace Airport_Airplane_management_system.Model.Services
 {
@@ -10,12 +11,15 @@ namespace Airport_Airplane_management_system.Model.Services
     {
         private readonly IBookingRepository _repo;
         private readonly IAppSession _session;
+        private readonly NotificationWriterService _notifWriter;
 
-        public BookingService(IBookingRepository repo, IAppSession session)
+        public BookingService(IBookingRepository repo, IAppSession session, NotificationWriterService notifWriter = null)
         {
             _repo = repo;
             _session = session;
+            _notifWriter = notifWriter; // can be null (old code still works)
         }
+
         public void LoadBookingsForCurrentUser()
         {
             var user = _session.CurrentUser;
@@ -58,6 +62,29 @@ namespace Airport_Airplane_management_system.Model.Services
                 booking = new Booking(user, flight, seat, seat.ClassType);
                 booking.SetDbId(bookingId);
                 booking.Confirm();
+
+                // ✅ Booking confirmed notification (passenger + route + dates)
+                if (_notifWriter != null)
+                {
+                    if (_repo.TryGetBookingNotificationInfo(
+                            bookingId,
+                            out int userId,
+                            out int flightId,
+                            out int passengerId2,
+                            out string passengerName,
+                            out string fromCity,
+                            out string toCity,
+                            out DateTime dep,
+                            out DateTime arr,
+                            out string infoErr))
+                    {
+                        _notifWriter.NotifyBookingConfirmedForPassenger(
+                            userId, bookingId, flightId,
+                            passengerId2, passengerName,
+                            fromCity, toCity, dep, arr);
+                    }
+                }
+
             }
 
             return success;

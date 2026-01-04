@@ -2,34 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;
-
 namespace Airport_Airplane_management_system.Presenter.AdminPages
 {
     public class PassengerManagementPresenter
     {
         private readonly IPassengerManagementView _view;
         private readonly PassengerService _service;
-
+        private readonly IBookingRepository _Repo;
+        private readonly NotificationWriterService _notifWriter;
         private readonly Func<int> _countUpcomingFlightsNotFullyBooked;
         private List<PassengerSummaryRow> _all = new();
 
         public PassengerManagementPresenter(
-            IPassengerManagementView view,
-            PassengerService service,
-            Func<int> countUpcomingFlightsNotFullyBooked)
+    IPassengerManagementView view,
+    PassengerService service,
+    Func<int> countUpcomingFlightsNotFullyBooked,
+    IBookingRepository bookingRepo,
+    NotificationWriterService notifWriter)
         {
             _view = view;
             _service = service;
             _countUpcomingFlightsNotFullyBooked = countUpcomingFlightsNotFullyBooked;
+
+            _Repo = bookingRepo ?? throw new ArgumentNullException(nameof(bookingRepo));
+            _notifWriter = notifWriter ?? throw new ArgumentNullException(nameof(notifWriter));
 
             _view.ViewLoaded += OnLoad;
             _view.SearchChanged += OnSearch;
             _view.PassengerToggleRequested += OnTogglePassenger;
             _view.CancelBookingRequested += OnCancelBooking;
         }
-        
+
 
         private void OnLoad()
         {
@@ -103,6 +109,24 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         {
             if (!_view.Confirm("Cancel this flight booking?", "Confirm"))
                 return;
+
+            // ✅ Before cancel, get booking owner + flight
+            if (_Repo.TryGetBookingNotificationInfo(
+        bookingId,
+        out int userId,
+        out int flightId,
+        out int passengerIdFromDb,
+        out string passengerName,
+        out string fromCity,
+        out string toCity,
+        out DateTime dep,
+        out DateTime arr,
+        out string infoErr))
+            {
+                // simplest: reuse your existing cancel notification method but change its message method (recommended below)
+                _notifWriter.NotifyBookingCancelledByAdmin(userId, flightId, passengerId, passengerName);
+            }
+
 
             if (_service.CancelBooking(bookingId, out var err))
             {

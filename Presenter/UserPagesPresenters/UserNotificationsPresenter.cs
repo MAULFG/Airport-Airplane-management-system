@@ -37,6 +37,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _view.MarkSelectedReadClicked += OnMarkSelectedRead;
             _view.MarkSelectedUnreadClicked += OnMarkSelectedUnread;
 
+            _view.SelectAllClicked += OnSelectAll;
 
 
         }
@@ -215,6 +216,60 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _service.MarkUnread(_view.UserId, ids);
             OnLoad();
             _view.RequestBadgeRefresh();
+        }
+        private void OnSelectAll()
+        {
+            // if already everything selected -> clear selection (toggle behavior)
+            var visibleIds = _all
+                .Where(n => ShouldBeVisibleInCurrentFilter(n))
+                .Select(n => n.NotificationId)
+                .ToList();
+
+            var currentlySelected = _view.SelectedNotificationIds ?? new List<int>();
+
+            bool allSelected = visibleIds.Count > 0 && visibleIds.All(id => currentlySelected.Contains(id));
+
+            if (allSelected)
+            {
+                _view.ClearSelectionPublic();
+                return;
+            }
+
+            // Select ALL visible cards (after filter/search)
+            _view.SelectAllUI();
+        }
+
+
+        private bool ShouldBeVisibleInCurrentFilter(UserNotificationRow n)
+        {
+            string filter = (_view.Filter ?? "All").Trim();
+            string search = (_view.SearchText ?? "").Trim();
+
+            // filter logic (must match ApplyFilter)
+            bool ok = true;
+
+            if (!string.Equals(filter, "All", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(filter, "Unread", StringComparison.OrdinalIgnoreCase))
+                    ok = !n.IsRead;
+                else if (string.Equals(filter, "Read", StringComparison.OrdinalIgnoreCase))
+                    ok = n.IsRead;
+                else
+                    ok = string.Equals(n.Type, filter, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (!ok) return false;
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                return
+                    (n.Title ?? "").Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    (n.Message ?? "").Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    (n.Type ?? "").Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    (n.BookingId?.ToString() ?? "").Contains(search);
+            }
+
+            return true;
         }
 
     }

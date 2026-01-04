@@ -51,6 +51,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnRefresh.Click += (_, __) => RefreshClicked?.Invoke();
             btnClearAll.Click += (_, __) => ClearAllClicked?.Invoke();
             btnDeleteSelected.Click += (_, __) => DeleteSelectedClicked?.Invoke();
+            btnSelectAll.Click += (_, __) => SelectAllClicked?.Invoke();
 
             cmbFilter.SelectedIndexChanged += (_, __) => FilterChanged?.Invoke();
             txtSearch.TextChanged += (_, __) => SearchChanged?.Invoke();
@@ -101,6 +102,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public event Action RefreshClicked;
         public event Action ClearAllClicked;
         public event Action DeleteSelectedClicked;
+        public event Action SelectAllClicked;
 
         public event Action FilterChanged;
         public event Action SearchChanged;
@@ -384,6 +386,27 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     sp.Width = w;
             }
         }
+        public void SelectAllUI()
+        {
+            _selectedIds.Clear();
+
+            foreach (Control c in flow.Controls)
+            {
+                if (c is Guna2ShadowPanel sp && sp.Tag is UserNotificationRow row)
+                {
+                    _selectedIds.Add(row.NotificationId);
+                    ApplySelectedVisual(sp, true);
+                }
+            }
+
+            UpdateSelectionBar();
+        }
+
+        public void ClearSelectionPublic()
+        {
+            ClearSelectionUI();
+        }
+
 
     }
 }

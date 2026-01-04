@@ -51,11 +51,14 @@ public partial class Main1 : Form, INavigationService
         myTicketsRepo = new MySqlMyTicketsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         var passengerRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
         var notifRepo = new MySqlUserNotificationsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+        var notifWriterRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+
 
         // Services
+        var notifWriter = new NotificationWriterService(notifWriterRepo);
         var userService = new UserService(userRepo, session);
-        flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo,session);
-        bookingService = new BookingService(bookingRepo, session);
+        flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo, session, notifWriter);
+        bookingService = new BookingService(bookingRepo, session, notifWriter);
         passengerService = new PassengerService(passengerRepo, session);
         myTicketsService = new MyTicketsService(myTicketsRepo);
         // Pages

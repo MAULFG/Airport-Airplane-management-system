@@ -18,6 +18,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         private Guna2Button btnRefresh;
         private Guna2Button btnClearAll;
+        private Guna2Button btnSelectAll;
 
         private Panel pnlSelection;
         private Label lblSelected;
@@ -54,6 +55,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtSearch = new Guna2TextBox();
             btnRefresh = new Guna2Button();
             btnClearAll = new Guna2Button();
+            btnSelectAll = new Guna2Button();
             pnlSelection = new Panel();
             lblSelected = new Label();
             btnDeleteSelected = new Guna2Button();
@@ -175,6 +177,17 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnClearAll.TabIndex = 6;
             btnClearAll.Text = "Clear all";
             // 
+            // btnSelectAll
+            // 
+            btnSelectAll.BorderRadius = 10;
+            btnSelectAll.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnSelectAll.ForeColor = Color.White;
+            btnSelectAll.Location = new Point(930, 95);   // ✅ place it right after Clear all (we'll move Clear all)
+            btnSelectAll.Name = "btnSelectAll";
+            btnSelectAll.Size = new Size(130, 36);
+            btnSelectAll.TabIndex = 7;
+            btnSelectAll.Text = "Select all";
+            // 
             // pnlSelection
             // 
             pnlSelection.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -255,6 +268,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Controls.Add(btnRefresh);
             Controls.Add(btnClearAll);
             Controls.Add(pnlSelection);
+            Controls.Add(btnSelectAll);
             Controls.Add(flow);
             Name = "UserNotifications";
             Size = new Size(1464, 826);

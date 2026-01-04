@@ -109,6 +109,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             var bookingForm = new BookingPage(flightId, _bookingService, _passengerService, _session);
             _bookingpresenter = new BookingPresenter(bookingForm, _flightService, flightId);
             bookingForm.ShowDialog();
+            RefreshNotificationsBadge();
         }
 
         private void InitializeButtonEvents()
