@@ -1,7 +1,6 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
-using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +14,24 @@ namespace Airport_Airplane_management_system.Model.Services
         private readonly IBookingRepository _bookingRepo;
         private readonly IPlaneRepository _planeRepo;
         private readonly IAppSession _session;
-        public FlightService(IFlightRepository flightRepo, IUserRepository userRepo,IBookingRepository bookingRepo,IPlaneRepository planeRepo, IAppSession session) 
+
+        public FlightService(
+            IFlightRepository flightRepo,
+            IUserRepository userRepo,
+            IBookingRepository bookingRepo,
+            IPlaneRepository planeRepo,
+            IAppSession session)
         {
             _flightRepo = flightRepo;
             _userRepo = userRepo;
             _bookingRepo = bookingRepo;
             _planeRepo = planeRepo;
-            _session = session; 
+            _session = session;
         }
 
+        // -----------------------------
+        // PRELOAD / SESSION
+        // -----------------------------
         public void Preload()
         {
             if (_session.Flights != null)
@@ -52,8 +60,8 @@ namespace Airport_Airplane_management_system.Model.Services
             {
                 flight.Plane = planes.FirstOrDefault(p => p.PlaneID == flight.PlaneIDFromDb);
                 flight.FlightSeats.Clear();
-                var seats = _flightRepo.GetSeatsForFlight(flight.FlightID);
 
+                var seats = _flightRepo.GetSeatsForFlight(flight.FlightID);
                 foreach (var seat in seats)
                 {
                     if (seat.PassengerId.HasValue)
@@ -68,69 +76,52 @@ namespace Airport_Airplane_management_system.Model.Services
 
             _session.SetPlanes(planes);
             _session.SetFlights(flights);
-
             return flights;
         }
 
-        public Flight GetFlightById(int flightId) => _flightRepo.GetFlightById(flightId);
+        public Flight GetFlightById(int flightId)
+            => _flightRepo.GetFlightById(flightId);
 
         public List<Flight> GetFlights()
-        {
-            return _flightRepo.GetAllFlights();
-        }
+            => _flightRepo.GetAllFlights();
 
-        public void LoadSeatsForFlight(Flight flight)
-        {
-            if (flight == null) return;
+        public List<Plane> GetPlanes()
+            => _planeRepo.GetAllPlanesf();
 
-            flight.FlightSeats.Clear();
+        // -----------------------------
+        // SEATS / CLASSES
+        // -----------------------------
 
-            var seats = _flightRepo.GetSeatsForFlight(flight.FlightID);
-            var users = _userRepo.GetAllUsers();
+        // ✅ Correct meaning: classes depend on PLANE
+        public HashSet<string> GetSeatClassesForPlane(int planeId)
+            => _flightRepo.GetSeatClassesForPlane(planeId);
+        public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId)
+    => _flightRepo.PlaneHasTimeConflict(planeId, dep, arr, excludeFlightId);
 
-            foreach (var seat in seats)
-            {
-                if (seat.PassengerId.HasValue)
-                {
-                    var passenger = users.FirstOrDefault(u => u.UserID == seat.PassengerId.Value);
-                    if (passenger != null)
-                        seat.AssignPassenger(passenger);
-                }
 
-                flight.FlightSeats.Add(seat);
-            }
-        }
-        public int GetUpcomingFlightsNotFullyBooked() => _flightRepo.CountUpcomingFlightsNotFullyBooked();
-        public bool CancelFlight(int flightID, out string error)
-        {
-            error = "";
 
-            var bookingIds = _bookingRepo.GetActiveBookingIdsForFlight(flightID);
-            foreach (var bookingId in bookingIds)
-            {
-                if (!_bookingRepo.CancelBooking(bookingId, out error))
-                    return false;
-            }
+        public Dictionary<string, decimal> GetSeatPricesForFlight(int flightId)
+            => _flightRepo.GetSeatPricesForFlight(flightId);
 
-            if (!_flightRepo.DeleteFlight(flightID, out error))
-                return false;
+        public bool UpdateSeatPricesForFlight(
+            int flightId,
+            decimal economy,
+            decimal business,
+            decimal firstOrVip,
+            out string error)
+            => _flightRepo.UpdateSeatPricesForFlight(
+                flightId, economy, business, firstOrVip, out error);
 
-            return true;
-        }
-        public List<Plane> GetPlanes() => _planeRepo.GetAllPlanesf();
-
- 
-
-        // ✅ for "depends on plane chosen"
-        public HashSet<string> GetSeatClassesForFlight(int planeId)
-            => _flightRepo.GetSeatClassesForFlight(planeId);
+        // -----------------------------
+        // ADD FLIGHT
+        // -----------------------------
         public bool AddFlight(
-           Flight flight,
-           decimal economyPrice,
-           decimal businessPrice,
-           decimal firstPrice,
-           out int newId,
-           out string error)
+            Flight flight,
+            decimal economyPrice,
+            decimal businessPrice,
+            decimal firstPrice,
+            out int newId,
+            out string error)
         {
             error = "";
             newId = -1;
@@ -153,9 +144,10 @@ namespace Airport_Airplane_management_system.Model.Services
                 return false;
             }
 
-            // conflict check
-            
-            if (_flightRepo.PlaneHasTimeConflict(flight.Plane.PlaneID, flight.Departure, flight.Arrival))
+            if (_flightRepo.PlaneHasTimeConflict(
+                flight.Plane.PlaneID,
+                flight.Departure,
+                flight.Arrival))
             {
                 error = "Plane has a scheduling conflict.";
                 return false;
@@ -167,52 +159,67 @@ namespace Airport_Airplane_management_system.Model.Services
                 businessPrice,
                 firstPrice,
                 out newId,
-                out error
-            );
+                out error);
         }
-        public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId)
-            => _flightRepo.PlaneHasTimeConflict(planeId, dep, arr, excludeFlightId);
-        public bool UpdateFlightDates(int flightId, DateTime dep, DateTime arr, out string error)
+
+        // -----------------------------
+        // UPDATE FLIGHT (NO PLANE CHANGE)
+        // -----------------------------
+        public bool UpdateFlightDates(
+            int flightId,
+            DateTime dep,
+            DateTime arr,
+            out string error)
             => _flightRepo.UpdateFlightDates(flightId, dep, arr, out error);
-        public List<Flight> SearchFlights(string from, string to, int? year = null, int? month = null, int? day = null)
+
+        // -----------------------------
+        // UPDATE FLIGHT (PLANE CHANGED)
+        // -----------------------------
+        public bool UpdateFlightWithPlaneAndSeats(
+            int flightId,
+            int newPlaneId,
+            string fromCity,
+            string toCity,
+            DateTime departure,
+            DateTime arrival,
+            decimal economyPrice,
+            decimal businessPrice,
+            decimal firstOrVipPrice,
+            out string error)
         {
-            var flights = _flightRepo.GetAllFlights() ?? new List<Flight>();
+            return _flightRepo.UpdateFlightWithPlaneAndSeats(
+                flightId,
+                newPlaneId,
+                fromCity,
+                toCity,
+                departure,
+                arrival,
+                economyPrice,
+                businessPrice,
+                firstOrVipPrice,
+                out error);
+        }
 
-            if (!string.IsNullOrWhiteSpace(from))
-                flights = flights.Where(f => (f.From ?? "").Trim()
-                    .Equals(from.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+        // -----------------------------
+        // DELETE / CANCEL
+        // -----------------------------
+        public bool CancelFlight(int flightID, out string error)
+        {
+            error = "";
 
-            if (!string.IsNullOrWhiteSpace(to))
-                flights = flights.Where(f => (f.To ?? "").Trim()
-                    .Equals(to.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
-
-            // If date parts are provided, filter by that date
-            if (year.HasValue && month.HasValue && day.HasValue)
+            var bookingIds = _bookingRepo.GetActiveBookingIdsForFlight(flightID);
+            foreach (var bookingId in bookingIds)
             {
-                DateTime date;
-                try
-                {
-                    date = new DateTime(year.Value, month.Value, day.Value);
-                }
-                catch
-                {
-                    // invalid date -> return empty
-                    return new List<Flight>();
-                }
-
-                flights = flights.Where(f => f.Departure.Date == date.Date).ToList();
+                if (!_bookingRepo.CancelBooking(bookingId, out error))
+                    return false;
             }
 
-            return flights;
+            return _flightRepo.DeleteFlight(flightID, out error);
         }
-        public Dictionary<string, decimal> GetSeatPricesForFlight(int flightId)
-            => _flightRepo.GetSeatPricesForFlight(flightId);
-        public bool UpdateSeatPricesForFlight(int flightId, decimal economy, decimal business, decimal firstOrVip, out string error)
-            => _flightRepo.UpdateSeatPricesForFlight(flightId, economy, business, firstOrVip, out error);
 
-
-
-    
+        // -----------------------------
+        // SEARCH / FILTER
+        // -----------------------------
         public List<Flight> SearchFlights(
             string from = null,
             string to = null,
@@ -222,19 +229,15 @@ namespace Airport_Airplane_management_system.Model.Services
             string seatClass = null,
             int? passengers = null)
         {
-            // Load all flights with seats assigned
             var flights = LoadFlightsWithSeats();
             var query = flights.AsEnumerable();
 
-            // Filter FROM
             if (!string.IsNullOrWhiteSpace(from))
                 query = query.Where(f => f.From.Equals(from, StringComparison.OrdinalIgnoreCase));
 
-            // Filter TO
             if (!string.IsNullOrWhiteSpace(to))
                 query = query.Where(f => f.To.Equals(to, StringComparison.OrdinalIgnoreCase));
 
-            // Filter DATE
             if (year.HasValue)
                 query = query.Where(f => f.Departure.Year == year.Value);
             if (month.HasValue)
@@ -242,22 +245,13 @@ namespace Airport_Airplane_management_system.Model.Services
             if (day.HasValue)
                 query = query.Where(f => f.Departure.Day == day.Value);
 
-            // Filter by class + passengers
             if (!string.IsNullOrWhiteSpace(seatClass) && passengers.HasValue)
             {
-                query = query.Where(f => f.GetAvailableSeats(seatClass).Count >= passengers.Value);
+                query = query.Where(f =>
+                    f.GetAvailableSeats(seatClass).Count >= passengers.Value);
             }
 
             return query.ToList();
         }
-
-
-
-
-
-
-
-      
-
     }
 }

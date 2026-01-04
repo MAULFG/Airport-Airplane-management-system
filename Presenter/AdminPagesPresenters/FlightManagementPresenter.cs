@@ -17,6 +17,9 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private readonly Action<int>? _openCrewForFlight;
         private readonly Action<int>? _openScheduleForPlane;
 
+        // ✅ Track original plane in edit mode
+        private int? _originalPlaneId;
+
         public FlightManagementPresenter(
             IFlightManagementView view,
             FlightService service,
@@ -33,20 +36,23 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             _view.AddClicked += (_, __) => AddFlight();
             _view.UpdateClicked += (_, __) => UpdateFlight();
-            _view.CancelEditClicked += (_, __) => _view.ExitEditMode();
+            _view.CancelEditClicked += (_, __) =>
+            {
+                _originalPlaneId = null;
+                _view.ExitEditMode();
+            };
 
             _view.EditRequested += flightId => EnterEditMode(flightId);
             _view.DeleteRequested += flightId => DeleteFlight(flightId);
 
+            // ✅ When plane changes in the form, refresh seat class availability based on PLANE
             _view.PlaneChanged += planeId => OnPlaneChanged(planeId);
 
-            // ✅ NEW: open schedule whenever the view requests it
             _view.PlaneScheduleRequested += planeId =>
             {
                 _openScheduleForPlane?.Invoke(planeId);
             };
 
-            // (Optional) if you want the crew icon to navigate using callback
             _view.ViewCrewRequested += flightId =>
             {
                 _openCrewForFlight?.Invoke(flightId);
@@ -100,7 +106,8 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         private void OnPlaneChanged(int planeId)
         {
-            var classes = _service.GetSeatClassesForFlight(planeId)
+            // ✅ Correct: seat classes are determined by PLANE here
+            var classes = _service.GetSeatClassesForPlane(planeId)
                           ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             _view.SetSeatClassAvailability(classes);
@@ -141,7 +148,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 return;
             }
 
-            var classes = _service.GetSeatClassesForFlight(planeId)
+            var classes = _service.GetSeatClassesForPlane(planeId)
                           ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             decimal eco = _view.EconomyPrice;
@@ -205,6 +212,9 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             _view.EnterEditMode(flight, prices);
 
+            // ✅ store original plane id for detecting plane change
+            _originalPlaneId = flight.PlaneIDFromDb;
+
             if (_view.SelectedPlaneId.HasValue)
                 OnPlaneChanged(_view.SelectedPlaneId.Value);
         }
@@ -219,6 +229,12 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             int flightId = _view.EditingFlightId.Value;
 
+            if (string.IsNullOrWhiteSpace(_view.FromCity) || string.IsNullOrWhiteSpace(_view.ToCity))
+            {
+                _view.ShowError("From and To are required.");
+                return;
+            }
+
             if (_view.Arrival <= _view.Departure)
             {
                 _view.ShowError("Arrival must be after Departure.");
@@ -231,21 +247,16 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 return;
             }
 
-            int planeId = _view.SelectedPlaneId.Value;
+            int newPlaneId = _view.SelectedPlaneId.Value;
 
-            if (_service.PlaneHasTimeConflict(planeId, _view.Departure, _view.Arrival, excludeFlightId: flightId))
+            if (_service.PlaneHasTimeConflict(newPlaneId, _view.Departure, _view.Arrival, excludeFlightId: flightId))
             {
                 _view.ShowError("This plane already has another flight in the same time period.");
                 return;
             }
 
-            if (!_service.UpdateFlightDates(flightId, _view.Departure, _view.Arrival, out string dateErr))
-            {
-                _view.ShowError("Failed to update flight: " + dateErr);
-                return;
-            }
-
-            var classes = _service.GetSeatClassesForFlight(planeId)
+            // Validate prices based on NEW plane
+            var classes = _service.GetSeatClassesForPlane(newPlaneId)
                           ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             decimal eco = _view.EconomyPrice;
@@ -268,13 +279,45 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 return;
             }
 
-            if (!_service.UpdateSeatPricesForFlight(flightId, eco, bus, top, out string priceErr))
+            bool planeChanged = _originalPlaneId.HasValue && _originalPlaneId.Value != newPlaneId;
+
+            if (planeChanged)
             {
-                _view.ShowError("Failed to update seat prices: " + priceErr);
-                return;
+                // ✅ Correct fix: update flight + plane + rebuild seats
+                if (!_service.UpdateFlightWithPlaneAndSeats(
+                    flightId,
+                    newPlaneId,
+                    _view.FromCity.Trim(),
+                    _view.ToCity.Trim(),
+                    _view.Departure,
+                    _view.Arrival,
+                    eco,
+                    bus,
+                    top,
+                    out string err))
+                {
+                    _view.ShowError("Failed to update flight: " + err);
+                    return;
+                }
+            }
+            else
+            {
+                // ✅ Plane unchanged: keep your existing lightweight update
+                if (!_service.UpdateFlightDates(flightId, _view.Departure, _view.Arrival, out string dateErr))
+                {
+                    _view.ShowError("Failed to update flight: " + dateErr);
+                    return;
+                }
+
+                if (!_service.UpdateSeatPricesForFlight(flightId, eco, bus, top, out string priceErr))
+                {
+                    _view.ShowError("Failed to update seat prices: " + priceErr);
+                    return;
+                }
             }
 
             _view.ShowInfo("Flight updated.");
+            _originalPlaneId = null;
             _view.ExitEditMode();
             RefreshFlights();
         }

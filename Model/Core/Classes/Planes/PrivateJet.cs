@@ -19,8 +19,10 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
             // We'll generate exactly 7 VIP seats instead of 8 to match your UI config.
 
             Seats.Clear();
-            for (int i = 1; i <= 7; i++)
-                Seats.Add(new Seat($"V{i}", "VIP"));
+            for (int i = 1; i <= 4; i++)
+                Seats.Add(new Seat($"{i}A", "VIP"));
+            for (int i = 1; i <= 3; i++)
+                Seats.Add(new Seat($"{i}B", "VIP"));
         }
 
         private void AddSeats(string classType, int startRow, int endRow, int seatsPerRow)

@@ -32,6 +32,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private List<Plane> _planes = new();
         private List<Flight> _flights = new();
 
+        // ✅ prevents firing ViewLoaded repeatedly while already visible
+        private bool _wasVisible = false;
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsEditMode { get; set; }
@@ -63,8 +66,22 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             InitializeComponent();
 
-            // MVP load
+            // MVP load (first time)
             Load += (_, __) => ViewLoaded?.Invoke(this, EventArgs.Empty);
+
+            // ✅ MVP "enter page" (every time the control becomes visible again)
+            VisibleChanged += (_, __) =>
+            {
+                if (Visible && !_wasVisible)
+                {
+                    _wasVisible = true;
+                    ViewLoaded?.Invoke(this, EventArgs.Empty); // triggers presenter OnLoad -> LoadPlanes()
+                }
+                else if (!Visible)
+                {
+                    _wasVisible = false;
+                }
+            };
 
             // Flicker-free panel for schedule
             panelScheduleHost = new Guna2Panel
@@ -138,6 +155,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             _planes = planes ?? new List<Plane>();
 
+            // ✅ keep current selected plane if possible
+            int? keepPlaneId = SelectedPlaneId;
+
             cmbPlane.Items.Clear();
             foreach (var p in _planes.OrderBy(x => x.PlaneID))
             {
@@ -147,7 +167,16 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             }
 
             if (cmbPlane.Items.Count > 0)
-                cmbPlane.SelectedIndex = 0;
+            {
+                if (keepPlaneId.HasValue)
+                    SelectPlaneInDropdown(keepPlaneId.Value);
+                else
+                    cmbPlane.SelectedIndex = 0;
+            }
+            else
+            {
+                cmbPlane.SelectedIndex = -1;
+            }
 
             RefreshFilterItems();
 
@@ -365,7 +394,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             card.Controls.Add(InfoLine("Departure:", f.Departure.ToString("dd MMM yyyy  HH:mm"), 16, 56));
             card.Controls.Add(InfoLine("Arrival:", f.Arrival.ToString("dd MMM yyyy  HH:mm"), 16, 80));
 
-            // ✅ CLICKABLE plane value (button-style link)
             card.Controls.Add(
                 InfoLineClickableValue(
                     "Plane:",
@@ -430,7 +458,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             return p;
         }
 
-        // ✅ FIXED: clickable value is a real button (reliable click)
         private Control InfoLineClickableValue(string label, string value, int x, int y, Action onValueClick)
         {
             var p = new Guna2Panel
@@ -449,7 +476,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Location = new Point(0, 2)
             };
 
-            // clickable "link"
             var btnValue = new Guna2Button
             {
                 Text = value ?? "",
@@ -473,10 +499,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             p.Controls.Add(l1);
             p.Controls.Add(btnValue);
 
-            p.SizeChanged += (_, __) =>
-            {
-                btnValue.Location = new Point(l1.Right + 2, 0);
-            };
+            p.SizeChanged += (_, __) => btnValue.Location = new Point(l1.Right + 2, 0);
 
             return p;
         }
@@ -575,11 +598,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             panelScheduleHost.Visible = true;
 
-            // ✅ important: keep overlay above everything
             panelScheduleHost.BringToFront();
             schedule.BringToFront();
         }
-
 
         public void HideDockedSchedule()
         {
@@ -618,6 +639,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private void txtTo_TextChanged(object sender, EventArgs e) { }
         private void cmbPlane_SelectedIndexChanged(object sender, EventArgs e) { }
         private void rowFirst_Paint(object sender, PaintEventArgs e) { }
-        private void btnAddOrUpdate_Click(object sender, EventArgs e) { }
+        private void btnAddOrUpdate_Click(object sender, EventArgs e)
+        {
+            if (!IsEditMode) AddClicked?.Invoke(this, EventArgs.Empty);
+            else UpdateClicked?.Invoke(this, EventArgs.Empty);
+        }
+
     }
 }

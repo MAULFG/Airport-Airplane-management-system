@@ -260,17 +260,10 @@ SELECT LAST_INSERT_ID();";
 
                 var c = raw.Trim().ToLowerInvariant();
 
-                // keep VIP distinct
                 if (c.Contains("vip")) return "vip";
-
-                // first class
                 if (c.Contains("first") || c.Contains("premium")) return "first";
-
-                if (c.Contains("bus") || c.Contains("business") || c.Contains("biz"))
-                    return "business";
-
-                if (c.Contains("eco") || c.Contains("economy"))
-                    return "economy";
+                if (c.Contains("bus")) return "business";
+                if (c.Contains("eco")) return "economy";
 
                 return c;
             }
@@ -283,9 +276,9 @@ SELECT LAST_INSERT_ID();";
             using var cmd = con.CreateCommand();
             cmd.CommandText = @"
 SELECT DISTINCT class_type
-FROM seats
-WHERE plane_id = @pid;";
-            cmd.Parameters.AddWithValue("@pid", flightId);
+FROM flight_seats
+WHERE flight_id = @fid;";
+            cmd.Parameters.AddWithValue("@fid", flightId);
 
             using var r = cmd.ExecuteReader();
             while (r.Read())
@@ -299,6 +292,7 @@ WHERE plane_id = @pid;";
 
             return set;
         }
+
 
         public bool InsertFlightWithSeats(Flight flight,decimal economyPrice,decimal businessPrice,decimal firstPrice,out int newFlightId,out string error)
         {
@@ -500,6 +494,125 @@ WHERE plane_id = @pid
             return dict;
         }
 
+        public bool UpdateFlightWithPlaneAndSeats(
+    int flightId,
+    int newPlaneId,
+    string fromCity,
+    string toCity,
+    DateTime departure,
+    DateTime arrival,
+    decimal economyPrice,
+    decimal businessPrice,
+    decimal firstOrVipPrice,
+    out string error)
+        {
+            error = "";
+
+            if (arrival <= departure)
+            {
+                error = "Arrival must be after departure.";
+                return false;
+            }
+
+            try
+            {
+                using var conn = new MySqlConnection(_connStr);
+                conn.Open();
+                using var tx = conn.BeginTransaction();
+
+                // 1) If any booked seats exist -> block plane change
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"
+SELECT COUNT(*)
+FROM flight_seats
+WHERE flight_id = @fid AND is_booked = 1;";
+                    cmd.Parameters.AddWithValue("@fid", flightId);
+
+                    var booked = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (booked > 0)
+                    {
+                        tx.Rollback();
+                        error = "Cannot change plane: this flight already has booked seats.";
+                        return false;
+                    }
+                }
+
+                // 2) Update the flight row (including plane_id)
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"
+UPDATE flights
+SET plane_id=@pid,
+    from_city=@from,
+    to_city=@to,
+    departure=@dep,
+    arrival=@arr
+WHERE id=@fid;";
+                    cmd.Parameters.AddWithValue("@pid", newPlaneId);
+                    cmd.Parameters.AddWithValue("@from", fromCity);
+                    cmd.Parameters.AddWithValue("@to", toCity);
+                    cmd.Parameters.AddWithValue("@dep", departure);
+                    cmd.Parameters.AddWithValue("@arr", arrival);
+                    cmd.Parameters.AddWithValue("@fid", flightId);
+
+                    if (cmd.ExecuteNonQuery() <= 0)
+                        throw new Exception("Flight update failed.");
+                }
+
+                // 3) Delete old flight_seats (they belong to old plane)
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = "DELETE FROM flight_seats WHERE flight_id=@fid;";
+                    cmd.Parameters.AddWithValue("@fid", flightId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // 4) Recreate flight_seats from seats of the NEW plane
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"
+INSERT INTO flight_seats
+(flight_id, plane_seat_index, seat_number, class_type, is_booked, passenger_id, seat_price)
+SELECT
+    @fid,
+    s.id,
+    s.seat_number,
+    s.class_type,
+    0,
+    NULL,
+    CASE
+        WHEN LOWER(TRIM(s.class_type)) LIKE '%eco%' THEN @eco
+        WHEN LOWER(TRIM(s.class_type)) LIKE '%bus%' THEN @bus
+        WHEN LOWER(TRIM(s.class_type)) LIKE '%first%' THEN @first
+        WHEN LOWER(TRIM(s.class_type)) LIKE '%vip%' THEN @first
+        ELSE 0.00
+    END
+FROM seats s
+WHERE s.plane_id = @pid
+ORDER BY s.id;";
+                    cmd.Parameters.AddWithValue("@fid", flightId);
+                    cmd.Parameters.AddWithValue("@pid", newPlaneId);
+                    cmd.Parameters.AddWithValue("@eco", economyPrice);
+                    cmd.Parameters.AddWithValue("@bus", businessPrice);
+                    cmd.Parameters.AddWithValue("@first", firstOrVipPrice);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                tx.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
+        }
 
     }
 
