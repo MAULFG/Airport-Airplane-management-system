@@ -189,7 +189,7 @@ namespace Airport_Airplane_management_system.Presenter
         {
             PassengerDetailsClosed?.Invoke();  // Notify BookingPage even if canceled
             _view.CloseView();
-
+            
         }
     }
 }

@@ -26,8 +26,7 @@ namespace Airport_Airplane_management_system.Presenter
 
             LoadFlight(flightId);
         }
-
-
+       
         private void LoadFlight(int flightId)
         {
             _flight = _flightService.LoadFlightsWithSeats().FirstOrDefault(f => f.FlightID == flightId);

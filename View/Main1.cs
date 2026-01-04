@@ -57,7 +57,7 @@ public partial class Main1 : Form, INavigationService
         passengerService = new PassengerService(passengerRepo, session);
         myTicketsService = new MyTicketsService(myTicketsRepo);
         // Pages
-        loginPage = new LoginPage(this, userService, flightService, session);
+        loginPage = new LoginPage(this, userService,  session);
         userDashboard = new UserDashboard(myTicketsService,this, flightService, bookingService, passengerService, session);
         adminDashboard = new AdminDashboard(this);
         signUpPage = new Signupusercontrol(this);

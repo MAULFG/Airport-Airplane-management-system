@@ -11,13 +11,13 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
     {
         private readonly ILoginView _view;
         private readonly UserService _userService;
-        private readonly FlightService _flightService;
+
         private readonly INavigationService _navigation;
-        public LoginPresenter(ILoginView view,UserService userService,FlightService flightService,INavigationService navigation)
+        public LoginPresenter(ILoginView view,UserService userService,INavigationService navigation)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _flightService = flightService ?? throw new ArgumentNullException(nameof(flightService));
+
             _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 
             _view.LoginClicked += OnLoginClicked;
@@ -47,7 +47,7 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
             }
 
             // 🚀 PRELOAD HEAVY DATA
-            _flightService.Preload();
+     
 
             // 🧭 ROLE-BASED NAVIGATION
             if (user.UserID == 313)
