@@ -114,39 +114,55 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public event Action MenuSeeTicketClicked;
 
         public void BindNotifications(List<UserNotificationRow> rows)
+{
+    flow.SuspendLayout();
+    try
+    {
+        // ❶ Preserve selection before clearing
+        var oldSelected = new HashSet<int>(_selectedIds);
+
+        flow.Controls.Clear();
+
+        _selectedIds.Clear();
+        _focusedId = null;
+
+        lblCount.Text = $"Notifications ({rows.Count})";
+
+        pnlEmpty.Visible = rows.Count == 0;
+        if (rows.Count == 0)
         {
-            flow.SuspendLayout();
-            try
-            {
-                flow.Controls.Clear();
-
-                _selectedIds.Clear();
-                _focusedId = null;
-                UpdateSelectionBar();
-
-                lblCount.Text = $"Notifications ({rows.Count})";
-
-                pnlEmpty.Visible = rows.Count == 0;
-                if (rows.Count == 0)
-                {
-                    flow.Controls.Add(pnlEmpty);
-                    return;
-                }
-
-                foreach (var n in rows)
-                    flow.Controls.Add(CreateCard(n));
-
-                // ✅ IMPORTANT: set padding once here (do not multiply widths)
-                flow.Padding = new Padding(6, 6, 26, 6); // right padding gives scrollbar space
-            }
-            finally
-            {
-                flow.ResumeLayout(true);
-            }
-
-            // ✅ force proper width now
-            FixCardsWidth();
+            flow.Controls.Add(pnlEmpty);
+            return;
         }
+
+        foreach (var n in rows)
+        {
+            var card = CreateCard(n);
+            flow.Controls.Add(card);
+
+            // ❷ Restore selection if previously selected
+            if (oldSelected.Contains(n.NotificationId))
+            {
+                _selectedIds.Add(n.NotificationId);
+                ApplySelectedVisual(card, true);
+            }
+        }
+
+        // ✅ set padding once
+        flow.Padding = new Padding(6, 6, 26, 6); 
+    }
+    finally
+    {
+        flow.ResumeLayout(true);
+    }
+
+    // force proper width now
+    FixCardsWidth();
+
+    // update selection bar
+    UpdateSelectionBar();
+}
+
 
 
 
@@ -352,27 +368,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblSelected.Text = _selectedIds.Count > 0 ? $"Selected: {_selectedIds.Count}" : "";
         }
 
-        private static string Shorten(string s, int max)
-        {
-            s ??= "";
-            if (s.Length <= max) return s;
-            return s.Substring(0, max - 3) + "...";
-        }
 
-
-        private int GetCardWidth()
-        {
-            const int CUT_RIGHT = 220;
-            const int CUT_LEFT = 10;
-
-            int w = flow.ClientSize.Width - flow.Padding.Horizontal - CUT_LEFT - CUT_RIGHT;
-
-            // keep the “wider cards” rule here ONLY (not in two places)
-            w = (int)(w * 1.25);
-
-            if (w < 520) w = 520;
-            return w;
-        }
 
         private void FixCardsWidth()
         {
@@ -433,6 +429,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void flow_Paint(object sender, PaintEventArgs e)
         {
 
         }

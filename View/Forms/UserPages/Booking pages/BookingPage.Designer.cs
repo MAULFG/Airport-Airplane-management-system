@@ -97,7 +97,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblFlightInfo.ForeColor = Color.White;
             lblFlightInfo.Location = new Point(20, 20);
             lblFlightInfo.Name = "lblFlightInfo";
-            lblFlightInfo.Size = new Size(104, 23);
+            lblFlightInfo.Size = new Size(129, 30);
             lblFlightInfo.TabIndex = 0;
             lblFlightInfo.Text = "Flight Details";
             // 
@@ -175,7 +175,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2HtmlLabel1.BackColor = Color.Transparent;
             guna2HtmlLabel1.Location = new Point(10, 61);
             guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(102, 17);
+            guna2HtmlLabel1.Size = new Size(129, 22);
             guna2HtmlLabel1.TabIndex = 4;
             guna2HtmlLabel1.Text = "WindowSeat: $0.00";
             // 
@@ -184,7 +184,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblBasePriceValue.BackColor = Color.Transparent;
             lblBasePriceValue.Location = new Point(10, 40);
             lblBasePriceValue.Name = "lblBasePriceValue";
-            lblBasePriceValue.Size = new Size(60, 17);
+            lblBasePriceValue.Size = new Size(76, 22);
             lblBasePriceValue.TabIndex = 0;
             lblBasePriceValue.Text = "Base: $0.00";
             // 
@@ -193,7 +193,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblTaxValue.BackColor = Color.Transparent;
             lblTaxValue.Location = new Point(10, 82);
             lblTaxValue.Name = "lblTaxValue";
-            lblTaxValue.Size = new Size(54, 17);
+            lblTaxValue.Size = new Size(68, 22);
             lblTaxValue.TabIndex = 1;
             lblTaxValue.Text = "Tax: $0.00";
             // 
@@ -202,7 +202,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblDivider.BackColor = Color.Transparent;
             lblDivider.Location = new Point(10, 93);
             lblDivider.Name = "lblDivider";
-            lblDivider.Size = new Size(87, 17);
+            lblDivider.Size = new Size(115, 22);
             lblDivider.TabIndex = 2;
             lblDivider.Text = "──────────────";
             // 
@@ -213,7 +213,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblTotalValue.ForeColor = Color.DarkCyan;
             lblTotalValue.Location = new Point(10, 113);
             lblTotalValue.Name = "lblTotalValue";
-            lblTotalValue.Size = new Size(75, 19);
+            lblTotalValue.Size = new Size(99, 25);
             lblTotalValue.TabIndex = 3;
             lblTotalValue.Text = "Total: $0.00";
             // 
@@ -243,7 +243,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblSeatKey.Font = new Font("Segoe UI", 9F);
             lblSeatKey.Location = new Point(10, 40);
             lblSeatKey.Name = "lblSeatKey";
-            lblSeatKey.Size = new Size(28, 17);
+            lblSeatKey.Size = new Size(35, 22);
             lblSeatKey.TabIndex = 0;
             lblSeatKey.Text = "Seat:";
             // 
@@ -253,7 +253,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblSeatValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblSeatValue.Location = new Point(100, 40);
             lblSeatValue.Name = "lblSeatValue";
-            lblSeatValue.Size = new Size(8, 17);
+            lblSeatValue.Size = new Size(9, 22);
             lblSeatValue.TabIndex = 1;
             lblSeatValue.Text = "-";
             // 
@@ -262,7 +262,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblClassKey.BackColor = Color.Transparent;
             lblClassKey.Location = new Point(10, 65);
             lblClassKey.Name = "lblClassKey";
-            lblClassKey.Size = new Size(33, 17);
+            lblClassKey.Size = new Size(39, 22);
             lblClassKey.TabIndex = 2;
             lblClassKey.Text = "Class:";
             // 
@@ -272,7 +272,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblClassValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblClassValue.Location = new Point(100, 65);
             lblClassValue.Name = "lblClassValue";
-            lblClassValue.Size = new Size(8, 17);
+            lblClassValue.Size = new Size(9, 22);
             lblClassValue.TabIndex = 3;
             lblClassValue.Text = "-";
             // 
@@ -281,7 +281,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblStatusKey.BackColor = Color.Transparent;
             lblStatusKey.Location = new Point(10, 90);
             lblStatusKey.Name = "lblStatusKey";
-            lblStatusKey.Size = new Size(38, 17);
+            lblStatusKey.Size = new Size(46, 22);
             lblStatusKey.TabIndex = 4;
             lblStatusKey.Text = "Status:";
             // 
@@ -291,7 +291,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblStatusValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblStatusValue.Location = new Point(100, 90);
             lblStatusValue.Name = "lblStatusValue";
-            lblStatusValue.Size = new Size(8, 17);
+            lblStatusValue.Size = new Size(9, 22);
             lblStatusValue.TabIndex = 5;
             lblStatusValue.Text = "-";
             // 

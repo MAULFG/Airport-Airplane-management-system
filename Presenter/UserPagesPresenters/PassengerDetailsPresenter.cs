@@ -58,7 +58,7 @@ namespace Airport_Airplane_management_system.Presenter
         private void LoadSummary()
         {
             _view.ShowSelectedSeat(_seat);
-
+            _view.ClearInputs();
             decimal basePrice = _seat.SeatPrice;
             decimal window = IsWindowSeat(_seat, _flight) ? basePrice * 0.20m : 0m;
             decimal tax = (basePrice + window) * 0.10m;
@@ -76,29 +76,24 @@ namespace Airport_Airplane_management_system.Presenter
             if (!ValidatePassenger())
                 return;
 
-            int? passengerId = _passengerService.GetPassengerIdByPhone(_view.Phone);
 
-            if (passengerId == null)
+            if (!_passengerService.AddPassenger(
+    _view.FullName,
+    _view.Email,
+    _view.Phone,
+    out int newPassengerId,
+    out string passengerError))
             {
-                if (!_passengerService.AddPassenger(
-                    _view.FullName,
-                    _view.Email,
-                    _view.Phone,
-                    out int newPassengerId,
-                    out string error))
-                {
-                    _view.ShowMessage(error);
-                    return;
-                }
-
-                passengerId = newPassengerId;
+                _view.ShowMessage(passengerError);
+                return;
             }
 
+          int  passengerId = newPassengerId;
             var user = _session.CurrentUser;
 
             if (!_bookingService.MakeBooking(
                 user,
-                passengerId.Value,
+                  passengerId,
                 _flight,
                 _seat,
                 out Booking booking,

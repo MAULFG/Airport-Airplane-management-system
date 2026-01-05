@@ -1,4 +1,4 @@
-using Airport_Airplane_management_system.Infrastructure.Repositories;
+
 using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
