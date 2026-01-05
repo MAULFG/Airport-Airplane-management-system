@@ -3,19 +3,26 @@ using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using MySqlX.XDevAPI;
 using System.Linq;
+using System;
+using Airport_Airplane_management_system.Model.Repositories;
 
 namespace Airport_Airplane_management_system.Model.Services
 {
     public class BookingService
     {
         private readonly IBookingRepository _repo;
+        private readonly INotificationWriterRepository _notiRepo;
         private readonly IAppSession _session;
+        private readonly NotificationWriterService _notifWriter;
 
         public BookingService(IBookingRepository repo, IAppSession session)
         {
             _repo = repo;
             _session = session;
+            _notiRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _notifWriter = new NotificationWriterService(_notiRepo);
         }
+
         public void LoadBookingsForCurrentUser()
         {
             var user = _session.CurrentUser;
@@ -58,6 +65,30 @@ namespace Airport_Airplane_management_system.Model.Services
                 booking = new Booking(user, flight, seat, seat.ClassType);
                 booking.SetDbId(bookingId);
                 booking.Confirm();
+
+                // ✅ Booking confirmed notification (passenger + route + dates)
+                if (_notifWriter != null)
+                {
+                    if (_repo.TryGetBookingNotificationInfo(
+                            bookingId,
+                            out int userId,
+                            out int flightId,
+                            out int passengerId2,
+                            out string passengerName,
+                            out string fromCity,
+                            out string toCity,
+                            out DateTime dep,
+                            out DateTime arr,
+                            out string infoErr))
+                    {
+                        error = "Notification info failed: " + infoErr;
+                        _notifWriter.NotifyBookingConfirmedForPassenger(
+                            userId, bookingId, flightId,
+                            passengerId2, passengerName,
+                            fromCity, toCity, dep, arr);
+                    }
+                }
+
             }
 
             return success;

@@ -1,7 +1,6 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
-
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
@@ -29,12 +28,24 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private int? _selectedBookingId;
         private int? _focusBookingId;
 
+        // Reusable ticket cards
+        private readonly Dictionary<int, Guna2ShadowPanel> _ticketCards = new Dictionary<int, Guna2ShadowPanel>();
+
+        // ✅ Exposed event to dashboard (same idea as notifications1)
+        public event Action BadgeRefreshRequested;
+
         public MyTicketsBookingHistory()
         {
             InitializeComponent();
-            flowTickets.SizeChanged += (_, __) => FixCardsWidth();
             Dock = DockStyle.Fill;
-          
+
+            // Enable double buffering on flowTickets for smooth rendering
+            typeof(FlowLayoutPanel)
+                .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .SetValue(flowTickets, true, null);
+
+            flowTickets.SizeChanged += (_, __) => FixCardsWidth();
+
             btnRefresh.Click += (_, __) => RefreshClicked?.Invoke();
             btnClear.Click += (_, __) => ClearSearchAndFilter();
 
@@ -46,7 +57,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 if (Visible && _initialized)
                     Activate();
             };
-            this.DoubleBuffered = true;
         }
 
         public void Initialize(INavigationService navigation, IAppSession session)
@@ -54,12 +64,17 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             if (_initialized) return;
 
             _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+            _session = session ?? throw new ArgumentNullException(nameof(session));
 
             var connStr = "server=localhost;port=3306;database=user;user=root;password=2006";
-            _session = session ?? throw new ArgumentNullException(nameof(session));
             _repo = new MySqlMyTicketsRepository(connStr);
             _service = new MyTicketsService(_repo);
-            _presenter = new MyTicketsPresenter(this, _service,_session);
+
+            // Notification writer service (kept as before)
+            var notifRepo = new MySqlNotificationWriterRepository(connStr);
+            var notifWriter = new NotificationWriterService(notifRepo);
+
+            _presenter = new MyTicketsPresenter(this, session);
 
             _initialized = true;
         }
@@ -94,29 +109,59 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public void BindTickets(List<MyTicketRow> rows)
         {
             rows ??= new List<MyTicketRow>();
-
             flowTickets.SuspendLayout();
-            flowTickets.Controls.Clear();
-            _selectedBookingId = null;
 
-            lblCount.Text = $"Tickets ({rows.Count})";
+            // Hide all existing cards first
+            foreach (var card in _ticketCards.Values)
+                card.Visible = false;
 
-            
-
-            if (rows.Count == 0)
+            foreach (var t in rows)
             {
-                flowTickets.ResumeLayout(true);
-                return;
+                Guna2ShadowPanel card;
+                if (_ticketCards.ContainsKey(t.BookingId))
+                {
+                    card = _ticketCards[t.BookingId];
+                    card.Visible = true;
+                    UpdateCard(card, t);
+                }
+                else
+                {
+                    card = CreateTicketCard(t);
+                    _ticketCards[t.BookingId] = card;
+                    flowTickets.Controls.Add(card);
+                }
             }
-
-            foreach (var r in rows)
-                flowTickets.Controls.Add(CreateTicketCard(r));
 
             FixCardsWidth();
             TryFocusBookingCard();
-
             flowTickets.ResumeLayout(true);
+
+            lblCount.Text = $"Tickets ({rows.Count})";
         }
+
+        private void UpdateCard(Guna2ShadowPanel card, MyTicketRow t)
+        {
+            // Update text and status
+            foreach (var lbl in card.Controls.OfType<Guna2HtmlLabel>())
+            {
+                if (lbl.Text.Contains("→")) lbl.Text = $"{t.FromCity} → {t.ToCity}";
+                else if (lbl.Text.StartsWith("Passenger:")) lbl.Text = $"Passenger: {t.PassengerName}";
+                else if (lbl.Text.Contains("Booking ID:")) lbl.Text = $"Booking ID: {t.BookingId}";
+            }
+
+            var details = card.Controls.Find("detailsPanel", true).FirstOrDefault();
+            if (details != null)
+            {
+                var btnCancel = details.Controls.OfType<Guna2Button>().FirstOrDefault();
+                if (btnCancel != null)
+                    btnCancel.Enabled = !string.Equals(t.Status, "Cancelled", StringComparison.OrdinalIgnoreCase);
+            }
+
+            var lblStatus = card.Controls.OfType<Guna2HtmlLabel>().FirstOrDefault(l => l.Text == t.Status || l.Text.Contains("Confirmed") || l.Text.Contains("Cancelled") || l.Text.Contains("Pending"));
+            if (lblStatus != null)
+                ApplyStatusStyle(lblStatus, t.Status);
+        }
+
         public bool Confirm(string message)
         {
             return MessageBox.Show(
@@ -138,13 +183,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         // ===================== CARD UI =====================
 
-        private Control CreateTicketCard(MyTicketRow t)
+        private Guna2ShadowPanel CreateTicketCard(MyTicketRow t)
         {
-            int cardWidth = flowTickets.ClientSize.Width
-               - flowTickets.Padding.Horizontal
-               - 35; // scrollbar safety
-
-            if (cardWidth < 900) cardWidth = 900;
+            int cardWidth = Math.Max(flowTickets.ClientSize.Width - flowTickets.Padding.Horizontal - 35, 900);
 
             var card = new Guna2ShadowPanel
             {
@@ -153,17 +194,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Radius = 14,
                 ShadowColor = Color.Black,
                 ShadowDepth = 12,
-
                 Width = cardWidth,
                 Height = 90,
-
                 Margin = new Padding(8),
                 Padding = new Padding(14),
                 Tag = false
             };
 
-            card.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            
 
+            // Top labels
             var lblRoute = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
@@ -212,7 +252,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             card.Controls.Add(lblRoute);
             card.Controls.Add(lblPassenger);
-
             card.Controls.Add(lblMetaRight);
             card.Controls.Add(lblStatus);
             card.Controls.Add(lblPrice);
@@ -222,13 +261,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             PositionRightAligned(card, lblPrice, 16, 64);
 
             ApplyStatusStyle(lblStatus, t.Status);
-
-            // DETAILS PANEL (collapsed by default)
-            var details = BuildDetailsPanel(t, card.Width - 28);
-            details.Name = "detailsPanel";
-            details.Location = new Point(14, 90);
-            details.Visible = false;
-            card.Controls.Add(details);
 
             card.Name = "ticket_" + t.BookingId;
 
@@ -246,19 +278,22 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
                 flowTickets.SuspendLayout();
 
+                var details = card.Controls.Find("detailsPanel", true).FirstOrDefault();
+                if (details == null)
+                {
+                    details = BuildDetailsPanel(t, card.Width - 28);
+                    details.Name = "detailsPanel";
+                    details.Location = new Point(14, 90);
+                    card.Controls.Add(details);
+                }
+
                 details.Visible = !expanded;
                 card.Height = !expanded ? 250 : 90;
 
-                // ✅ allow shrinking back
-                card.MinimumSize = new Size(card.Width, 0);
-
                 flowTickets.ResumeLayout(true);
-
                 FixCardsWidth();
                 flowTickets.ScrollControlIntoView(details);
             }
-
-
 
             void ClickAny(object s, EventArgs e)
             {
@@ -286,7 +321,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             var grid = new TableLayoutPanel
             {
                 Location = new Point(8, 12),
-                Size = new Size(details.Width - 40, details.Height - 70), // ✅ less width => more breathing room
+                Size = new Size(details.Width - 40, details.Height - 70),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 ColumnCount = 2,
                 RowCount = 3,
@@ -341,7 +376,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             return details;
         }
 
-
         private Guna2HtmlLabel MakeDetailLabel(string text, int x, int y)
         {
             return new Guna2HtmlLabel
@@ -350,18 +384,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Font = new Font("Segoe UI", 10F),
                 ForeColor = Color.FromArgb(60, 70, 85),
                 Text = text,
-                // Dock = DockStyle.Fill,
                 AutoSize = true,
                 Padding = new Padding(0, 0, 0, 3)
             };
         }
 
-
         private void PositionRightAligned(Control parent, Control child, int rightPadding, int top)
         {
-            child.Location = new Point(
-                parent.Width - child.Width - rightPadding,
-                top);
+            child.Location = new Point(parent.Width - child.Width - rightPadding, top);
         }
 
         private void ApplyStatusStyle(Guna2HtmlLabel lbl, string status)
@@ -378,33 +408,21 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         private void HighlightSelectedCard(Control selected)
         {
-            foreach (Control c in flowTickets.Controls)
-            {
-                if (c == pnlEmpty) continue;
-
-                if (c is Guna2ShadowPanel sp)
-                    sp.FillColor = Color.White;
-            }
+            foreach (var c in flowTickets.Controls.OfType<Guna2ShadowPanel>())
+                c.FillColor = Color.White;
 
             if (selected is Guna2ShadowPanel selectedSp)
                 selectedSp.FillColor = Color.FromArgb(248, 249, 251);
         }
+
+
         private void FixCardsWidth()
         {
-            int w = flowTickets.ClientSize.Width
-                    - flowTickets.Padding.Horizontal
-                    - 35; // scrollbar safety
+            int w = Math.Max(flowTickets.ClientSize.Width - flowTickets.Padding.Horizontal - 35, 900);
 
-            if (w < 900) w = 900;
-
-            foreach (Control c in flowTickets.Controls)
+            foreach (var c in flowTickets.Controls.OfType<Guna2ShadowPanel>().Where(x => x.Visible))
             {
-                if (c == pnlEmpty) continue;
-
                 c.Width = w;
-
-                // ✅ DO NOT lock the height
-                c.MinimumSize = new Size(w, 0); // or just remove MinimumSize entirely
 
                 var details = c.Controls.Find("detailsPanel", true).FirstOrDefault();
                 if (details != null)
@@ -417,6 +435,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _focusBookingId = bookingId;
             TryFocusBookingCard();
         }
+
         private void TryFocusBookingCard()
         {
             if (_focusBookingId == null) return;
@@ -436,6 +455,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _focusBookingId = null;
         }
 
+        public void RequestBadgeRefresh()
+        {
+            BadgeRefreshRequested?.Invoke();
+        }
 
+        private void flowTickets_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

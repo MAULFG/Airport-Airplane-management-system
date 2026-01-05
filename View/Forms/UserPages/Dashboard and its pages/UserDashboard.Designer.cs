@@ -26,15 +26,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         #region Component Designer generated code
-       
+
         /// <summary> 
         /// Required method for Designer support - do not modify 
         /// the contents of  method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -49,11 +49,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             logoutuser = new Guna.UI2.WinForms.Guna2Button();
-            Settings = new Guna.UI2.WinForms.Guna2Button();
             Account = new Guna.UI2.WinForms.Guna2Button();
             guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             btnNotifications = new Guna.UI2.WinForms.Guna2Button();
@@ -62,9 +59,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnUpcomingFlights = new Guna.UI2.WinForms.Guna2Button();
             panel1 = new Panel();
             userAccount1 = new UserAccount();
-            userSettings1 = new UserSettings();
             searchAndBooking1 = new SearchAndBooking();
-            notifications1 = new Notifications();
+            notifications1 = new UserNotifications();
             myTicketsBookingHistory1 = new MyTicketsBookingHistory();
             upcomingFlights1 = new UpcomingFlights();
             mainUserPage1 = new MainUserPage();
@@ -77,7 +73,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2Panel1.BorderRadius = 20;
             guna2Panel1.BorderThickness = 2;
             guna2Panel1.Controls.Add(logoutuser);
-            guna2Panel1.Controls.Add(Settings);
             guna2Panel1.Controls.Add(Account);
             guna2Panel1.Controls.Add(guna2Button1);
             guna2Panel1.Controls.Add(btnNotifications);
@@ -85,19 +80,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2Panel1.Controls.Add(btnSearchBook);
             guna2Panel1.Controls.Add(btnUpcomingFlights);
             guna2Panel1.Controls.Add(panel1);
-            customizableEdges17.BottomLeft = false;
-            customizableEdges17.BottomRight = false;
-            customizableEdges17.TopLeft = false;
-            customizableEdges17.TopRight = false;
-            guna2Panel1.CustomizableEdges = customizableEdges17;
+            customizableEdges15.BottomLeft = false;
+            customizableEdges15.BottomRight = false;
+            customizableEdges15.TopLeft = false;
+            customizableEdges15.TopRight = false;
+            guna2Panel1.CustomizableEdges = customizableEdges15;
             guna2Panel1.Dock = DockStyle.Left;
             guna2Panel1.FillColor = Color.FromArgb(26, 44, 63);
             guna2Panel1.Location = new Point(0, 0);
             guna2Panel1.Name = "guna2Panel1";
-            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            guna2Panel1.Size = new Size(250, 683);
+            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            guna2Panel1.Size = new Size(250, 720);
             guna2Panel1.TabIndex = 1;
-            guna2Panel1.Paint += guna2Panel1_Paint;
             // 
             // logoutuser
             // 
@@ -117,29 +111,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             logoutuser.Text = "Logout";
             logoutuser.TextAlign = HorizontalAlignment.Left;
             // 
-            // Settings
-            // 
-            Settings.BackColor = Color.Transparent;
-            Settings.BorderRadius = 10;
-            Settings.CustomizableEdges = customizableEdges3;
-            Settings.FillColor = Color.Transparent;
-            Settings.Font = new Font("Tajawal", 12F, FontStyle.Bold);
-            Settings.ForeColor = Color.White;
-            Settings.Image = Properties.Resources.Settings;
-            Settings.ImageAlign = HorizontalAlignment.Left;
-            Settings.Location = new Point(10, 439);
-            Settings.Name = "Settings";
-            Settings.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            Settings.Size = new Size(214, 45);
-            Settings.TabIndex = 9;
-            Settings.Text = "Settings";
-            Settings.TextAlign = HorizontalAlignment.Left;
-            // 
             // Account
             // 
             Account.BackColor = Color.Transparent;
             Account.BorderRadius = 10;
-            Account.CustomizableEdges = customizableEdges5;
+            Account.CustomizableEdges = customizableEdges3;
             Account.FillColor = Color.Transparent;
             Account.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             Account.ForeColor = Color.White;
@@ -147,7 +123,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Account.ImageAlign = HorizontalAlignment.Left;
             Account.Location = new Point(10, 485);
             Account.Name = "Account";
-            Account.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Account.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Account.Size = new Size(214, 45);
             Account.TabIndex = 8;
             Account.Text = "Account";
@@ -157,7 +133,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             guna2Button1.BackColor = Color.Transparent;
             guna2Button1.BorderRadius = 15;
-            guna2Button1.CustomizableEdges = customizableEdges7;
+            guna2Button1.CustomizableEdges = customizableEdges5;
             guna2Button1.FillColor = Color.Transparent;
             guna2Button1.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             guna2Button1.ForeColor = Color.White;
@@ -165,7 +141,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2Button1.ImageAlign = HorizontalAlignment.Left;
             guna2Button1.Location = new Point(10, 130);
             guna2Button1.Name = "guna2Button1";
-            guna2Button1.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            guna2Button1.ShadowDecoration.CustomizableEdges = customizableEdges6;
             guna2Button1.Size = new Size(214, 45);
             guna2Button1.TabIndex = 0;
             guna2Button1.Text = "Main";
@@ -175,7 +151,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             btnNotifications.BackColor = Color.Transparent;
             btnNotifications.BorderRadius = 10;
-            btnNotifications.CustomizableEdges = customizableEdges9;
+            btnNotifications.CustomizableEdges = customizableEdges7;
             btnNotifications.FillColor = Color.Transparent;
             btnNotifications.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btnNotifications.ForeColor = Color.White;
@@ -183,7 +159,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnNotifications.ImageAlign = HorizontalAlignment.Left;
             btnNotifications.Location = new Point(10, 350);
             btnNotifications.Name = "btnNotifications";
-            btnNotifications.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            btnNotifications.ShadowDecoration.CustomizableEdges = customizableEdges8;
             btnNotifications.Size = new Size(214, 45);
             btnNotifications.TabIndex = 1;
             btnNotifications.Text = "Notifications";
@@ -193,7 +169,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             btnMyTickets.BackColor = Color.Transparent;
             btnMyTickets.BorderRadius = 10;
-            btnMyTickets.CustomizableEdges = customizableEdges11;
+            btnMyTickets.CustomizableEdges = customizableEdges9;
             btnMyTickets.FillColor = Color.Transparent;
             btnMyTickets.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btnMyTickets.ForeColor = Color.White;
@@ -201,7 +177,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnMyTickets.ImageAlign = HorizontalAlignment.Left;
             btnMyTickets.Location = new Point(10, 295);
             btnMyTickets.Name = "btnMyTickets";
-            btnMyTickets.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            btnMyTickets.ShadowDecoration.CustomizableEdges = customizableEdges10;
             btnMyTickets.Size = new Size(214, 45);
             btnMyTickets.TabIndex = 2;
             btnMyTickets.Text = "My Tickets";
@@ -211,7 +187,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             btnSearchBook.BackColor = Color.Transparent;
             btnSearchBook.BorderRadius = 10;
-            btnSearchBook.CustomizableEdges = customizableEdges13;
+            btnSearchBook.CustomizableEdges = customizableEdges11;
             btnSearchBook.FillColor = Color.Transparent;
             btnSearchBook.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btnSearchBook.ForeColor = Color.White;
@@ -219,7 +195,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnSearchBook.ImageAlign = HorizontalAlignment.Left;
             btnSearchBook.Location = new Point(10, 240);
             btnSearchBook.Name = "btnSearchBook";
-            btnSearchBook.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            btnSearchBook.ShadowDecoration.CustomizableEdges = customizableEdges12;
             btnSearchBook.Size = new Size(214, 45);
             btnSearchBook.TabIndex = 3;
             btnSearchBook.Text = "Search And Book";
@@ -229,7 +205,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             btnUpcomingFlights.BackColor = Color.Transparent;
             btnUpcomingFlights.BorderRadius = 10;
-            btnUpcomingFlights.CustomizableEdges = customizableEdges15;
+            btnUpcomingFlights.CustomizableEdges = customizableEdges13;
             btnUpcomingFlights.FillColor = Color.Transparent;
             btnUpcomingFlights.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             btnUpcomingFlights.ForeColor = Color.White;
@@ -237,7 +213,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnUpcomingFlights.ImageAlign = HorizontalAlignment.Left;
             btnUpcomingFlights.Location = new Point(10, 185);
             btnUpcomingFlights.Name = "btnUpcomingFlights";
-            btnUpcomingFlights.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            btnUpcomingFlights.ShadowDecoration.CustomizableEdges = customizableEdges14;
             btnUpcomingFlights.Size = new Size(214, 45);
             btnUpcomingFlights.TabIndex = 4;
             btnUpcomingFlights.Text = "Upcoming Flights";
@@ -257,22 +233,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             // userAccount1
             // 
+            userAccount1.BackColor = Color.WhiteSmoke;
             userAccount1.Dock = DockStyle.Fill;
             userAccount1.Location = new Point(250, 0);
             userAccount1.Name = "userAccount1";
             userAccount1.Size = new Size(963, 683);
             userAccount1.TabIndex = 2;
             // 
-            // userSettings1
-            // 
-            userSettings1.Dock = DockStyle.Fill;
-            userSettings1.Location = new Point(250, 0);
-            userSettings1.Name = "userSettings1";
-            userSettings1.Size = new Size(963, 683);
-            userSettings1.TabIndex = 11;
-            // 
             // searchAndBooking1
             // 
+            searchAndBooking1.BackColor = Color.White;
             searchAndBooking1.Dock = DockStyle.Fill;
             searchAndBooking1.Location = new Point(250, 0);
             searchAndBooking1.Name = "searchAndBooking1";
@@ -281,9 +251,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             // notifications1
             // 
+            notifications1.BackColor = Color.White;
             notifications1.Dock = DockStyle.Fill;
             notifications1.Location = new Point(250, 0);
             notifications1.Name = "notifications1";
+            notifications1.Padding = new Padding(10);
             notifications1.Size = new Size(963, 683);
             notifications1.TabIndex = 11;
             // 
@@ -295,7 +267,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             myTicketsBookingHistory1.Name = "myTicketsBookingHistory1";
             myTicketsBookingHistory1.Size = new Size(963, 683);
             myTicketsBookingHistory1.TabIndex = 11;
-            myTicketsBookingHistory1.Load += myTicketsBookingHistory1_Load;
             // 
             // upcomingFlights1
             // 
@@ -303,6 +274,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             upcomingFlights1.Dock = DockStyle.Fill;
             upcomingFlights1.Location = new Point(250, 0);
             upcomingFlights1.Name = "upcomingFlights1";
+            upcomingFlights1.Padding = new Padding(20);
             upcomingFlights1.Size = new Size(963, 683);
             upcomingFlights1.TabIndex = 11;
             // 
@@ -311,16 +283,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             mainUserPage1.Dock = DockStyle.Fill;
             mainUserPage1.Location = new Point(250, 0);
             mainUserPage1.Name = "mainUserPage1";
+            mainUserPage1.Padding = new Padding(10);
             mainUserPage1.Size = new Size(963, 683);
             mainUserPage1.TabIndex = 12;
-            mainUserPage1.Load += mainUserPage1_Load;
             // 
             // UserDashboard
             // 
-            
             Controls.Add(guna2Panel1);
             Name = "UserDashboard";
-            Size = new Size(1280,720);
+            Size = new Size(1280, 720);
             Load += UserDashboard_Load;
             guna2Panel1.ResumeLayout(false);
             ResumeLayout(false);
@@ -338,15 +309,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
        
        
         private Guna.UI2.WinForms.Guna2Button Account;
-        private Guna.UI2.WinForms.Guna2Button Settings;
         private Guna.UI2.WinForms.Guna2Button logoutuser;
     
-        private UserSettings settings1;
+        private UserAccount settings1;
         private UpcomingFlights upcomingFlights1;
         private UserAccount userAccount1;
-        private UserSettings userSettings1;
+
         private SearchAndBooking searchAndBooking1;
-        private Notifications notifications1;
+        private UserNotifications notifications1;
         private MyTicketsBookingHistory myTicketsBookingHistory1;
         private MainUserPage mainUserPage1;
     }

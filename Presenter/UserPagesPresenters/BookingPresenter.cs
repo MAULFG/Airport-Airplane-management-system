@@ -1,6 +1,9 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Repositories;
 using Airport_Airplane_management_system.View.Interfaces;
 using System;
 using System.Linq;
@@ -9,24 +12,55 @@ namespace Airport_Airplane_management_system.Presenter
 {
     public class BookingPresenter
     {
+        private readonly IFlightRepository _flightrepo;
+        private readonly IUserRepository _userRepo;
+        private readonly IBookingRepository _bookRepo;
+        private readonly IPlaneRepository _planeRepo;
+        private readonly INotificationWriterRepository _notiRepo;
+        private IAppSession _session;
         private readonly IBookingView _view;
         private readonly FlightService _flightService;
         private readonly BookingService _bookingService;
-
+        private readonly NotificationWriterService _notifWriter;
         private Flight _flight;
         private FlightSeats _selectedSeat;
-
-        public BookingPresenter(IBookingView view, FlightService flightService, int flightId)
+        //("server=localhost;port=3306;database=user;user=root;password=2006");
+        public BookingPresenter(IBookingView view, IAppSession session, int flightId)
         {
+            _session = session;
             _view = view ?? throw new ArgumentNullException(nameof(view));
-            _flightService = flightService ?? throw new ArgumentNullException(nameof(flightService));
+
+            _userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _flightrepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _bookRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _notiRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+
+            _notifWriter = new NotificationWriterService(_notiRepo);
+            _flightService = new FlightService(_flightrepo,_userRepo,_bookRepo,_planeRepo,session, _notifWriter);
+            _view.BookingCompleted += OnBookingCompleted;
 
             _view.SeatSelected += OnSeatSelected;
             _view.ConfirmBookingClicked += OnConfirmBooking;
 
             LoadFlight(flightId);
         }
-       
+        private void OnBookingCompleted()
+        {
+            _selectedSeat = null;
+
+            // reload flight + seats
+            LoadFlight(_flight.FlightID);
+        }
+
+        public void Refresh(int flightId)
+        {
+            // Clear current seat selection
+            _selectedSeat = null;
+
+            // Reload the flight info
+            LoadFlight(flightId);
+        }
+
         private void LoadFlight(int flightId)
         {
             _flight = _flightService.LoadFlightsWithSeats().FirstOrDefault(f => f.FlightID == flightId);
@@ -108,8 +142,9 @@ namespace Airport_Airplane_management_system.Presenter
 
             _view.ShowPassengerDetails(_flight, _selectedSeat, price);
 
-            // Reload seats after booking
-            LoadFlight(_flight.FlightID);
+
+
         }
+
     }
 }

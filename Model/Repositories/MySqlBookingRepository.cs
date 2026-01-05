@@ -256,5 +256,98 @@ WHERE flight_id = @fid AND status <> 'Cancelled';";
             return list;
         }
 
+
+        public List<int> GetUserIdsForFlight(int flightId)
+        {
+            var list = new List<int>();
+
+            const string sql = @"
+SELECT DISTINCT user_id
+FROM bookings
+WHERE flight_id = @fid;";
+
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@fid", flightId);
+
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+                list.Add(Convert.ToInt32(r["user_id"]));
+
+            return list;
+        }
+
+        public bool TryGetBookingNotificationInfo(
+    int bookingId,
+    out int userId,
+    out int flightId,
+    out int passengerId,
+    out string passengerName,
+    out string fromCity,
+    out string toCity,
+    out DateTime departure,
+    out DateTime arrival,
+    out string error)
+        {
+            userId = 0;
+            flightId = 0;
+            passengerId = 0;
+            passengerName = "";
+            fromCity = "";
+            toCity = "";
+            departure = default;
+            arrival = default;
+            error = "";
+
+            const string sql = @"
+SELECT
+    b.user_id,
+    b.flight_id,
+    b.passenger_id,
+    COALESCE(p.full_name, CONCAT('Passenger #', b.passenger_id)) AS passenger_name,
+    f.from_city,
+    f.to_city,
+    f.departure,
+    f.arrival
+FROM bookings b
+JOIN flights f ON f.id = b.flight_id
+LEFT JOIN passengers p ON p.passenger_id = b.passenger_id
+WHERE b.id = @bid
+LIMIT 1;";
+
+            try
+            {
+                using var conn = new MySqlConnection(_connStr);
+                using var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@bid", bookingId);
+
+                conn.Open();
+                using var r = cmd.ExecuteReader();
+                if (!r.Read())
+                {
+                    error = "Booking not found.";
+                    return false;
+                }
+
+                userId = Convert.ToInt32(r["user_id"]);
+                flightId = Convert.ToInt32(r["flight_id"]);
+                passengerId = Convert.ToInt32(r["passenger_id"]);
+                passengerName = r["passenger_name"]?.ToString() ?? $"Passenger #{passengerId}";
+                fromCity = r["from_city"]?.ToString() ?? "";
+                toCity = r["to_city"]?.ToString() ?? "";
+                departure = Convert.ToDateTime(r["departure"]);
+                arrival = Convert.ToDateTime(r["arrival"]);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
+        }
+
+
     }
 }

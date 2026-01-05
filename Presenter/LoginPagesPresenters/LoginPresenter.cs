@@ -1,4 +1,7 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.View.Forms.LoginPages;
 using Airport_Airplane_management_system.View.Interfaces;
@@ -11,12 +14,16 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
     {
         private readonly ILoginView _view;
         private readonly UserService _userService;
-
+        private IAppSession _session;
+        private IUserRepository _userRepo;
         private readonly INavigationService _navigation;
-        public LoginPresenter(ILoginView view,UserService userService,INavigationService navigation)
+        
+       public LoginPresenter(ILoginView view,IAppSession Session, INavigationService navigation)
         {
+            _session = Session;
             _view = view ?? throw new ArgumentNullException(nameof(view));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _userRepo =new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _userService = new UserService(_userRepo,_session);
 
             _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 
@@ -45,6 +52,8 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
                 _view.ClearFields();
                 return;
             }
+            _navigation.SetCurrentUserId(user.UserID);
+            
 
             // 🚀 PRELOAD HEAVY DATA
      

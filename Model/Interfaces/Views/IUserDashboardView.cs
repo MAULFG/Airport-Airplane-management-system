@@ -22,7 +22,6 @@ namespace Airport_Airplane_management_system.View.Interfaces
         void SearchBook();
         void MyTickets();
         void Notifications();
-        void UserSettings();
         void UserAccount();
         void ShowMainUser();
         // Logout action

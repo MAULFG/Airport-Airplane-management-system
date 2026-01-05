@@ -1,7 +1,4 @@
-﻿using Airport_Airplane_management_system.Model.Services;
-using Airport_Airplane_management_system.View.Interfaces;
-using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
-using MySqlX.XDevAPI;
+﻿using Airport_Airplane_management_system.View.Interfaces;
 using System;
 
 namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
@@ -10,12 +7,12 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
     {
         private readonly IUserDashboardView _view;
         private readonly INavigationService _navigationService;
-        private readonly IAppSession _session;
+
         public UserDashboardPresenter(IUserDashboardView view, INavigationService navigationService)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
-            
+
             // Subscribe to view events
             _view.UserMainClicked += OnMainClicked;
             _view.UpcomingFlightsClicked += OnUpcomingFlightsClicked;
@@ -32,7 +29,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
         {
             _view.ShowMainUser();
         }
-        
+
         private void OnUpcomingFlightsClicked(object sender, EventArgs e)
         {
             _view.UpcomingFlights();
@@ -42,10 +39,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
         {
             _view.SearchBook();
         }
-        public void OpenBookingp(int flightid)
-        {
-            _view.OpenBooking(flightid);
-        }
+
         private void OnMyTicketsClicked(object sender, EventArgs e)
         {
             _view.MyTickets();
@@ -58,7 +52,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
         private void OnSettingsClicked(object sender, EventArgs e)
         {
-            _view.UserSettings();
+            _view.UserAccount();
         }
 
         private void OnAccountClicked(object sender, EventArgs e)
@@ -68,10 +62,16 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
         private void OnLogoutClicked(object sender, EventArgs e)
         {
-            _session.Clear();
-            // Optional: any session cleanup here
             _view.Logout(); // clear UI
             _navigationService.NavigateToLogin(); // redirect to login page
+        }
+
+        /// <summary>
+        /// Called by child presenters (Search, Upcoming, etc.) to open booking page
+        /// </summary>
+        public void OpenBookingp(int flightId)
+        {
+            _view.OpenBooking(flightId);
         }
     }
 }

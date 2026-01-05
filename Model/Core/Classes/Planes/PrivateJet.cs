@@ -14,13 +14,13 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
         public override void GenerateSeats()
         {
             Seats.Clear();
-            AddSeats("VIP", 1, 4, 2); // 8 seats if rows 1-4 with 2 each
-            // But your fixed config says 7 seats.
-            // We'll generate exactly 7 VIP seats instead of 8 to match your UI config.
+            AddSeats("VIP", 1, 4, 2); 
 
             Seats.Clear();
-            for (int i = 1; i <= 7; i++)
-                Seats.Add(new Seat($"V{i}", "VIP"));
+            for (int i = 1; i <= 4; i++)
+                Seats.Add(new Seat($"{i}A", "VIP"));
+            for (int i = 1; i <= 3; i++)
+                Seats.Add(new Seat($"{i}B", "VIP"));
         }
 
         private void AddSeats(string classType, int startRow, int endRow, int seatsPerRow)

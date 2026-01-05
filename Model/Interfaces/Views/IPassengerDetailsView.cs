@@ -19,10 +19,10 @@ namespace Airport_Airplane_management_system.View.Interfaces
 
         // Display seat & price (from BookingPresenter)
         void ShowSelectedSeat(FlightSeats seat);
-        void ShowPrice(decimal basePrice, decimal tax, decimal total);
-
+        void ShowPrice(decimal basePrice,decimal Window, decimal tax, decimal total);
+        void ClearInputs();
         // UI feedback
         void ShowMessage(string message);
-        void CloseView();
+        
     }
 }

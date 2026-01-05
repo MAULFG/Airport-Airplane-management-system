@@ -54,6 +54,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelSummary = new Guna2ShadowPanel();
             btnConfirm = new Guna2Button();
             grpPrice = new Guna2GroupBox();
+            guna2HtmlLabel1 = new Guna2HtmlLabel();
             lblBasePriceValue = new Guna2HtmlLabel();
             lblTaxValue = new Guna2HtmlLabel();
             lblDivider = new Guna2HtmlLabel();
@@ -85,7 +86,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelHeader.Padding = new Padding(20);
             panelHeader.Radius = 10;
             panelHeader.ShadowColor = Color.Black;
-            panelHeader.Size = new Size(1000, 70);
+            panelHeader.Size = new Size(1084, 70);
             panelHeader.TabIndex = 1;
             // 
             // lblFlightInfo
@@ -105,7 +106,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.BackColor = Color.Transparent;
             panelMain.Controls.Add(panelSummary);
             panelMain.Controls.Add(flowSeats);
-            panelMain.Controls.Add(passengerDetails1);
             panelMain.Dock = DockStyle.Fill;
             panelMain.FillColor = Color.White;
             panelMain.Location = new Point(0, 70);
@@ -113,7 +113,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelMain.Padding = new Padding(20);
             panelMain.Radius = 10;
             panelMain.ShadowColor = Color.Black;
-            panelMain.Size = new Size(1000, 680);
+            panelMain.Size = new Size(1084, 680);
             panelMain.TabIndex = 0;
             // 
             // panelSummary
@@ -124,7 +124,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             panelSummary.Controls.Add(grpSelectedSeat);
             panelSummary.Dock = DockStyle.Right;
             panelSummary.FillColor = Color.FromArgb(245, 245, 245);
-            panelSummary.Location = new Point(671, 20);
+            panelSummary.Location = new Point(755, 20);
             panelSummary.Name = "panelSummary";
             panelSummary.Padding = new Padding(20);
             panelSummary.Radius = 10;
@@ -154,6 +154,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // grpPrice
             // 
             grpPrice.BorderRadius = 10;
+            grpPrice.Controls.Add(guna2HtmlLabel1);
             grpPrice.Controls.Add(lblBasePriceValue);
             grpPrice.Controls.Add(lblTaxValue);
             grpPrice.Controls.Add(lblDivider);
@@ -169,6 +170,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             grpPrice.TabIndex = 1;
             grpPrice.Text = "Price Summary";
             // 
+            // guna2HtmlLabel1
+            // 
+            guna2HtmlLabel1.BackColor = Color.Transparent;
+            guna2HtmlLabel1.Location = new Point(10, 61);
+            guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            guna2HtmlLabel1.Size = new Size(102, 17);
+            guna2HtmlLabel1.TabIndex = 4;
+            guna2HtmlLabel1.Text = "WindowSeat: $0.00";
+            // 
             // lblBasePriceValue
             // 
             lblBasePriceValue.BackColor = Color.Transparent;
@@ -181,7 +191,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // lblTaxValue
             // 
             lblTaxValue.BackColor = Color.Transparent;
-            lblTaxValue.Location = new Point(10, 65);
+            lblTaxValue.Location = new Point(10, 82);
             lblTaxValue.Name = "lblTaxValue";
             lblTaxValue.Size = new Size(54, 17);
             lblTaxValue.TabIndex = 1;
@@ -190,7 +200,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // lblDivider
             // 
             lblDivider.BackColor = Color.Transparent;
-            lblDivider.Location = new Point(10, 85);
+            lblDivider.Location = new Point(10, 93);
             lblDivider.Name = "lblDivider";
             lblDivider.Size = new Size(87, 17);
             lblDivider.TabIndex = 2;
@@ -201,7 +211,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblTotalValue.BackColor = Color.Transparent;
             lblTotalValue.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblTotalValue.ForeColor = Color.DarkCyan;
-            lblTotalValue.Location = new Point(10, 105);
+            lblTotalValue.Location = new Point(10, 113);
             lblTotalValue.Name = "lblTotalValue";
             lblTotalValue.Size = new Size(75, 19);
             lblTotalValue.TabIndex = 3;
@@ -293,7 +303,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowSeats.Location = new Point(20, 20);
             flowSeats.Margin = new Padding(20);
             flowSeats.Name = "flowSeats";
-            flowSeats.Size = new Size(960, 640);
+            flowSeats.Size = new Size(1044, 640);
             flowSeats.TabIndex = 1;
             flowSeats.WrapContents = false;
             flowSeats.Paint += flowSeats_Paint;
@@ -301,18 +311,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // passengerDetails1
             // 
             passengerDetails1.Dock = DockStyle.Fill;
-            passengerDetails1.Location = new Point(20, 20);
+            passengerDetails1.Location = new Point(0, 0);
             passengerDetails1.Name = "passengerDetails1";
-            passengerDetails1.Size = new Size(1142, 640);
+            passengerDetails1.Size = new Size(1084, 750);
             passengerDetails1.TabIndex = 2;
             // 
             // BookingPage
             // 
             BackColor = Color.White;
-            ClientSize = new Size(1000, 750);
+            ClientSize = new Size(1084, 750);
             Controls.Add(panelMain);
-            Controls.Add(passengerDetails1);
             Controls.Add(panelHeader);
+            Controls.Add(passengerDetails1);
             MaximizeBox = false;
             Name = "BookingPage";
             Load += BookingPage_Load;
@@ -328,5 +338,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         private Booking_pages.PassengerDetails passengerDetails1;
+        private Guna2HtmlLabel guna2HtmlLabel1;
     }
 }

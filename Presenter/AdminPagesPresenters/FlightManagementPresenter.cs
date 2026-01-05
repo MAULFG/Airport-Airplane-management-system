@@ -1,14 +1,28 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Repositories;
+using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ticket_Booking_System_OOP.Model.Repositories;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPages
 {
     public class FlightManagementPresenter
     {
+        private readonly IFlightRepository flightRepo;
+        private readonly IPlaneRepository planeRepo;
+        private readonly IAppSession session;
+        private readonly IUserRepository userRepo;
+        private readonly IBookingRepository bookRepo;
+        private readonly INotificationWriterRepository notiRepo;
+        private readonly NotificationWriterService notificationWriterService;
+
         private readonly IFlightManagementView _view;
         private readonly FlightService _service;
 
@@ -19,12 +33,18 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         public FlightManagementPresenter(
             IFlightManagementView view,
-            FlightService service,
             Action<int>? openCrewForFlight = null,
             Action<int>? openScheduleForPlane = null)
         {
+            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            bookRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            notiRepo =new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            session = new AppSession();
+            notificationWriterService = new NotificationWriterService(notiRepo);
             _view = view;
-            _service = service;
+            _service = new FlightService(flightRepo, userRepo, bookRepo, planeRepo, session, notificationWriterService);
             _openCrewForFlight = openCrewForFlight;
             _openScheduleForPlane = openScheduleForPlane;
 

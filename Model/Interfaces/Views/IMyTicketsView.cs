@@ -22,6 +22,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         void ShowInfo(string message);
         void ShowError(string message);
         bool Confirm(string message);
+        void RequestBadgeRefresh();
 
     }
 }

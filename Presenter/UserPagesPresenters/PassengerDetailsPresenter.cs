@@ -1,31 +1,48 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Repositories;
 using Airport_Airplane_management_system.View.Interfaces;
-using MySqlX.XDevAPI;
 using System;
 using System.Text.RegularExpressions;
-using System.Text.RegularExpressions;
+
 namespace Airport_Airplane_management_system.Presenter
 {
     public class PassengerDetailsPresenter
     {
+        private readonly IBookingRepository bookingRepo;
+        private readonly IPassengerRepository passengerRepo;
+
         private readonly IPassengerDetailsView _view;
         private readonly PassengerService _passengerService;
         private readonly BookingService _bookingService;
         private readonly IAppSession _session;
-        private readonly Flight _flight;
-        private readonly FlightSeats _seat;
-        private readonly decimal _price;
 
+        private Flight _flight;
+        private FlightSeats _seat;
+        private decimal _price;
 
-        public PassengerDetailsPresenter(IPassengerDetailsView view, PassengerService passengerService, BookingService bookingService, IAppSession session, Flight flight,
-            FlightSeats selectedSeat, decimal seatPrice)
+        private bool _isClosed; // 🔒 prevents double execution
+
+        public PassengerDetailsPresenter(
+            IPassengerDetailsView view,
+            IAppSession session,
+            Flight flight,
+            FlightSeats selectedSeat,
+            decimal seatPrice)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
-            _passengerService = passengerService ?? throw new ArgumentNullException(nameof(passengerService));
-            _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
-            _session = session ?? throw new ArgumentNullException(nameof(session)); // assign it
+            _session = session;
+
+            bookingRepo = new MySqlBookingRepository(
+                "server=localhost;port=3306;database=user;user=root;password=2006");
+            passengerRepo = new MySqlPassengerRepository(
+                "server=localhost;port=3306;database=user;user=root;password=2006");
+
+            _passengerService = new PassengerService(passengerRepo, session);
+            _bookingService = new BookingService(bookingRepo, session);
 
             _flight = flight;
             _seat = selectedSeat;
@@ -37,55 +54,30 @@ namespace Airport_Airplane_management_system.Presenter
             LoadSummary();
         }
 
+        // ================= SUMMARY =================
         private void LoadSummary()
         {
             _view.ShowSelectedSeat(_seat);
 
-            decimal seatPrice = _seat.SeatPrice; // base seat price
+            decimal basePrice = _seat.SeatPrice;
+            decimal window = IsWindowSeat(_seat, _flight) ? basePrice * 0.20m : 0m;
+            decimal tax = (basePrice + window) * 0.10m;
+            decimal total = basePrice + window + tax;
 
-            // Optional: add window seat surcharge (+20%)
-            if (IsWindowSeat(_seat, _flight))
-                seatPrice += seatPrice * 0.20m;
-
-            decimal tax = seatPrice * 0.10m; // 10% tax
-            decimal total = seatPrice + tax;
-
-            _view.ShowPrice(seatPrice, tax, total);
+            _view.ShowPrice(basePrice, window, tax, total);
         }
 
-        // Helper: detect window seat
-        private bool IsWindowSeat(FlightSeats seat, Flight flight)
-        {
-            string seatLetter = new string(seat.SeatNumber.SkipWhile(char.IsDigit).ToArray()).ToUpper();
-            string model = flight.Plane.Model.ToLower();
-
-            if (model.Contains("a320"))
-                return seatLetter == "A" || seatLetter == "F";
-
-            if (model.Contains("777"))
-            {
-                return seat.ClassType switch
-                {
-                    "First" => seatLetter == "A" || seatLetter == "D",
-                    "Business" => seatLetter == "A" || seatLetter == "F",
-                    "Economy" => seatLetter == "A" || seatLetter == "J",
-                    _ => false
-                };
-            }
-
-            if (model.Contains("g650"))
-                return seatLetter == "A" || seatLetter == "B";
-
-            return false;
-        }
+        // ================= BOOKING =================
 
         private void OnCompleteBooking()
         {
+            if (_isClosed) return;
+
             if (!ValidatePassenger())
                 return;
 
-            // 1️⃣ Get or create passenger
             int? passengerId = _passengerService.GetPassengerIdByPhone(_view.Phone);
+
             if (passengerId == null)
             {
                 if (!_passengerService.AddPassenger(
@@ -93,26 +85,19 @@ namespace Airport_Airplane_management_system.Presenter
                     _view.Email,
                     _view.Phone,
                     out int newPassengerId,
-                    out string passengerError))
+                    out string error))
                 {
-                    _view.ShowMessage(passengerError);
+                    _view.ShowMessage(error);
                     return;
                 }
+
                 passengerId = newPassengerId;
             }
 
-            var loggedInUser = _session.CurrentUser;
+            var user = _session.CurrentUser;
 
-            // 2️⃣ Compute final seat price (surcharge + tax)
-            decimal seatPrice = _seat.SeatPrice;
-            if (IsWindowSeat(_seat, _flight))
-                seatPrice += seatPrice * 0.20m;
-            decimal tax = seatPrice * 0.10m;
-            decimal totalPrice = seatPrice + tax;
-
-            // 3️⃣ Make booking
             if (!_bookingService.MakeBooking(
-                loggedInUser,
+                user,
                 passengerId.Value,
                 _flight,
                 _seat,
@@ -123,73 +108,93 @@ namespace Airport_Airplane_management_system.Presenter
                 return;
             }
 
-            // 4️⃣ Show success and close
-            _view.ShowMessage($"Booking completed successfully.\nTotal: ${totalPrice:0.00}");
-            PassengerDetailsClosed?.Invoke();
-            _view.CloseView();
+            _view.ShowMessage("Booking completed successfully.");
+            Close();
+            BookingCompleted?.Invoke();
         }
 
+        // ================= CANCEL =================
 
-        public event Action PassengerDetailsClosed;
+        private void OnCancel()
+        {
+            if (_isClosed) return;
+            Close();
+            PassengerDetailsClosed?.Invoke();
+        }
+
+        // ================= CLEANUP =================
+
+        private void Close()
+        {
+            _isClosed = true;
+
+            _view.CompleteBookingClicked -= OnCompleteBooking;
+            _view.CancelClicked -= OnCancel;
+
+            _view.ClearInputs();
+        }
+
+        // ================= VALIDATION =================
 
         private bool ValidatePassenger()
         {
-            // First name validation
             if (string.IsNullOrWhiteSpace(_view.FirstName) || _view.FirstName.Length < 2)
             {
                 _view.ShowMessage("First name must be at least 2 characters.");
                 return false;
             }
 
-            // Middle name (optional)
             if (!string.IsNullOrWhiteSpace(_view.MiddleName) && _view.MiddleName.Length < 2)
             {
-                _view.ShowMessage("Middle name must be at least 2 characters if provided.");
+                _view.ShowMessage("Middle name must be at least 2 characters.");
                 return false;
             }
 
-            // Last name validation
             if (string.IsNullOrWhiteSpace(_view.LastName) || _view.LastName.Length < 2)
             {
                 _view.ShowMessage("Last name must be at least 2 characters.");
                 return false;
             }
 
-            // Email validation
-            if (string.IsNullOrWhiteSpace(_view.Email))
+            if (!Regex.IsMatch(_view.Email ?? "", @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
-                _view.ShowMessage("Email is required.");
+                _view.ShowMessage("Invalid email.");
                 return false;
             }
 
-            if (!Regex.IsMatch(_view.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            if (!Regex.IsMatch(_view.Phone ?? "", @"^\d{8,}$"))
             {
-                _view.ShowMessage("Invalid email format.");
+                _view.ShowMessage("Invalid phone number.");
                 return false;
             }
 
-            // Phone number validation
-            if (string.IsNullOrWhiteSpace(_view.Phone))
-            {
-                _view.ShowMessage("Phone number is required.");
-                return false;
-            }
-
-            if (!Regex.IsMatch(_view.Phone, @"^\d{8,}$"))
-            {
-                _view.ShowMessage("Phone number must be numeric and at least 8 digits.");
-                return false;
-            }
-
-            return true; // all checks passed
+            return true;
         }
 
+        // ================= HELPERS =================
 
-        private void OnCancel()
+        private bool IsWindowSeat(FlightSeats seat, Flight flight)
         {
-            PassengerDetailsClosed?.Invoke();  // Notify BookingPage even if canceled
-            _view.CloseView();
-            
+            string letter = new string(seat.SeatNumber.SkipWhile(char.IsDigit).ToArray()).ToUpper();
+            string model = flight.Plane.Model.ToLower();
+
+            if (model.Contains("a320")) return letter == "A" || letter == "F";
+            if (model.Contains("777"))
+                return seat.ClassType switch
+                {
+                    "First" => letter == "A" || letter == "D",
+                    "Business" => letter == "A" || letter == "F",
+                    "Economy" => letter == "A" || letter == "I",
+                    _ => false
+                };
+            if (model.Contains("g650")) return letter == "A" || letter == "B";
+
+            return false;
         }
+
+        // ================= EVENTS =================
+
+        public event Action BookingCompleted;
+        public event Action PassengerDetailsClosed;
     }
 }

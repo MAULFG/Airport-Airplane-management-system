@@ -15,13 +15,15 @@ namespace Airport_Airplane_management_system.Model.Services
         private readonly IBookingRepository _bookingRepo;
         private readonly IPlaneRepository _planeRepo;
         private readonly IAppSession _session;
-        public FlightService(IFlightRepository flightRepo, IUserRepository userRepo,IBookingRepository bookingRepo,IPlaneRepository planeRepo, IAppSession session) 
+        private readonly NotificationWriterService _notifWriter;
+        public FlightService(IFlightRepository flightRepo, IUserRepository userRepo, IBookingRepository bookingRepo, IPlaneRepository planeRepo, IAppSession session, NotificationWriterService notifWriter)
         {
             _flightRepo = flightRepo;
             _userRepo = userRepo;
             _bookingRepo = bookingRepo;
             _planeRepo = planeRepo;
-            _session = session; 
+            _session = session;
+            _notifWriter = notifWriter;
         }
 
         public void Preload()
@@ -105,6 +107,11 @@ namespace Airport_Airplane_management_system.Model.Services
         {
             error = "";
 
+            // ✅ notify all users with bookings on this flight (NO bookingId => no See Ticket)
+            var userIds = _bookingRepo.GetUserIdsForFlight(flightID);
+            foreach (var uid in userIds.Distinct())
+                _notifWriter.NotifyFlightCancelledByAdmin(uid, flightID);
+
             var bookingIds = _bookingRepo.GetActiveBookingIdsForFlight(flightID);
             foreach (var bookingId in bookingIds)
             {
@@ -119,7 +126,7 @@ namespace Airport_Airplane_management_system.Model.Services
         }
         public List<Plane> GetPlanes() => _planeRepo.GetAllPlanesf();
 
- 
+
 
         // ✅ for "depends on plane chosen"
         public HashSet<string> GetSeatClassesForFlight(int planeId)
@@ -154,7 +161,7 @@ namespace Airport_Airplane_management_system.Model.Services
             }
 
             // conflict check
-            
+
             if (_flightRepo.PlaneHasTimeConflict(flight.Plane.PlaneID, flight.Departure, flight.Arrival))
             {
                 error = "Plane has a scheduling conflict.";
@@ -172,8 +179,50 @@ namespace Airport_Airplane_management_system.Model.Services
         }
         public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId)
             => _flightRepo.PlaneHasTimeConflict(planeId, dep, arr, excludeFlightId);
+        //  public bool UpdateFlightDates(int flightId, DateTime dep, DateTime arr, out string error)
+        //    => _flightRepo.UpdateFlightDates(flightId, dep, arr, out error);
+
         public bool UpdateFlightDates(int flightId, DateTime dep, DateTime arr, out string error)
-            => _flightRepo.UpdateFlightDates(flightId, dep, arr, out error);
+        {
+            error = "";
+
+            var oldFlight = _flightRepo.GetFlightById(flightId);
+            if (oldFlight == null)
+            {
+                error = "Flight not found.";
+                return false;
+            }
+
+            bool depChanged = oldFlight.Departure != dep;
+            bool arrChanged = oldFlight.Arrival != arr;
+
+            if (!_flightRepo.UpdateFlightDates(flightId, dep, arr, out error))
+                return false;
+
+            // notify ONLY if something changed
+            if (depChanged || arrChanged)
+            {
+                var userIds = _bookingRepo.GetUserIdsForFlight(flightId);
+                foreach (var uid in userIds.Distinct())
+                {
+                    _notifWriter.NotifyFlightDatesUpdated(
+                        uid,
+                        flightId,
+                        depChanged ? dep : (DateTime?)null,
+                        arrChanged ? arr : (DateTime?)null
+                    );
+                }
+            }
+
+            return true;
+        }
+
+
+
+
+
+
+
         public List<Flight> SearchFlights(string from, string to, int? year = null, int? month = null, int? day = null)
         {
             var flights = _flightRepo.GetAllFlights() ?? new List<Flight>();
@@ -212,7 +261,7 @@ namespace Airport_Airplane_management_system.Model.Services
 
 
 
-    
+
         public List<Flight> SearchFlights(
             string from = null,
             string to = null,
@@ -257,7 +306,7 @@ namespace Airport_Airplane_management_system.Model.Services
 
 
 
-      
+
 
     }
 }

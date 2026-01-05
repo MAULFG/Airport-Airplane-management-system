@@ -8,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Airport_Airplane_management_system.View.Forms.UserPages.Booking_pages
 {
@@ -53,9 +54,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages.Booking_pages
             lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
         }
 
-        public void ShowPrice(decimal basePrice, decimal tax, decimal total)
+        public void ShowPrice(decimal basePrice,decimal Window, decimal tax, decimal total)
         {
             lblBasePriceValue.Text = $"Base: ${basePrice:F2}";
+            guna2HtmlLabel1.Text = $" WindowSeat: ${Window:0.00}";
             lblTaxValue.Text = $"Tax: ${tax:F2}";
             lblTotalValue.Text = $"Total: ${total:F2}";
         }
@@ -65,12 +67,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages.Booking_pages
             MessageBox.Show(message, "Passenger Details",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-        public void CloseView()
+        public void ClearInputs()
         {
-            this.Parent?.Controls.Remove(this);
-            this.Dispose();
+            txtFullName.Text = "";
+            guna2TextBox1.Text = "";
+            guna2TextBox2.Text = "";
+            txtEmail.Text = "";
+            txtPhone.Text = "";
         }
+
+       
 
 
         private void panelSummary_Paint(object sender, PaintEventArgs e)

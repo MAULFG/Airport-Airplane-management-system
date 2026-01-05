@@ -30,7 +30,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event EventHandler LogoutAClicked;
 
         // Navigation + Dashboard presenter
-        private readonly INavigationService _navigation;
+
         private readonly AdminDashboardPresenter _presenter;
 
         // Page presenters (lazy-loaded)
@@ -44,16 +44,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         // Repositories & services
         private readonly IFlightRepository flightRepo;
         private readonly IPlaneRepository planeRepo;
-        private readonly IUserRepository userRepo;
-        private readonly IBookingRepository bookRepo;
         private readonly ICrewRepository crewRepo;
-        private readonly IPassengerRepository passRepo;
+        private readonly INotificationWriterRepository notiRepo;
 
-        private readonly CrewService crewService;
-        private readonly PassengerService passService;
-        private readonly BookingService bookingService;
-        private readonly PlaneService planeService;
-        private readonly FlightService flightService;
+
+
+        private readonly NotificationWriterService notificationWriterService;
         private readonly ReportsService reportsService;
         private readonly IAppSession session;
 
@@ -65,29 +61,24 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             InitializeComponent();
 
-            _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
             _presenter = new AdminDashboardPresenter(this, navigation);
 
             session = new AppSession();
 
             // Repositories
             flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            bookRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            notiRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            passRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+
 
             // Services
-            crewService = new CrewService(crewRepo, flightRepo);
-            passService = new PassengerService(passRepo, session);
-            bookingService = new BookingService(bookRepo, session);
-            planeService = new PlaneService(planeRepo, flightRepo);
-            flightService = new FlightService(flightRepo, userRepo, bookRepo, planeRepo, session);
+            notificationWriterService = new NotificationWriterService(notiRepo);
+
             reportsService = new ReportsService(flightRepo, planeRepo, crewRepo);
 
             // Always create main + reports (or lazy load if desired)
-            _mainapresenter = new MainAPresenter(maina1, flightRepo, planeRepo, crewRepo, passRepo, bookRepo);
+            _mainapresenter = new MainAPresenter(maina1);
             //_reportspresenter = new ReportsPresenter(reports1, reportsService); // Lazy-loaded
 
             HookMainANavigation();
@@ -102,7 +93,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private void EnsureCrewPresenter()
         {
             if (_crewpresenter == null)
-                _crewpresenter = new CrewManagementPresenter(crewManagement1, crewService);
+                _crewpresenter = new CrewManagementPresenter(crewManagement1);
         }
 
         private void EnsureFlightPresenter()
@@ -110,7 +101,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (_flightmpresenter == null)
                 _flightmpresenter = new FlightManagementPresenter(
                     flightManagement1,
-                    flightService,
+                  
                     openCrewForFlight: null,
                     openScheduleForPlane: OpenPlaneScheduleDockedOnFlightPage
                 );
@@ -121,18 +112,20 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (_planepresenter == null)
                 _planepresenter = new PlaneManagementPresenter(
                     planeManagements1,
-                    planeRepo,
+                   
                     OpenPlaneScheduleDockedOnPlanePage
                 );
         }
 
         private void EnsurePassengerPresenter()
         {
+
             if (_passengermanagementpresenter == null)
                 _passengermanagementpresenter = new PassengerManagementPresenter(
                     passengerMangement1,
-                    passService,
+                  
                     () => flightRepo.CountUpcomingFlightsNotFullyBooked()
+
                 );
         }
 
@@ -167,7 +160,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             maina1.GoToPlanesRequested += () => PlaneMangement();
             maina1.GoToCrewRequested += () => CrewMangement();
             maina1.GoToPassengersRequested += () => PassengerMangement();
-         
+
         }
 
         #endregion
@@ -286,7 +279,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private void SetActiveButton(Guna2Button activeBtn)
         {
-            Guna2Button[] buttons = { btncrew, btnFlight, btnMainA,  btnpasenger, btnplane, btnreport, btnlogoutA };
+            Guna2Button[] buttons = { btncrew, btnFlight, btnMainA, btnpasenger, btnplane, btnreport, btnlogoutA };
             foreach (var btn in buttons) btn.FillColor = Color.Transparent;
             activeBtn.FillColor = Color.DarkCyan;
         }
@@ -362,5 +355,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         }
 
         #endregion
+
+        private void btnFlight_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

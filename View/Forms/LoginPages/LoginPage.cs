@@ -17,9 +17,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
         private readonly LoginPresenter _presenter;
 
         public LoginPage(
-        INavigationService navigationService,
-        UserService userService,
-        IAppSession session) // optional if needed by presenter
+        INavigationService navigationService,IAppSession session) // optional if needed by presenter
         {
             InitializeComponent();
 
@@ -35,7 +33,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             lb2.Click += (s, e) => ForgotPasswordClicked?.Invoke(this, EventArgs.Empty);
 
             // Initialize presenter properly
-            _presenter = new LoginPresenter(this, userService,  navigationService);
+            _presenter = new LoginPresenter(this,session,   navigationService);
 
             CenterGradientPanelVertically();
             panel2.Resize += (s, e) => CenterGradientPanelVertically();

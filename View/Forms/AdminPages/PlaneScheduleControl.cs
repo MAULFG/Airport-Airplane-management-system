@@ -1,6 +1,7 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -606,8 +607,13 @@ namespace Airport_Airplane_management_system.View.UserControls
         // -------------------------------------------------------
         private class RoundedBorderPanel : Panel
         {
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public int Radius { get; set; } = 12;
+
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public Color BorderColor { get; set; } = Color.FromArgb(220, 220, 220);
+
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public float BorderWidth { get; set; } = 1.2f;
 
             public RoundedBorderPanel()
@@ -652,6 +658,7 @@ namespace Airport_Airplane_management_system.View.UserControls
 
         private sealed class DashedRoundPanel : RoundedBorderPanel
         {
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public bool BorderDash { get; set; } = true;
 
             protected override void OnPaint(PaintEventArgs e)

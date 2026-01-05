@@ -1,36 +1,34 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
+using Airport_Airplane_management_system.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Ticket_Booking_System_OOP.Model.Repositories;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPages
 {
     public class MainAPresenter
     {
         private readonly IMainAView _view;
-        private readonly IFlightRepository _flightRepo;
-        private readonly IPlaneRepository _planeRepo;
-        private readonly ICrewRepository _crewRepo;
-        private readonly IPassengerRepository _passengerRepo;
-        private readonly IBookingRepository _bookingRepo;
+        private readonly IFlightRepository flightRepo;
+        private readonly IPlaneRepository planeRepo;
+        private readonly ICrewRepository crewRepo;
+        private readonly IPassengerRepository passRepo;
 
-        public MainAPresenter(
-            IMainAView view,
-            IFlightRepository flightRepo,
-            IPlaneRepository planeRepo,
-            ICrewRepository crewRepo,
-            IPassengerRepository passengerRepo,
-            IBookingRepository bookingRepo)
+
+        public MainAPresenter(IMainAView view)
         {
+            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            passRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+
             _view = view ?? throw new ArgumentNullException(nameof(view));
-            _flightRepo = flightRepo ?? throw new ArgumentNullException(nameof(flightRepo));
-            _planeRepo = planeRepo ?? throw new ArgumentNullException(nameof(planeRepo));
-            _crewRepo = crewRepo ?? throw new ArgumentNullException(nameof(crewRepo));
-            _passengerRepo = passengerRepo ?? throw new ArgumentNullException(nameof(passengerRepo));
-            _bookingRepo = bookingRepo ?? throw new ArgumentNullException(nameof(bookingRepo));
+   
         }
 
         /// <summary>
@@ -38,11 +36,11 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         /// </summary>
         public void RefreshData()
         {
-            var flights = InvokeList<Flight>(_flightRepo, "GetAllFlights", "GetFlights", "GetAll") ?? new List<Flight>();
-            var planes = InvokeList<Plane>(_planeRepo, "GetAllPlanes", "GetPlanes", "GetAll") ?? new List<Plane>();
-            var crew = InvokeList<Crew>(_crewRepo, "GetAllCrew", "GetAllCrewMembers", "GetCrew", "GetAll") ?? new List<Crew>();
+            var flights = InvokeList<Flight>(flightRepo, "GetAllFlights", "GetFlights", "GetAll") ?? new List<Flight>();
+            var planes = InvokeList<Plane>(planeRepo, "GetAllPlanes", "GetPlanes", "GetAll") ?? new List<Plane>();
+            var crew = InvokeList<Crew>(crewRepo, "GetAllCrew", "GetAllCrewMembers", "GetCrew", "GetAll") ?? new List<Crew>();
 
-            var passengerSummary = _passengerRepo.GetPassengersSummary();
+            var passengerSummary = passRepo.GetPassengersSummary();
             int totalPassengers = passengerSummary?.Count ?? 0;
 
             var now = DateTime.Now;

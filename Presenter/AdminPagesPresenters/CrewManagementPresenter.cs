@@ -1,8 +1,12 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Repositories;
 using System;
 using System.Linq;
+using Ticket_Booking_System_OOP.Model.Repositories;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPages
 {
@@ -10,14 +14,21 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
     {
         private readonly ICrewManagementView _view;
         private readonly CrewService _service;
+        private readonly ICrewRepository crewRepo;
+        private readonly IFlightRepository flightRepo;
 
         private bool _isEditMode;
         private string _editingEmployeeId;
 
-        public CrewManagementPresenter(ICrewManagementView view, CrewService service)
+        public CrewManagementPresenter(ICrewManagementView view)
         {
+            
             _view = view;
-            _service = service;
+            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+
+
+            _service = new CrewService(crewRepo,flightRepo);
 
             _view.LoadCrewRequested += OnLoad;
             _view.AddOrUpdateClicked += OnAddOrUpdate;

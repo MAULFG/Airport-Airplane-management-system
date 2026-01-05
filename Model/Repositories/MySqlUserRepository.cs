@@ -168,5 +168,16 @@ namespace Airport_Airplane_management_system.Model.Repositories
 
             return cmd.ExecuteNonQuery() > 0;
         }
+        public void UpdateLastLogin(int userId)
+        {
+            using var conn = new MySqlConnection(connStr);
+            conn.Open();
+
+            const string q = "UPDATE `user` SET last_login_at = NOW() WHERE id=@id;";
+            using var cmd = new MySqlCommand(q, conn);
+            cmd.Parameters.AddWithValue("@id", userId);
+           
+        }
+
     }
 }

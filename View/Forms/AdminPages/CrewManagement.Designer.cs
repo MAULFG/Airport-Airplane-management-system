@@ -67,15 +67,15 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            root = new Guna2Panel();
+            root = new Guna.UI2.WinForms.Guna2Panel();
             layout = new TableLayoutPanel();
-            leftCard = new Guna2ShadowPanel();
-            cmbFlight = new Guna2ComboBox();
-            cmbStatus = new Guna2ComboBox();
-            txtPhone = new Guna2TextBox();
-            txtEmail = new Guna2TextBox();
-            cmbRole = new Guna2ComboBox();
-            txtFullName = new Guna2TextBox();
+            leftCard = new Guna.UI2.WinForms.Guna2ShadowPanel();
+            cmbFlight = new Guna.UI2.WinForms.Guna2ComboBox();
+            cmbStatus = new Guna.UI2.WinForms.Guna2ComboBox();
+            txtPhone = new Guna.UI2.WinForms.Guna2TextBox();
+            txtEmail = new Guna.UI2.WinForms.Guna2TextBox();
+            cmbRole = new Guna.UI2.WinForms.Guna2ComboBox();
+            txtFullName = new Guna.UI2.WinForms.Guna2TextBox();
             lblTitle = new Label();
             lblFullName = new Label();
             lblRole = new Label();
@@ -83,11 +83,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             lblPhone = new Label();
             lblStatus = new Label();
             lblFlight = new Label();
-            btnAddOrUpdate = new Guna2Button();
-            btnCancelEdit = new Guna2Button();
-            rightCard = new Guna2ShadowPanel();
-            cmbFilter = new Guna2ComboBox();
-            lblCount = new Guna2HtmlLabel();
+            btnAddOrUpdate = new Guna.UI2.WinForms.Guna2Button();
+            btnCancelEdit = new Guna.UI2.WinForms.Guna2Button();
+            rightCard = new Guna.UI2.WinForms.Guna2ShadowPanel();
+            cmbFilter = new Guna.UI2.WinForms.Guna2ComboBox();
+            lblCount = new Guna.UI2.WinForms.Guna2HtmlLabel();
             root.SuspendLayout();
             layout.SuspendLayout();
             leftCard.SuspendLayout();
@@ -105,7 +105,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             root.ShadowDecoration.CustomizableEdges = customizableEdges20;
             root.Size = new Size(1030, 720);
             root.TabIndex = 0;
-            root.Paint += root_Paint;
+            root.Paint += this.root_Paint;
             // 
             // layout
             // 
@@ -352,13 +352,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             rightCard.FillColor = Color.White;
             rightCard.Location = new Point(433, 3);
             rightCard.Name = "rightCard";
-            rightCard.Padding = new Padding(10);
+            rightCard.Padding = new Padding(15);
             rightCard.Radius = 14;
             rightCard.ShadowColor = Color.Black;
             rightCard.ShadowDepth = 18;
             rightCard.Size = new Size(564, 684);
             rightCard.TabIndex = 1;
-            rightCard.Paint += rightCard_Paint;
+            rightCard.Paint += this.rightCard_Paint;
             // 
             // cmbFilter
             // 
@@ -382,7 +382,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             // 
             lblCount.BackColor = Color.Transparent;
             lblCount.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
-            lblCount.Location = new Point(23, 16);
+            lblCount.Location = new Point(28, 21);
             lblCount.Name = "lblCount";
             lblCount.Size = new Size(151, 25);
             lblCount.TabIndex = 0;

@@ -36,6 +36,7 @@ namespace Airport_Airplane_management_system.Model.Services
                 return false;
 
             _session.SetUser(user);
+            _repo.UpdateLastLogin(user.UserID);
             return true;
         }
         // Add new user

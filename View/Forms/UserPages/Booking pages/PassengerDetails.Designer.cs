@@ -70,6 +70,7 @@
             lblClassValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblStatusKey = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblStatusValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             panelMain.SuspendLayout();
             panelForm.SuspendLayout();
             guna2ShadowPanel1.SuspendLayout();
@@ -88,7 +89,7 @@
             panelMain.Name = "panelMain";
             panelMain.Padding = new Padding(20);
             panelMain.ShadowColor = Color.Black;
-            panelMain.Size = new Size(1000, 680);
+            panelMain.Size = new Size(1100, 680);
             panelMain.TabIndex = 0;
             // 
             // panelForm
@@ -108,7 +109,7 @@
             panelForm.Padding = new Padding(40);
             panelForm.Radius = 10;
             panelForm.ShadowColor = Color.Black;
-            panelForm.Size = new Size(651, 640);
+            panelForm.Size = new Size(751, 640);
             panelForm.TabIndex = 2;
             panelForm.Paint += panelForm_Paint;
             // 
@@ -217,7 +218,7 @@
             guna2ShadowPanel1.Controls.Add(grpSelectedSeat);
             guna2ShadowPanel1.Dock = DockStyle.Right;
             guna2ShadowPanel1.FillColor = Color.FromArgb(245, 245, 245);
-            guna2ShadowPanel1.Location = new Point(671, 20);
+            guna2ShadowPanel1.Location = new Point(771, 20);
             guna2ShadowPanel1.Name = "guna2ShadowPanel1";
             guna2ShadowPanel1.Padding = new Padding(20);
             guna2ShadowPanel1.Radius = 10;
@@ -259,6 +260,7 @@
             // grpPrice
             // 
             grpPrice.BorderRadius = 10;
+            grpPrice.Controls.Add(guna2HtmlLabel1);
             grpPrice.Controls.Add(lblBasePriceValue);
             grpPrice.Controls.Add(lblTaxValue);
             grpPrice.Controls.Add(lblDivider);
@@ -286,7 +288,7 @@
             // lblTaxValue
             // 
             lblTaxValue.BackColor = Color.Transparent;
-            lblTaxValue.Location = new Point(15, 70);
+            lblTaxValue.Location = new Point(15, 83);
             lblTaxValue.Name = "lblTaxValue";
             lblTaxValue.Size = new Size(54, 17);
             lblTaxValue.TabIndex = 1;
@@ -295,7 +297,7 @@
             // lblDivider
             // 
             lblDivider.BackColor = Color.Transparent;
-            lblDivider.Location = new Point(15, 90);
+            lblDivider.Location = new Point(15, 96);
             lblDivider.Name = "lblDivider";
             lblDivider.Size = new Size(87, 17);
             lblDivider.TabIndex = 2;
@@ -306,7 +308,7 @@
             lblTotalValue.BackColor = Color.Transparent;
             lblTotalValue.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblTotalValue.ForeColor = Color.DarkCyan;
-            lblTotalValue.Location = new Point(15, 110);
+            lblTotalValue.Location = new Point(15, 116);
             lblTotalValue.Name = "lblTotalValue";
             lblTotalValue.Size = new Size(75, 19);
             lblTotalValue.TabIndex = 3;
@@ -390,11 +392,20 @@
             lblStatusValue.TabIndex = 5;
             lblStatusValue.Text = "-";
             // 
+            // guna2HtmlLabel1
+            // 
+            guna2HtmlLabel1.BackColor = Color.Transparent;
+            guna2HtmlLabel1.Location = new Point(15, 64);
+            guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            guna2HtmlLabel1.Size = new Size(102, 17);
+            guna2HtmlLabel1.TabIndex = 5;
+            guna2HtmlLabel1.Text = "WindowSeat: $0.00";
+            // 
             // PassengerDetails
             // 
             Controls.Add(panelMain);
             Name = "PassengerDetails";
-            Size = new Size(1000, 680);
+            Size = new Size(1100, 680);
             panelMain.ResumeLayout(false);
             panelForm.ResumeLayout(false);
             panelForm.PerformLayout();
@@ -432,5 +443,6 @@
         private Guna.UI2.WinForms.Guna2Button guna2Button1;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox2;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox1;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
     }
 }

@@ -1,9 +1,13 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter.UserPagesPresenters;
 using Airport_Airplane_management_system.View.Forms.UserPages;
 using Airport_Airplane_management_system.View.Interfaces;
+using MySqlX.XDevAPI;
 using System;
 using System.Configuration;
 using System.Linq;
@@ -14,20 +18,50 @@ namespace Airport_Airplane_management_system.Presenter
     {
         private readonly ISearchAndBookingView _view;
         private readonly FlightService _flightService;
-        private readonly INavigationService _navigation;
-        private readonly UserDashboardPresenter _userdashpresenter;
+        private readonly NotificationWriterService notifWriter;
 
-        public SearchAndBookingPresenter( ISearchAndBookingView view,FlightService flightService,INavigationService navigation,UserDashboardPresenter userDashboardPresenter)  // Add this parameter
+        private readonly INotificationWriterRepository _notiRepo;
+        private readonly IUserRepository userRepo;
+        private readonly IFlightRepository flightRepo;
+        private readonly IBookingRepository bookingRepo;
+        private readonly IPlaneRepository planeRepo;
+        private readonly UserDashboardPresenter _userdashpresenter;
+        private readonly IAppSession _session;
+        public SearchAndBookingPresenter( ISearchAndBookingView view, IAppSession Session, UserDashboardPresenter userDashboardPresenter)  // Add this parameter
         {
+            _session = Session;
             _view = view;
-            _flightService = flightService;
-            _navigation = navigation;
-            _userdashpresenter = userDashboardPresenter;  // Assign it
+            userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _notiRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+
+            notifWriter = new NotificationWriterService(_notiRepo);
+            _flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo, _session, notifWriter);
+
+
+            _userdashpresenter = userDashboardPresenter;
 
             _view.BookFlightRequested += OpenBookingPage;
             _view.SearchClicked += OnSearchClicked;
         }
+        public void RefreshData()
+        {
+            
+                // 1️⃣ Load distinct "From" and "To" airports for combo boxes
+                var flights = _flightService.LoadFlightsWithSeats();
 
+                var fromList = flights.Select(f => f.From).Distinct().OrderBy(f => f).ToList();
+                var toList = flights.Select(f => f.To).Distinct().OrderBy(f => f).ToList();
+                var classList = new List<string> { "Economy", "Business", "First" }; // Adjust based on your model
+
+
+
+                _view.DisplayFlights(new List<Flight>());
+            
+            
+        }
         private void OnSearchClicked(object sender, EventArgs e)
         {
             // Clear the view first

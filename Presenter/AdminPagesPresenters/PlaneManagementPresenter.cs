@@ -1,6 +1,7 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
 using System;
 using System.Collections.Generic;
 
@@ -16,11 +17,11 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         public PlaneManagementPresenter(
             IPlaneManagementView view,
-            IPlaneRepository repo,
+            
             Action<int>? openSchedule = null)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
-            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _repo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             _openSchedule = openSchedule;
 
             // Event bindings
@@ -38,14 +39,9 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         private void OnPlaneSelected(int planeId)
         {
-            if (_openSchedule == null)
-            {
-                _view.ShowError("Schedule action is not wired from AdminDashboard.");
-                return;
-            }
-
-            _openSchedule.Invoke(planeId);
+            _openSchedule?.Invoke(planeId);
         }
+
 
         private void OnDeletePlane(int planeId)
         {

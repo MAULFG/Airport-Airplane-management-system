@@ -24,17 +24,10 @@ public partial class Main1 : Form, INavigationService
     private readonly Signupusercontrol signUpPage;
     private readonly ForgetUserControl forgotPasswordPage;
 
-    // Services
-    private readonly IUserRepository userRepo;
-    private readonly IFlightRepository flightRepo;
-    private readonly IBookingRepository bookingRepo;
-    private readonly IPlaneRepository planeRepo;
-    private readonly IMyTicketsRepository myTicketsRepo;
+  
     private readonly IAppSession session;
-    private readonly FlightService flightService;
-    private readonly BookingService bookingService;
-    private readonly PassengerService passengerService;
-    private readonly MyTicketsService myTicketsService;
+    
+    private int _currentUserId;
     public Main1()
     {
         InitializeComponent();
@@ -43,22 +36,13 @@ public partial class Main1 : Form, INavigationService
         session = new AppSession();
 
         // Repositories
-        userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-        flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-        bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-        planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-        myTicketsRepo = new MySqlMyTicketsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-        var passengerRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+        
 
-        // Services
-        var userService = new UserService(userRepo, session);
-        flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo,session);
-        bookingService = new BookingService(bookingRepo, session);
-        passengerService = new PassengerService(passengerRepo, session);
-        myTicketsService = new MyTicketsService(myTicketsRepo);
+
+        
         // Pages
-        loginPage = new LoginPage(this, userService,  session);
-        userDashboard = new UserDashboard(myTicketsService,this, flightService, bookingService, passengerService, session);
+        loginPage = new LoginPage(this,  session);
+        userDashboard = new UserDashboard(session, this);
         adminDashboard = new AdminDashboard(this);
         signUpPage = new Signupusercontrol(this);
         forgotPasswordPage = new ForgetUserControl(this);
@@ -82,11 +66,10 @@ public partial class Main1 : Form, INavigationService
     }
 
 
-
-
-    
-
-
+    public void SetCurrentUserId(int userId)
+    {
+        _currentUserId = userId;
+    }
 
     public void NavigateToUser()
     {
@@ -94,7 +77,7 @@ public partial class Main1 : Form, INavigationService
             Controls.Remove(userDashboard);
 
         // Recreate with same service instances
-        userDashboard = new UserDashboard(myTicketsService,this, flightService, bookingService, passengerService, session)
+        userDashboard = new UserDashboard(session, this )
         {
             Dock = DockStyle.Fill
         };
@@ -131,4 +114,10 @@ public partial class Main1 : Form, INavigationService
     {
 
     }
+    public int GetCurrentUserId()
+    {
+        
+        return _currentUserId;
+    }
+    
 }

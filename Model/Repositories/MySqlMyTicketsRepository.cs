@@ -33,6 +33,8 @@ SELECT
 
     fs.seat_number,
     fs.class_type,
+    fs.seat_price,
+
 
     p.full_name AS passenger_name
 
@@ -77,9 +79,9 @@ ORDER BY f.departure DESC;
 
                     SeatNumber = r["seat_number"].ToString(),
                     ClassType = classType,
+                    Category = classType,
                     Status = r["status"].ToString(),
-
-                    Price = GetPriceFromConfig(classType)
+                    Price = r["seat_price"] == DBNull.Value ? 0 : Convert.ToDecimal(r["seat_price"])
                 });
             }
 
@@ -145,21 +147,5 @@ FOR UPDATE;";
             }
         }
 
-        private decimal GetPriceFromConfig(string classType)
-        {
-            string key = classType switch
-            {
-                "Economy" => "PriceEconomy",
-                "Business" => "PriceBusiness",
-                "First" => "PriceFirst",
-                "VIP" => "PriceVIP",
-                _ => ""
-            };
-
-            if (string.IsNullOrEmpty(key)) return 0;
-
-            string value = ConfigurationManager.AppSettings[key];
-            return decimal.TryParse(value, out var price) ? price : 0;
-        }
     }
 }
