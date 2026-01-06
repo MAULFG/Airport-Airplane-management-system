@@ -1,5 +1,5 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
-using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
+using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;

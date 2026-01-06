@@ -1,10 +1,10 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
-using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using MySqlX.XDevAPI;
 using System.Linq;
 using System;
 using Airport_Airplane_management_system.Model.Repositories;
+using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 
 namespace Airport_Airplane_management_system.Model.Services
 {

@@ -1,7 +1,7 @@
 ﻿using Airport_Airplane_management_system.Model.Interfaces.Views;
-using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
 using System;
 using System.Linq;
+using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 
 namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 {
