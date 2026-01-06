@@ -12,10 +12,11 @@ namespace Airport_Airplane_management_system.Model.Core.Classes.Exceptions
         public List<Plane> Planes { get; set; }
         public List<PassengerSummaryRow> PassengersSummary { get; set; }
         public bool IsLoggedIn => CurrentUser != null;
-
+        public event Action UserLoggedIn;
         public void SetUser(User user)
         {
             CurrentUser = user;
+            UserLoggedIn?.Invoke();
         }
 
         public void SetFlights(List<Flight> flights)

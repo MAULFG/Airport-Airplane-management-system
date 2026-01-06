@@ -104,7 +104,7 @@ namespace Airport_Airplane_management_system.Presenter
 
         private void OpenBookingPage(int flightId)
         {
-            _userdashpresenter.OpenBookingp(flightId);
+            _userdashpresenter.OpenBooking(flightId);
         }
 
     }

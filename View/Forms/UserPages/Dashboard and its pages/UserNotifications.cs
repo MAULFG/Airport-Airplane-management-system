@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 
 namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
@@ -24,7 +25,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private IUserNotificationsRepository _repo;
         private UserNotificationsService _service;
         private UserNotificationsPresenter _presenter;
-
+        private IAppSession _session;
         // UI state
         private readonly HashSet<int> _selectedIds = new();
         private int? _focusedId;
@@ -68,20 +69,23 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         // CALL THIS like MyTickets / UserSettings
-        public void Initialize(INavigationService navigation)
+        public void Initialize(INavigationService navigation, IAppSession session)
         {
             if (_initialized) return;
 
             _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+            _session = session ?? throw new ArgumentNullException(nameof(session));
 
             var connStr = "server=localhost;port=3306;database=user;user=root;password=2006";
 
             _repo = new MySqlUserNotificationsRepository(connStr);
             _service = new UserNotificationsService(_repo);
-            _presenter = new UserNotificationsPresenter(this);
+            _presenter = new UserNotificationsPresenter(this, _session); // now _session is not null
 
             _initialized = true;
         }
+
+
 
         public void Activate()
         {

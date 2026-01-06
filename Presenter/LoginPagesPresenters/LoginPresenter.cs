@@ -53,10 +53,9 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
                 return;
             }
             _navigation.SetCurrentUserId(user.UserID);
-            
 
-            // 🚀 PRELOAD HEAVY DATA
-     
+            _session.SetUser(user);
+
 
             // 🧭 ROLE-BASED NAVIGATION
             if (user.UserID == 313)

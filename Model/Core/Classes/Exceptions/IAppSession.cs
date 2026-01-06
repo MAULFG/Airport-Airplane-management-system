@@ -17,7 +17,7 @@ namespace Airport_Airplane_management_system.Model.Core.Classes.Exceptions
         void SetFlights(List<Flight> flights);
         void SetPlanes(List<Plane> planes);
         void Clear();
-
+        event Action UserLoggedIn;
         // Add this for caching passenger summary
         List<PassengerSummaryRow> PassengersSummary { get; set; }
     }

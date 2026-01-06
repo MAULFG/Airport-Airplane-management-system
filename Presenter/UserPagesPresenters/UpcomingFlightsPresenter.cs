@@ -51,7 +51,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
         }
         private void OpenBookingPage(int flightId)
         {
-            _userdashpresenter.OpenBookingp(flightId);
+            _userdashpresenter.OpenBooking(flightId);
         }
     }
 }
