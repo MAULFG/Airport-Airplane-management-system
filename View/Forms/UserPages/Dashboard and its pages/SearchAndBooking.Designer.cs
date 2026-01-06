@@ -9,7 +9,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
     {
         private Guna2Panel panelSearch;
         private FlowLayoutPanel flowFilters;
-        private Guna2ComboBox cbFrom, cbTo, cbClass;
+        private Guna2TextBox cbFrom, cbTo;
+        private Guna2ComboBox  cbClass;
         private Guna2DateTimePicker dtDeparture, dtReturn;
         private Guna2Button btnSearch;
         private FlowLayoutPanel flowFlights;
@@ -34,8 +35,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             panelSearch = new Guna2Panel();
             flowFilters = new FlowLayoutPanel();
-            cbFrom = new Guna2ComboBox();
-            cbTo = new Guna2ComboBox();
+            cbFrom = new Guna2TextBox();
+            cbTo = new Guna2TextBox();
             lblDeparture = new Label();
             dtDeparture = new Guna2DateTimePicker();
             lblPassengers = new Label();
@@ -84,18 +85,17 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cbFrom.BackColor = Color.Transparent;
             cbFrom.BorderRadius = 10;
             cbFrom.CustomizableEdges = customizableEdges1;
-            cbFrom.DrawMode = DrawMode.OwnerDrawFixed;
-            cbFrom.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbFrom.FocusedColor = Color.Empty;
+            cbFrom.DefaultText = "";
             cbFrom.Font = new Font("Segoe UI", 10F);
             cbFrom.ForeColor = Color.FromArgb(68, 88, 112);
-            cbFrom.ItemHeight = 30;
-            cbFrom.Items.AddRange(new object[] {  "New York", "London", "Paris", "Dubai" });
             cbFrom.Location = new Point(10, 10);
             cbFrom.Margin = new Padding(5);
             cbFrom.Name = "cbFrom";
+            cbFrom.PlaceholderForeColor = Color.LightGray;
+            cbFrom.PlaceholderText = "Search From";
+            cbFrom.SelectedText = "";
             cbFrom.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            cbFrom.Size = new Size(125, 36);
+            cbFrom.Size = new Size(140, 36);
             cbFrom.TabIndex = 1;
             cbFrom.Tag = "From:";
             cbFrom.TextAlign = HorizontalAlignment.Center;
@@ -105,28 +105,27 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cbTo.BackColor = Color.Transparent;
             cbTo.BorderRadius = 10;
             cbTo.CustomizableEdges = customizableEdges3;
-            cbTo.DrawMode = DrawMode.OwnerDrawFixed;
-            cbTo.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbTo.FocusedColor = Color.Empty;
+            cbTo.DefaultText = "";
             cbTo.Font = new Font("Segoe UI", 10F);
             cbTo.ForeColor = Color.FromArgb(68, 88, 112);
-            cbTo.ItemHeight = 30;
-            cbTo.Items.AddRange(new object[] {  "Tokyo", "Berlin", "Dubai", "London" });
-            cbTo.Location = new Point(145, 10);
+            cbTo.Location = new Point(160, 10);
             cbTo.Margin = new Padding(5);
             cbTo.Name = "cbTo";
+            cbTo.PlaceholderForeColor = Color.LightGray;
+            cbTo.PlaceholderText = "Search To";
+            cbTo.SelectedText = "";
             cbTo.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            cbTo.Size = new Size(125, 36);
+            cbTo.Size = new Size(140, 36);
             cbTo.TabIndex = 3;
             // 
             // lblDeparture
             // 
             lblDeparture.AutoSize = true;
             lblDeparture.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblDeparture.Location = new Point(280, 15);
+            lblDeparture.Location = new Point(310, 15);
             lblDeparture.Margin = new Padding(5, 10, 0, 0);
             lblDeparture.Name = "lblDeparture";
-            lblDeparture.Size = new Size(68, 15);
+            lblDeparture.Size = new Size(84, 20);
             lblDeparture.TabIndex = 4;
             lblDeparture.Text = "Departure:";
             // 
@@ -139,7 +138,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             dtDeparture.FillColor = Color.DarkCyan;
             dtDeparture.Font = new Font("Segoe UI", 9F);
             dtDeparture.Format = DateTimePickerFormat.Short;
-            dtDeparture.Location = new Point(353, 10);
+            dtDeparture.Location = new Point(399, 10);
             dtDeparture.Margin = new Padding(5);
             dtDeparture.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             dtDeparture.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
@@ -154,10 +153,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             lblPassengers.AutoSize = true;
             lblPassengers.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPassengers.Location = new Point(488, 15);
+            lblPassengers.Location = new Point(534, 15);
             lblPassengers.Margin = new Padding(5, 10, 0, 0);
             lblPassengers.Name = "lblPassengers";
-            lblPassengers.Size = new Size(71, 15);
+            lblPassengers.Size = new Size(91, 20);
             lblPassengers.TabIndex = 8;
             lblPassengers.Text = "Passengers:";
             // 
@@ -167,7 +166,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             numPassengers.BorderRadius = 10;
             numPassengers.CustomizableEdges = customizableEdges7;
             numPassengers.Font = new Font("Segoe UI", 9F);
-            numPassengers.Location = new Point(564, 10);
+            numPassengers.Location = new Point(630, 10);
             numPassengers.Margin = new Padding(5);
             numPassengers.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
             numPassengers.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
@@ -189,12 +188,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             cbClass.Font = new Font("Segoe UI", 10F);
             cbClass.ForeColor = Color.FromArgb(68, 88, 112);
             cbClass.ItemHeight = 30;
-            cbClass.Items.AddRange(new object[] {  "Economy", "Business", "First" });
-            cbClass.Location = new Point(635, 10);
+            cbClass.Items.AddRange(new object[] { "Economy", "Business", "First" });
+            cbClass.Location = new Point(701, 10);
             cbClass.Margin = new Padding(5);
             cbClass.Name = "cbClass";
             cbClass.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            cbClass.Size = new Size(120, 36);
+            cbClass.Size = new Size(140, 36);
             cbClass.TabIndex = 11;
             // 
             // btnSearch
@@ -204,7 +203,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnSearch.FillColor = Color.DarkCyan;
             btnSearch.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnSearch.ForeColor = Color.White;
-            btnSearch.Location = new Point(765, 10);
+            btnSearch.Location = new Point(10, 56);
             btnSearch.Margin = new Padding(5);
             btnSearch.Name = "btnSearch";
             btnSearch.PressedColor = Color.DarkCyan;

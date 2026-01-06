@@ -36,10 +36,11 @@ public partial class Main1 : Form, INavigationService
         session = new AppSession();
 
         // Repositories
-        
+
+        this.AutoScaleMode = AutoScaleMode.Dpi;
 
 
-        
+
         // Pages
         loginPage = new LoginPage(this,  session);
         userDashboard = new UserDashboard(session, this);

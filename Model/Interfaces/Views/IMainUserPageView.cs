@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Airport_Airplane_management_system.Model.Interfaces.Views
+﻿namespace Airport_Airplane_management_system.Model.Interfaces.Views
 {
     public interface IMainUserPageView
     {
@@ -10,5 +6,8 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
 
         void ClearStatistics();
         void AddStatCard(string title, string value);
+
+        void SetNextFlight(string route, string info);
+        void HideNextFlight();
     }
 }

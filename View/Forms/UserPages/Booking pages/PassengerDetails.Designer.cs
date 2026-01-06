@@ -59,6 +59,7 @@
             guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             btnConfirm = new Guna.UI2.WinForms.Guna2Button();
             grpPrice = new Guna.UI2.WinForms.Guna2GroupBox();
+            guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblBasePriceValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblTaxValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblDivider = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -70,7 +71,6 @@
             lblClassValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblStatusKey = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblStatusValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             panelMain.SuspendLayout();
             panelForm.SuspendLayout();
             guna2ShadowPanel1.SuspendLayout();
@@ -120,7 +120,8 @@
             guna2TextBox2.DefaultText = "";
             guna2TextBox2.Font = new Font("Segoe UI", 9F);
             guna2TextBox2.IconLeft = Properties.Resources.person_24dp_707070_FILL0_wght400_GRAD0_opsz24;
-            guna2TextBox2.Location = new Point(162, 277);
+            guna2TextBox2.Location = new Point(199, 277);
+            guna2TextBox2.Margin = new Padding(3, 4, 3, 4);
             guna2TextBox2.Name = "guna2TextBox2";
             guna2TextBox2.PlaceholderText = "Last Name";
             guna2TextBox2.SelectedText = "";
@@ -135,7 +136,8 @@
             guna2TextBox1.DefaultText = "";
             guna2TextBox1.Font = new Font("Segoe UI", 9F);
             guna2TextBox1.IconLeft = Properties.Resources.person_24dp_707070_FILL0_wght400_GRAD0_opsz24;
-            guna2TextBox1.Location = new Point(162, 214);
+            guna2TextBox1.Location = new Point(199, 214);
+            guna2TextBox1.Margin = new Padding(3, 4, 3, 4);
             guna2TextBox1.Name = "guna2TextBox1";
             guna2TextBox1.PlaceholderText = "Middle  Name";
             guna2TextBox1.SelectedText = "";
@@ -148,9 +150,9 @@
             lblTitle.BackColor = Color.Transparent;
             lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             lblTitle.ForeColor = Color.DimGray;
-            lblTitle.Location = new Point(195, 81);
+            lblTitle.Location = new Point(204, 81);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(264, 34);
+            lblTitle.Size = new Size(322, 43);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Passenger Information";
             // 
@@ -160,7 +162,7 @@
             lblHint.ForeColor = Color.Gray;
             lblHint.Location = new Point(189, 119);
             lblHint.Name = "lblHint";
-            lblHint.Size = new Size(279, 17);
+            lblHint.Size = new Size(352, 22);
             lblHint.TabIndex = 1;
             lblHint.Text = "Enter passenger details exactly as shown on passport";
             // 
@@ -171,7 +173,8 @@
             txtFullName.DefaultText = "";
             txtFullName.Font = new Font("Segoe UI", 9F);
             txtFullName.IconLeft = Properties.Resources.person_24dp_707070_FILL0_wght400_GRAD0_opsz24;
-            txtFullName.Location = new Point(162, 151);
+            txtFullName.Location = new Point(199, 151);
+            txtFullName.Margin = new Padding(3, 4, 3, 4);
             txtFullName.Name = "txtFullName";
             txtFullName.PlaceholderText = "First Name";
             txtFullName.SelectedText = "";
@@ -186,7 +189,8 @@
             txtEmail.DefaultText = "";
             txtEmail.Font = new Font("Segoe UI", 9F);
             txtEmail.IconLeft = Properties.Resources.alternate_email_24dp_707070_FILL0_wght400_GRAD0_opsz24;
-            txtEmail.Location = new Point(162, 340);
+            txtEmail.Location = new Point(199, 340);
+            txtEmail.Margin = new Padding(3, 4, 3, 4);
             txtEmail.Name = "txtEmail";
             txtEmail.PlaceholderText = "Email Address";
             txtEmail.SelectedText = "";
@@ -201,7 +205,8 @@
             txtPhone.DefaultText = "";
             txtPhone.Font = new Font("Segoe UI", 9F);
             txtPhone.IconLeft = Properties.Resources.phone_enabled_24dp_707070_FILL0_wght400_GRAD0_opsz24;
-            txtPhone.Location = new Point(162, 403);
+            txtPhone.Location = new Point(199, 403);
+            txtPhone.Margin = new Padding(3, 4, 3, 4);
             txtPhone.Name = "txtPhone";
             txtPhone.PlaceholderText = "Phone Number";
             txtPhone.SelectedText = "";
@@ -276,12 +281,21 @@
             grpPrice.TabIndex = 1;
             grpPrice.Text = "Price Summary";
             // 
+            // guna2HtmlLabel1
+            // 
+            guna2HtmlLabel1.BackColor = Color.Transparent;
+            guna2HtmlLabel1.Location = new Point(15, 64);
+            guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            guna2HtmlLabel1.Size = new Size(129, 22);
+            guna2HtmlLabel1.TabIndex = 5;
+            guna2HtmlLabel1.Text = "WindowSeat: $0.00";
+            // 
             // lblBasePriceValue
             // 
             lblBasePriceValue.BackColor = Color.Transparent;
             lblBasePriceValue.Location = new Point(15, 45);
             lblBasePriceValue.Name = "lblBasePriceValue";
-            lblBasePriceValue.Size = new Size(60, 17);
+            lblBasePriceValue.Size = new Size(76, 22);
             lblBasePriceValue.TabIndex = 0;
             lblBasePriceValue.Text = "Base: $0.00";
             // 
@@ -290,7 +304,7 @@
             lblTaxValue.BackColor = Color.Transparent;
             lblTaxValue.Location = new Point(15, 83);
             lblTaxValue.Name = "lblTaxValue";
-            lblTaxValue.Size = new Size(54, 17);
+            lblTaxValue.Size = new Size(68, 22);
             lblTaxValue.TabIndex = 1;
             lblTaxValue.Text = "Tax: $0.00";
             // 
@@ -299,7 +313,7 @@
             lblDivider.BackColor = Color.Transparent;
             lblDivider.Location = new Point(15, 96);
             lblDivider.Name = "lblDivider";
-            lblDivider.Size = new Size(87, 17);
+            lblDivider.Size = new Size(115, 22);
             lblDivider.TabIndex = 2;
             lblDivider.Text = "──────────────";
             // 
@@ -310,7 +324,7 @@
             lblTotalValue.ForeColor = Color.DarkCyan;
             lblTotalValue.Location = new Point(15, 116);
             lblTotalValue.Name = "lblTotalValue";
-            lblTotalValue.Size = new Size(75, 19);
+            lblTotalValue.Size = new Size(99, 25);
             lblTotalValue.TabIndex = 3;
             lblTotalValue.Text = "Total: $0.00";
             // 
@@ -340,7 +354,7 @@
             lblSeatKey.Font = new Font("Segoe UI", 9F);
             lblSeatKey.Location = new Point(15, 45);
             lblSeatKey.Name = "lblSeatKey";
-            lblSeatKey.Size = new Size(28, 17);
+            lblSeatKey.Size = new Size(35, 22);
             lblSeatKey.TabIndex = 0;
             lblSeatKey.Text = "Seat:";
             // 
@@ -350,7 +364,7 @@
             lblSeatValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblSeatValue.Location = new Point(105, 45);
             lblSeatValue.Name = "lblSeatValue";
-            lblSeatValue.Size = new Size(8, 17);
+            lblSeatValue.Size = new Size(9, 22);
             lblSeatValue.TabIndex = 1;
             lblSeatValue.Text = "-";
             // 
@@ -359,7 +373,7 @@
             lblClassKey.BackColor = Color.Transparent;
             lblClassKey.Location = new Point(15, 70);
             lblClassKey.Name = "lblClassKey";
-            lblClassKey.Size = new Size(33, 17);
+            lblClassKey.Size = new Size(39, 22);
             lblClassKey.TabIndex = 2;
             lblClassKey.Text = "Class:";
             // 
@@ -369,7 +383,7 @@
             lblClassValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblClassValue.Location = new Point(105, 70);
             lblClassValue.Name = "lblClassValue";
-            lblClassValue.Size = new Size(8, 17);
+            lblClassValue.Size = new Size(9, 22);
             lblClassValue.TabIndex = 3;
             lblClassValue.Text = "-";
             // 
@@ -378,7 +392,7 @@
             lblStatusKey.BackColor = Color.Transparent;
             lblStatusKey.Location = new Point(15, 95);
             lblStatusKey.Name = "lblStatusKey";
-            lblStatusKey.Size = new Size(38, 17);
+            lblStatusKey.Size = new Size(46, 22);
             lblStatusKey.TabIndex = 4;
             lblStatusKey.Text = "Status:";
             // 
@@ -388,18 +402,9 @@
             lblStatusValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblStatusValue.Location = new Point(105, 95);
             lblStatusValue.Name = "lblStatusValue";
-            lblStatusValue.Size = new Size(8, 17);
+            lblStatusValue.Size = new Size(9, 22);
             lblStatusValue.TabIndex = 5;
             lblStatusValue.Text = "-";
-            // 
-            // guna2HtmlLabel1
-            // 
-            guna2HtmlLabel1.BackColor = Color.Transparent;
-            guna2HtmlLabel1.Location = new Point(15, 64);
-            guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(102, 17);
-            guna2HtmlLabel1.TabIndex = 5;
-            guna2HtmlLabel1.Text = "WindowSeat: $0.00";
             // 
             // PassengerDetails
             // 

@@ -1,9 +1,5 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes;
+﻿using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Interfaces.Exceptions;
-using Airport_Airplane_management_system.Model.Interfaces.Repositories;
-using Airport_Airplane_management_system.Model.Interfaces.Views;
-using Airport_Airplane_management_system.Model.Repositories;
-using Airport_Airplane_management_system.Model.Services;
 using System;
 using System.Linq;
 
@@ -13,63 +9,80 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
     {
         private readonly IMainUserPageView _view;
         private readonly IAppSession _session;
-        private readonly FlightService _flightService;
-        private readonly NotificationWriterService notifWriter;
-        private readonly BookingService _bookingService;
-        private readonly INotificationWriterRepository _notiRepo;
-        private readonly IUserRepository userRepo;
-        private readonly IFlightRepository flightRepo;
-        private readonly IBookingRepository bookingRepo;
-        private readonly IPlaneRepository planeRepo;
-        public MainUserPagePresenter( IMainUserPageView view, IAppSession session)
+
+        public MainUserPagePresenter(IMainUserPageView view, IAppSession session)
         {
             _view = view;
             _session = session;
-            userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            _notiRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-
-            notifWriter = new NotificationWriterService(_notiRepo);
-            _flightService = new FlightService(flightRepo, userRepo, bookingRepo, planeRepo, _session, notifWriter);
-            _bookingService = new BookingService(bookingRepo,_session);
         }
 
         public void RefreshData()
         {
-            
-                var user = _session.CurrentUser;
-                if (user == null) return;
+            var user = _session.CurrentUser;
+            if (user == null) return;
 
-                _view.SetWelcomeText($"Welcome, {user.FullName}!");
-                _view.ClearStatistics();
+            // ===== Welcome =====
+            _view.SetWelcomeText($"Welcome, {user.FullName}!");
+            _view.ClearStatistics();
 
-                // Preload flights and bookings
-                _flightService.Preload();
-                _bookingService.LoadBookingsForCurrentUser();
+            var bookings = user.BookedFlights
+                .Where(b => b.Status == "Confirmed")
+                .ToList();
 
-                var bookings = user.BookedFlights
-                    .Where(b => b.Status == "Confirmed")
-                    .ToList();
+            var now = DateTime.Now;
 
-                var now = DateTime.Now;
+            // ===== Main Stats =====
+            _view.AddStatCard("Upcoming Flights", bookings.Count(b => b.Flight.Departure > now).ToString());
+            _view.AddStatCard("Completed Flights", bookings.Count(b => b.Flight.Arrival < now).ToString());
+            _view.AddStatCard("Total Bookings", bookings.Count.ToString());
 
-                int totalBookings = bookings.Count;
-                int upcomingFlights = bookings.Count(b => b.Flight.Departure > now);
-                int completedFlights = bookings.Count(b => b.Flight.Arrival < now);
+            // ===== Favorite Route =====
+            var favorite = bookings
+                .GroupBy(b => $"{b.Flight.From} → {b.Flight.To}")
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefault();
 
-                string favoriteRoute = bookings
-                    .GroupBy(b => $"{b.Flight.From} → {b.Flight.To}")
-                    .OrderByDescending(g => g.Count())
-                    .Select(g => g.Key)
-                    .FirstOrDefault() ?? "Beirut → Dubai";
+            if (favorite != null)
+                _view.AddStatCard("Favorite Route", favorite);
 
-                _view.AddStatCard("Upcoming Flights", upcomingFlights.ToString());
-                _view.AddStatCard("Completed Flights", completedFlights.ToString());
-                _view.AddStatCard("Total Bookings", totalBookings.ToString());
-                _view.AddStatCard("Favorite Route", favoriteRoute);
+            // ===== Next Flight Panel =====
+            var next = bookings
+                .Where(b => b.Flight.Departure > now)
+                .OrderBy(b => b.Flight.Departure)
+                .FirstOrDefault();
+
+            if (next != null)
+            {
+                _view.SetNextFlight(
+                    $"{next.Flight.From} → {next.Flight.To}",
+                    $"Departs {next.Flight.Departure:g} "
+                );
+
+                // Optional: add "Next Check-in" card (24h before departure)
+                var checkInStatus = next.Flight.Departure.AddHours(-24) <= now ?
+                    "Available Now" :
+                    $"Opens {(next.Flight.Departure.AddHours(-24) - now).Hours}h {(next.Flight.Departure.AddHours(-24) - now).Minutes}m";
+
+                _view.AddStatCard("Next Check-in", checkInStatus);
+            }
+            else
+            {
+                _view.HideNextFlight();
+                _view.AddStatCard("Next Check-in", "No upcoming flights");
+            }
+
            
+            
+
+            // ===== Optional extra filler cards for balance =====
+            // Example: Loyalty Points, Frequent Route, or just dummy info
+            if (favorite != null)
+                _view.AddStatCard("Most Frequent Route", favorite);
+            else
+                _view.AddStatCard("Most Frequent Route", "Beirut → Dubai");
+
+            
         }
     }
 }

@@ -49,8 +49,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages.Booking_pages
         // DISPLAY METHODS (Presenter controls UI)
         public void ShowSelectedSeat(FlightSeats seat)
         {
-            lblSeatValue.Text = $"Seat: {seat.SeatNumber}";
-            lblClassValue.Text = $"Class: {seat.ClassType}";
+            lblSeatValue.Text = $"{seat.SeatNumber}";
+            lblClassValue.Text = $"{seat.ClassType}";
             lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
         }
 

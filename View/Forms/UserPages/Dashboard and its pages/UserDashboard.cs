@@ -130,6 +130,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             foreach (Control c in panelMain.Controls)
                 c.Hide();
+            _bookingPresenter = null;
+            _mainUserPagePresenter = null;
+            _upcomingFlightsPresenter = null;
+            _searchAndBookingPresenter = null;
+            _myTicketsPresenter = null;
+            _notificationsPresenter = null;
+            _userAccountPresenter = null;
         }
 
         private void ShowOnly(Control panelToShow, Guna2Button activeButton)

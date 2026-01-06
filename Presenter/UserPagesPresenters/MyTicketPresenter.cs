@@ -29,7 +29,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _notiRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             _ticketsRepository = new MySqlMyTicketsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             _service = new MyTicketsService(_ticketsRepository);
-            notifWriter = new NotificationWriterService(_notiRepo);
+            _notifWriter = new NotificationWriterService(_notiRepo);
 
             _view.ViewLoaded += () => RefreshData();
             _view.RefreshClicked += () => RefreshData();
