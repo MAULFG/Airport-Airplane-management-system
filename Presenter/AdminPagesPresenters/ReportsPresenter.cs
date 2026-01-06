@@ -19,7 +19,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
         private readonly ICrewRepository crewRepo;
         private List<ReportItemRow> _all = new();
 
-        public ReportsPresenter(IReportsView view, ReportsService service)
+        public ReportsPresenter(IReportsView view)
         {
             flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");

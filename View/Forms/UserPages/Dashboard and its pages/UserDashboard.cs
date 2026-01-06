@@ -114,14 +114,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         // =======================
         private void InitializeButtonEvents()
         {
-            guna2Button1.Click += (s, e) => ShowMainUser();
-            btnUpcomingFlights.Click += (s, e) => UpcomingFlights();
-            btnSearchBook.Click += (s, e) => SearchBook();
-            btnMyTickets.Click += (s, e) => MyTickets();
-            btnNotifications.Click += (s, e) => Notifications();
-            Account.Click += (s, e) => UserAccount();
+            guna2Button1.Click += (s, e) => UserMainClicked?.Invoke(this, EventArgs.Empty);
+            btnUpcomingFlights.Click += (s, e) => UpcomingFlightsClicked?.Invoke(this, EventArgs.Empty);
+            btnSearchBook.Click += (s, e) => SearchBookClicked?.Invoke(this, EventArgs.Empty);
+            btnMyTickets.Click += (s, e) => MyTicketsClicked?.Invoke(this, EventArgs.Empty);
+            btnNotifications.Click += (s, e) => NotificationsClicked?.Invoke(this, EventArgs.Empty);
+            Account.Click += (s, e) => AccountClicked?.Invoke(this, EventArgs.Empty);
             logoutuser.Click += (s, e) => LogoutClicked?.Invoke(this, EventArgs.Empty);
         }
+
 
         // =======================
         // PANEL SWITCHING
@@ -138,6 +139,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _notificationsPresenter = null;
             _userAccountPresenter = null;
         }
+
 
         private void ShowOnly(Control panelToShow, Guna2Button activeButton)
         {

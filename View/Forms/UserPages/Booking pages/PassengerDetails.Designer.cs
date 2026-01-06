@@ -127,7 +127,7 @@
             guna2TextBox2.SelectedText = "";
             guna2TextBox2.ShadowDecoration.CustomizableEdges = customizableEdges2;
             guna2TextBox2.Size = new Size(330, 45);
-            guna2TextBox2.TabIndex = 6;
+            guna2TextBox2.TabIndex = 2;
             // 
             // guna2TextBox1
             // 
@@ -143,7 +143,7 @@
             guna2TextBox1.SelectedText = "";
             guna2TextBox1.ShadowDecoration.CustomizableEdges = customizableEdges4;
             guna2TextBox1.Size = new Size(330, 45);
-            guna2TextBox1.TabIndex = 5;
+            guna2TextBox1.TabIndex = 1;
             // 
             // lblTitle
             // 
@@ -180,7 +180,7 @@
             txtFullName.SelectedText = "";
             txtFullName.ShadowDecoration.CustomizableEdges = customizableEdges6;
             txtFullName.Size = new Size(330, 45);
-            txtFullName.TabIndex = 2;
+            txtFullName.TabIndex = 0;
             // 
             // txtEmail
             // 
@@ -277,14 +277,14 @@
             grpPrice.Name = "grpPrice";
             grpPrice.Padding = new Padding(5);
             grpPrice.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            grpPrice.Size = new Size(269, 140);
-            grpPrice.TabIndex = 1;
+            grpPrice.Size = new Size(269, 152);
+            grpPrice.TabIndex = 7;
             grpPrice.Text = "Price Summary";
             // 
             // guna2HtmlLabel1
             // 
             guna2HtmlLabel1.BackColor = Color.Transparent;
-            guna2HtmlLabel1.Location = new Point(15, 64);
+            guna2HtmlLabel1.Location = new Point(15, 66);
             guna2HtmlLabel1.Name = "guna2HtmlLabel1";
             guna2HtmlLabel1.Size = new Size(129, 22);
             guna2HtmlLabel1.TabIndex = 5;
@@ -302,7 +302,7 @@
             // lblTaxValue
             // 
             lblTaxValue.BackColor = Color.Transparent;
-            lblTaxValue.Location = new Point(15, 83);
+            lblTaxValue.Location = new Point(15, 86);
             lblTaxValue.Name = "lblTaxValue";
             lblTaxValue.Size = new Size(68, 22);
             lblTaxValue.TabIndex = 1;
@@ -311,7 +311,7 @@
             // lblDivider
             // 
             lblDivider.BackColor = Color.Transparent;
-            lblDivider.Location = new Point(15, 96);
+            lblDivider.Location = new Point(15, 100);
             lblDivider.Name = "lblDivider";
             lblDivider.Size = new Size(115, 22);
             lblDivider.TabIndex = 2;
@@ -345,7 +345,7 @@
             grpSelectedSeat.Padding = new Padding(5);
             grpSelectedSeat.ShadowDecoration.CustomizableEdges = customizableEdges18;
             grpSelectedSeat.Size = new Size(269, 140);
-            grpSelectedSeat.TabIndex = 2;
+            grpSelectedSeat.TabIndex = 6;
             grpSelectedSeat.Text = "Selected Seat";
             // 
             // lblSeatKey

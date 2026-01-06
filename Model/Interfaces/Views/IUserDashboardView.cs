@@ -26,5 +26,8 @@ namespace Airport_Airplane_management_system.View.Interfaces
         void ShowMainUser();
         // Logout action
         void Logout();
+
+        // Notification badge
+        void SetUnreadNotificationsCount(int count);
     }
 }

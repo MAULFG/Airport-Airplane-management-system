@@ -44,13 +44,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         // Repositories & services
         private readonly IFlightRepository flightRepo;
         private readonly IPlaneRepository planeRepo;
-        private readonly ICrewRepository crewRepo;
-        private readonly INotificationWriterRepository notiRepo;
+
+
 
 
 
         private readonly NotificationWriterService notificationWriterService;
-        private readonly ReportsService reportsService;
+       
         private readonly IAppSession session;
 
         // Docked PlaneSchedule controls
@@ -66,21 +66,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             session = new AppSession();
 
             // Repositories
-            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            notiRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006"); 
             planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
 
 
-            // Services
-            notificationWriterService = new NotificationWriterService(notiRepo);
-
-            reportsService = new ReportsService(flightRepo, planeRepo, crewRepo);
-
-            // Always create main + reports (or lazy load if desired)
             _mainapresenter = new MainAPresenter(maina1);
-            //_reportspresenter = new ReportsPresenter(reports1, reportsService); // Lazy-loaded
-
+           
             HookMainANavigation();
             HideAllPanels();
             InitializeButtonEvents();
@@ -101,7 +92,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (_flightmpresenter == null)
                 _flightmpresenter = new FlightManagementPresenter(
                     flightManagement1,
-                  
                     openCrewForFlight: null,
                     openScheduleForPlane: OpenPlaneScheduleDockedOnFlightPage
                 );
@@ -112,7 +102,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (_planepresenter == null)
                 _planepresenter = new PlaneManagementPresenter(
                     planeManagements1,
-                   
                     OpenPlaneScheduleDockedOnPlanePage
                 );
         }
@@ -123,7 +112,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (_passengermanagementpresenter == null)
                 _passengermanagementpresenter = new PassengerManagementPresenter(
                     passengerMangement1,
-                  
+
                     () => flightRepo.CountUpcomingFlightsNotFullyBooked()
 
                 );
@@ -132,7 +121,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private void EnsureReportsPresenter()
         {
             if (_reportspresenter == null)
-                _reportspresenter = new ReportsPresenter(reports1, reportsService);
+                _reportspresenter = new ReportsPresenter(reports1);
         }
 
         #endregion
@@ -357,6 +346,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         #endregion
 
         private void btnFlight_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void maina1_Load(object sender, EventArgs e)
         {
 
         }

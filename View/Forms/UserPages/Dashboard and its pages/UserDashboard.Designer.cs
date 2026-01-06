@@ -89,6 +89,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             guna2Panel1.FillColor = Color.FromArgb(26, 44, 63);
             guna2Panel1.Location = new Point(0, 0);
             guna2Panel1.Name = "guna2Panel1";
+            guna2Panel1.Padding = new Padding(10, 0, 10, 40);
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges16;
             guna2Panel1.Size = new Size(250, 720);
             guna2Panel1.TabIndex = 1;
@@ -98,16 +99,17 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             logoutuser.BackColor = Color.Transparent;
             logoutuser.BorderRadius = 10;
             logoutuser.CustomizableEdges = customizableEdges1;
+            logoutuser.Dock = DockStyle.Bottom;
             logoutuser.FillColor = Color.Transparent;
             logoutuser.Font = new Font("Tajawal", 12F, FontStyle.Bold);
             logoutuser.ForeColor = Color.White;
             logoutuser.Image = Properties.Resources.logout;
             logoutuser.ImageAlign = HorizontalAlignment.Left;
-            logoutuser.Location = new Point(10, 594);
+            logoutuser.Location = new Point(10, 635);
             logoutuser.Name = "logoutuser";
             logoutuser.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            logoutuser.Size = new Size(206, 45);
-            logoutuser.TabIndex = 10;
+            logoutuser.Size = new Size(230, 45);
+            logoutuser.TabIndex = 6;
             logoutuser.Text = "Logout";
             logoutuser.TextAlign = HorizontalAlignment.Left;
             // 
@@ -121,11 +123,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             Account.ForeColor = Color.White;
             Account.Image = Properties.Resources.user;
             Account.ImageAlign = HorizontalAlignment.Left;
-            Account.Location = new Point(10, 485);
+            Account.Location = new Point(10, 405);
             Account.Name = "Account";
             Account.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Account.Size = new Size(214, 45);
-            Account.TabIndex = 8;
+            Account.TabIndex = 5;
             Account.Text = "Account";
             Account.TextAlign = HorizontalAlignment.Left;
             // 
@@ -161,7 +163,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnNotifications.Name = "btnNotifications";
             btnNotifications.ShadowDecoration.CustomizableEdges = customizableEdges8;
             btnNotifications.Size = new Size(214, 45);
-            btnNotifications.TabIndex = 1;
+            btnNotifications.TabIndex = 4;
             btnNotifications.Text = "Notifications";
             btnNotifications.TextAlign = HorizontalAlignment.Left;
             // 
@@ -179,7 +181,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnMyTickets.Name = "btnMyTickets";
             btnMyTickets.ShadowDecoration.CustomizableEdges = customizableEdges10;
             btnMyTickets.Size = new Size(214, 45);
-            btnMyTickets.TabIndex = 2;
+            btnMyTickets.TabIndex = 3;
             btnMyTickets.Text = "My Tickets";
             btnMyTickets.TextAlign = HorizontalAlignment.Left;
             // 
@@ -197,7 +199,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnSearchBook.Name = "btnSearchBook";
             btnSearchBook.ShadowDecoration.CustomizableEdges = customizableEdges12;
             btnSearchBook.Size = new Size(214, 45);
-            btnSearchBook.TabIndex = 3;
+            btnSearchBook.TabIndex = 2;
             btnSearchBook.Text = "Search And Book";
             btnSearchBook.TextAlign = HorizontalAlignment.Left;
             // 
@@ -215,7 +217,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnUpcomingFlights.Name = "btnUpcomingFlights";
             btnUpcomingFlights.ShadowDecoration.CustomizableEdges = customizableEdges14;
             btnUpcomingFlights.Size = new Size(214, 45);
-            btnUpcomingFlights.TabIndex = 4;
+            btnUpcomingFlights.TabIndex = 1;
             btnUpcomingFlights.Text = "Upcoming Flights";
             btnUpcomingFlights.TextAlign = HorizontalAlignment.Left;
             // 
@@ -236,6 +238,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             userAccount1.BackColor = Color.WhiteSmoke;
             userAccount1.Dock = DockStyle.Fill;
             userAccount1.Location = new Point(250, 0);
+            userAccount1.Margin = new Padding(4);
             userAccount1.Name = "userAccount1";
             userAccount1.Size = new Size(963, 683);
             userAccount1.TabIndex = 2;
