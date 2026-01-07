@@ -1,67 +1,209 @@
-﻿using Airport_Airplane_management_system.Model.Core.Classes;
+﻿using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Services;
+using Airport_Airplane_management_system.Presenter.AdminPages;
 using Airport_Airplane_management_system.View.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
+using System.Linq;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
 {
     public class AdminDashboardPresenter
     {
         private readonly IAdminDashboardView _view;
-        private readonly INavigationService _navigationService;
+        private readonly INavigationService _navigation;
+        private readonly IAppSession _session;
 
+        private readonly IFlightRepository _flightRepo;
+        private readonly IPlaneRepository _planeRepo;
+        private readonly ICrewRepository _crewRepo;
+        private readonly IPassengerRepository _passRepo;
 
+        private readonly MainAPresenter _mainPresenter;
 
-        public AdminDashboardPresenter(IAdminDashboardView view, INavigationService navigationService)
+        // lazy-loaded child presenters
+        private CrewManagementPresenter _crewPresenter;
+        private FlightManagementPresenter _flightPresenter;
+        private PassengerManagementPresenter _passengerPresenter;
+        private PlaneManagementPresenter _planePresenter;
+        private ReportsPresenter _reportsPresenter;
+
+        public AdminDashboardPresenter(
+            IAdminDashboardView view,
+            INavigationService navigation,
+            IAppSession session,
+            IFlightRepository flightRepo,
+            IPlaneRepository planeRepo,
+            ICrewRepository crewRepo,
+            IPassengerRepository passRepo)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
-            _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+            _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+            _session = session ?? throw new ArgumentNullException(nameof(session));
 
-            _view.LogoutAClicked += LogoutClicked;
-            _view.ReportsClicked += ReportClicked;
-            _view.PlaneManagementClicked += PlaneClicked;
-            _view.CrewManagementClicked += CrewClicked;
-            _view.FlightManagementClicked += FlightClicked;
-            _view.MainAClicked += MianClicked;
-            _view.PassengerManagementClicked += PassengerClicked;
+            _flightRepo = flightRepo ?? throw new ArgumentNullException(nameof(flightRepo));
+            _planeRepo = planeRepo ?? throw new ArgumentNullException(nameof(planeRepo));
+            _crewRepo = crewRepo ?? throw new ArgumentNullException(nameof(crewRepo));
+            _passRepo = passRepo ?? throw new ArgumentNullException(nameof(passRepo));
+
+            _mainPresenter = new MainAPresenter(_view.MainAView, _flightRepo, _planeRepo, _crewRepo, _passRepo);
+
+            HookMenu();
+            HookMainACards();
+
+            // default
+            ShowMain();
         }
 
-        private void LogoutClicked(object sender, EventArgs e)
+        public void ShowMain()
         {
-            _view.Logout();
-            _navigationService.NavigateToLogin();
-
-        }
-        private void ReportClicked(object sender, EventArgs e)
-        {
-            _view.Report();
-        }
-        private void PlaneClicked(object sender, EventArgs e)
-        {
-            _view.PlaneMangement();
-        }
-        private void CrewClicked(object sender, EventArgs e)
-        {
-            _view.CrewMangement();
-        }
-        private void FlightClicked(object sender, EventArgs e)
-        {
-            _view.FlightMangement();
-        }
-        private void MianClicked(object sender, EventArgs e)
-        {
+            _mainPresenter.RefreshData();
             _view.MainA();
         }
 
-        private void PassengerClicked(object sender, EventArgs e)
+        private void HookMenu()
         {
-            _view.PassengerMangement();
+            _view.MainAClicked += (_, __) => ShowMain();
+
+            _view.FlightManagementClicked += (_, __) =>
+            {
+                EnsureFlightPresenter();
+                _flightPresenter.RefreshData();
+                _view.FlightMangement();
+            };
+
+            _view.PlaneManagementClicked += (_, __) =>
+            {
+                EnsurePlanePresenter();
+                _planePresenter.RefreshData();
+                _view.PlaneMangement();
+            };
+
+            _view.CrewManagementClicked += (_, __) =>
+            {
+                EnsureCrewPresenter();
+                _crewPresenter.RefreshData();
+                _view.CrewMangement();
+            };
+
+            _view.PassengerManagementClicked += (_, __) =>
+            {
+                EnsurePassengerPresenter();
+                _passengerPresenter.RefreshData();
+                _view.PassengerMangement();
+            };
+
+            _view.ReportsClicked += (_, __) =>
+            {
+                EnsureReportsPresenter();
+                _reportsPresenter.RefreshData();
+                _view.Report();
+            };
+
+            _view.LogoutAClicked += (_, __) =>
+            {
+                _session.Clear();
+                _view.Logout();              // UI clear only
+                _navigation.NavigateToLogin();
+            };
         }
 
+        private void HookMainACards()
+        {
+            _view.MainAView.GoToFlightsRequested += () =>
+            {
+                EnsureFlightPresenter();
+                _flightPresenter.RefreshData();
+                _view.FlightMangement();
+            };
+
+            _view.MainAView.GoToPlanesRequested += () =>
+            {
+                EnsurePlanePresenter();
+                _planePresenter.RefreshData();
+                _view.PlaneMangement();
+            };
+
+            _view.MainAView.GoToCrewRequested += () =>
+            {
+                EnsureCrewPresenter();
+                _crewPresenter.RefreshData();
+                _view.CrewMangement();
+            };
+
+            _view.MainAView.GoToPassengersRequested += () =>
+            {
+                EnsurePassengerPresenter();
+                _passengerPresenter.RefreshData();
+                _view.PassengerMangement();
+            };
+        }
+
+        private void EnsureCrewPresenter()
+        {
+            if (_crewPresenter != null) return;
+            _crewPresenter = new CrewManagementPresenter(_view.CrewManagementView);
+        }
+
+        private void EnsureFlightPresenter()
+        {
+            if (_flightPresenter != null) return;
+            _flightPresenter = new FlightManagementPresenter(
+                _view.FlightManagementView,
+                openCrewForFlight: null,
+                openScheduleForPlane: OpenPlaneScheduleFromFlightPage
+            );
+        }
+
+        private void EnsurePlanePresenter()
+        {
+            if (_planePresenter != null) return;
+            _planePresenter = new PlaneManagementPresenter(
+                _view.PlaneManagementView,
+                OpenPlaneScheduleFromPlanePage
+            );
+        }
+
+        private void EnsurePassengerPresenter()
+        {
+            if (_passengerPresenter != null) return;
+            _passengerPresenter = new PassengerManagementPresenter(
+                _view.PassengerManagementView,
+                () => _flightRepo.CountUpcomingFlightsNotFullyBooked()
+            );
+        }
+
+        private void EnsureReportsPresenter()
+        {
+            if (_reportsPresenter != null) return;
+            _reportsPresenter = new ReportsPresenter(_view.ReportsView);
+        }
+
+        private void OpenPlaneScheduleFromPlanePage(int planeId)
+        {
+            var plane = _planeRepo.GetAllPlanes().FirstOrDefault(p => p.PlaneID == planeId);
+            if (plane == null)
+            {
+                _view.ShowError("Plane not found.");
+                return;
+            }
+
+            var flights = _flightRepo.GetAllFlights();
+            _view.ShowPlaneScheduleOnPlanePage($"{plane.Model} Schedule", planeId, flights);
+        }
+
+        private void OpenPlaneScheduleFromFlightPage(int planeId)
+        {
+            var plane = _planeRepo.GetAllPlanes().FirstOrDefault(p => p.PlaneID == planeId);
+            if (plane == null)
+            {
+                _view.ShowError("Plane not found.");
+                return;
+            }
+
+            var flights = _flightRepo.GetAllFlights();
+            _view.ShowPlaneScheduleOnFlightPage($"{plane.Model} Schedule", planeId, flights);
+        }
     }
 }

@@ -1,13 +1,10 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
-using Airport_Airplane_management_system.Model.Repositories;
-using Airport_Airplane_management_system.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Ticket_Booking_System_OOP.Model.Repositories;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPages
 {
@@ -19,23 +16,24 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private readonly ICrewRepository crewRepo;
         private readonly IPassengerRepository passRepo;
 
-
-        public MainAPresenter(IMainAView view)
+        public MainAPresenter(
+            IMainAView view,
+            IFlightRepository flightRepo,
+            IPlaneRepository planeRepo,
+            ICrewRepository crewRepo,
+            IPassengerRepository passRepo)
         {
-            flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            passRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-
             _view = view ?? throw new ArgumentNullException(nameof(view));
-   
+            this.flightRepo = flightRepo ?? throw new ArgumentNullException(nameof(flightRepo));
+            this.planeRepo = planeRepo ?? throw new ArgumentNullException(nameof(planeRepo));
+            this.crewRepo = crewRepo ?? throw new ArgumentNullException(nameof(crewRepo));
+            this.passRepo = passRepo ?? throw new ArgumentNullException(nameof(passRepo));
         }
 
-        /// <summary>
-        /// 🔥 Call this every time the AdminDashboard opens the MainA page
-        /// </summary>
         public void RefreshData()
         {
+            // NOTE: You’re using reflection because repo interfaces aren’t consistent.
+            // For “perfect architecture”, standardize interface methods and delete InvokeList.
             var flights = InvokeList<Flight>(flightRepo, "GetAllFlights", "GetFlights", "GetAll") ?? new List<Flight>();
             var planes = InvokeList<Plane>(planeRepo, "GetAllPlanes", "GetPlanes", "GetAll") ?? new List<Plane>();
             var crew = InvokeList<Crew>(crewRepo, "GetAllCrew", "GetAllCrewMembers", "GetCrew", "GetAll") ?? new List<Crew>();
@@ -45,16 +43,10 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             var now = DateTime.Now;
 
-            // =========================
-            // Flights KPI
-            // =========================
             int inAir = flights.Count(f => f.Departure <= now && now < f.Arrival);
             int upcoming = flights.Count(f => f.Departure > now);
             int past = flights.Count(f => f.Arrival <= now);
 
-            // =========================
-            // Planes KPI
-            // =========================
             int totalPlanes = planes.Count;
             int activePlanes = planes.Count(IsPlaneActive);
             int inactivePlanes = totalPlanes - activePlanes;
@@ -64,14 +56,9 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             );
 
             int planesNotAssignedToAnyFlight = planes.Count(p =>
-                p != null &&
-                p.PlaneID > 0 &&
-                !planeIdsWithAnyFlight.Contains(p.PlaneID)
+                p != null && p.PlaneID > 0 && !planeIdsWithAnyFlight.Contains(p.PlaneID)
             );
 
-            // =========================
-            // Crew KPI
-            // =========================
             int assigned = crew.Count(c => c.FlightId.HasValue);
             int unassigned = crew.Count - assigned;
 
@@ -84,21 +71,17 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             int crewAssignedToPastFlights = crew.Count(c =>
             {
                 if (c?.FlightId == null) return false;
-                int fid = c.FlightId.Value;
-                if (!flightById.TryGetValue(fid, out var f)) return false;
+                if (!flightById.TryGetValue(c.FlightId.Value, out var f)) return false;
                 return f.Arrival <= now;
             });
 
-            // =========================
-            // Alerts count (KPI)
-            // =========================
             int alertsCount = 0;
             if (unassigned > 0) alertsCount++;
             if (inactivePlanes > 0) alertsCount++;
             if (crewAssignedToPastFlights > 0) alertsCount++;
             if (planesNotAssignedToAnyFlight > 0) alertsCount++;
 
-            var kpi = new MainAKpiDto
+            _view.ShowKpis(new MainAKpiDto
             {
                 TotalFlights = flights.Count,
                 FlightsInAir = inAir,
@@ -119,11 +102,9 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
                 ActiveAlerts = alertsCount,
                 OpsText = flights.Count == 0 ? "0.0%" : "100.0%"
-            };
+            });
 
-            _view.ShowKpis(kpi);
-
-            var flightsDto = new MainAFlightsDto
+            _view.ShowFlights(new MainAFlightsDto
             {
                 Now = now,
                 InAir = flights.Where(f => f.Departure <= now && now < f.Arrival)
@@ -132,9 +113,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                                      .OrderBy(f => f.Departure).Take(8).ToList(),
                 Past = flights.Where(f => f.Arrival <= now)
                               .OrderByDescending(f => f.Arrival).Take(5).ToList(),
-            };
-
-            _view.ShowFlights(flightsDto);
+            });
 
             _view.ShowAlerts(new MainAAlertsDto
             {
@@ -166,26 +145,21 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         {
             if (p == null) return false;
             if (string.IsNullOrWhiteSpace(p.Status)) return false;
-
-            return p.Status.Trim()
-                           .Equals("Active", StringComparison.OrdinalIgnoreCase);
+            return p.Status.Trim().Equals("Active", StringComparison.OrdinalIgnoreCase);
         }
 
         private static int GetFlightId(Flight f)
         {
             if (f == null) return 0;
             var idObj = ReadAny(f, "FlightID", "Id", "ID", "id");
-            if (idObj == null) return 0;
-            return ToInt(idObj);
+            return idObj == null ? 0 : ToInt(idObj);
         }
 
         private static int GetPlaneIdFromFlight(Flight f)
         {
             if (f == null) return 0;
             var pidObj = ReadAny(f, "PlaneIDFromDb", "PlaneID", "plane_id", "PlaneId", "planeId");
-            if (pidObj == null) return 0;
-
-            return ToInt(pidObj);
+            return pidObj == null ? 0 : ToInt(pidObj);
         }
 
         private static int ToInt(object v)
