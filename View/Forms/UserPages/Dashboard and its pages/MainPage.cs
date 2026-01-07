@@ -15,7 +15,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             InitializeComponent();
             AutoScaleMode = AutoScaleMode.Dpi;
+
             CreateNextFlightPanel();
+
+            // ✅ FORCE ORDER: cards first, flight under
+            bodyPanel.Controls.SetChildIndex(flowStats, 0);
 
             flowStats.Resize += (s, e) => AdjustCardWidthsToMax();
         }
@@ -58,7 +62,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             foreach (Control c in flowStats.Controls)
             {
                 c.Width = maxWidth;
-                c.Height = 160; // doubled height
+                c.Height = 130; // doubled height
             }
         }
 
@@ -67,45 +71,64 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             nextFlightPanel = new Guna2ShadowPanel
             {
-                Height = 340,
+                Height = 150,
                 Radius = 24,
                 FillColor = Color.FromArgb(245, 248, 255),
                 ShadowDepth = 14,
-                Dock = DockStyle.Top,
-                Padding = new Padding(30),
-                Margin = new Padding(0, 0, 0, 20)
+                Dock = DockStyle.Bottom,
+                Padding = new Padding(25),
+                Margin = new Padding(0, 20, 0, 0)
             };
 
+            // ===== Title =====
             var title = new Label
             {
                 Text = "✈️ Your Next Flight",
                 Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                AutoSize = true
+                AutoSize = true,
+                Dock = DockStyle.Fill
             };
 
+            // ===== Route =====
             lblRoute = new Label
             {
                 Font = new Font("Segoe UI", 18F, FontStyle.Bold),
                 AutoSize = true,
-                MaximumSize = new Size(nextFlightPanel.Width - 60, 0),
-                Margin = new Padding(0, 10, 0, 0)
+                Dock = DockStyle.Fill
             };
 
+            // ===== Info =====
             lblInfo = new Label
             {
                 Font = new Font("Segoe UI", 11F),
                 ForeColor = Color.FromArgb(90, 90, 90),
                 AutoSize = true,
-                MaximumSize = new Size(nextFlightPanel.Width - 60, 0)
+                Dock = DockStyle.Fill
             };
 
-            nextFlightPanel.Controls.Add(title);
-            nextFlightPanel.Controls.Add(lblRoute);
-            nextFlightPanel.Controls.Add(lblInfo);
+            // ===== Layout =====
+            var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 3
+            };
+
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // title
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // route
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // info
+
+            layout.Controls.Add(title, 0, 0);
+            layout.Controls.Add(lblRoute, 0, 1);
+            layout.Controls.Add(lblInfo, 0, 2);
+
+            nextFlightPanel.Controls.Add(layout);
 
             bodyPanel.Controls.Add(nextFlightPanel);
-            bodyPanel.Controls.SetChildIndex(nextFlightPanel, 0);
+            nextFlightPanel.Visible = false;
         }
+
+
 
         // ================= STAT CARD =================
         private Control CreateStatCard(string title, string value)
@@ -122,7 +145,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Padding = new Padding(20),
                 AutoSize = false,   // crucial
                 Width = 500,        // initial width
-                Height =150       // doubled height
+                Height = 130       // doubled height
             };
 
             var emoji = new Label
@@ -206,7 +229,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             AddStatCard("Next Check-in", "Available 24h before flight at Gate A12");
             AddStatCard("Notifications", "2 new alerts");
             AddStatCard("Most Frequent Route", "Beirut → Dubai → London");
-        
+
+        }
+
+        private void flowStats_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

@@ -105,11 +105,11 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             panel1.ForeColor = Color.Transparent;
             panel1.ImageRotate = 0F;
             panel1.Location = new Point(90, 44);
-            panel1.Margin = new Padding(3, 4, 3, 4);
+            panel1.Margin = new Padding(0,0,0,0);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(23, 0, 23, 0);
             panel1.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            panel1.Size = new Size(86, 100);
+            panel1.Size = new Size(75, 75);
             panel1.TabIndex = 11;
             panel1.TabStop = false;
             // 

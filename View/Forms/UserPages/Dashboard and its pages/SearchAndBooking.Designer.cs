@@ -133,7 +133,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             dtDeparture.BorderRadius = 10;
             dtDeparture.CausesValidation = false;
-            dtDeparture.Checked = true;
             dtDeparture.CustomizableEdges = customizableEdges5;
             dtDeparture.FillColor = Color.DarkCyan;
             dtDeparture.Font = new Font("Segoe UI", 9F);

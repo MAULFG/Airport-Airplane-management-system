@@ -90,6 +90,7 @@
             flowStats.Name = "flowStats";
             flowStats.Size = new Size(1200, 500);
             flowStats.TabIndex = 0;
+            flowStats.Paint += flowStats_Paint;
             // 
             // MainUserPage
             // 

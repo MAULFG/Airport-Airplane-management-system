@@ -16,20 +16,14 @@ public partial class Main1 : Form, INavigationService
 {
     private readonly LoginPage loginPage;
     private UserDashboard userDashboard;
-    private readonly AdminDashboard adminDashboard;
+    private AdminDashboard adminDashboard;
     private readonly Signupusercontrol signUpPage;
     private readonly ForgetUserControl forgotPasswordPage;
 
     private readonly IAppSession session;
 
-    // Repos created once
-    private readonly IFlightRepository flightRepo;
-    private readonly IPlaneRepository planeRepo;
-    private readonly ICrewRepository crewRepo;
-    private readonly IPassengerRepository passRepo;
 
-    // Presenters created once
-    private readonly AdminDashboardPresenter adminDashboardPresenter;
+
 
     private int _currentUserId;
 
@@ -40,30 +34,15 @@ public partial class Main1 : Form, INavigationService
         session = new AppSession();
         this.AutoScaleMode = AutoScaleMode.Dpi;
 
-        string cs = "server=localhost;port=3306;database=user;user=root;password=2006";
-
-        flightRepo = new MySqlFlightRepository(cs);
-        planeRepo = new MySqlPlaneRepository(cs);
-        crewRepo = new MySqlCrewRepository(cs);
-        passRepo = new MySqlPassengerRepository(cs);
 
         // Views
         loginPage = new LoginPage(this, session);
         userDashboard = new UserDashboard(session, this);
-        adminDashboard = new AdminDashboard();
+        adminDashboard = new AdminDashboard(this,session);
         signUpPage = new Signupusercontrol(this);
         forgotPasswordPage = new ForgetUserControl(this);
 
-        // Wire presenters
-        adminDashboardPresenter = new AdminDashboardPresenter(
-            adminDashboard,
-            this,
-            session,
-            flightRepo,
-            planeRepo,
-            crewRepo,
-            passRepo
-        );
+    
 
         // Dock pages
         loginPage.Dock = DockStyle.Fill;
@@ -84,12 +63,23 @@ public partial class Main1 : Form, INavigationService
     public void SetCurrentUserId(int userId) => _currentUserId = userId;
     public int GetCurrentUserId() => _currentUserId;
 
-    public void NavigateToUser() => userDashboard.BringToFront();
+    public void NavigateToUser()
+    {
+        if (userDashboard != null)
+            Controls.Remove(userDashboard);
+        userDashboard = new UserDashboard(session, this)
+        {
+            Dock = DockStyle.Fill
+        };
+         Controls.Add(userDashboard);
+         userDashboard.BringToFront();
+    }
+
 
     public void NavigateToAdmin()
     {
         adminDashboard.BringToFront();
-        adminDashboardPresenter.ShowMain(); // refresh main each time you enter admin
+        
     }
 
     public void NavigateToLogin() => loginPage.BringToFront();

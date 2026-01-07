@@ -1,5 +1,8 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Presenter.AdminPagesPresenters;
+using Airport_Airplane_management_system.View.Interfaces;
 using Airport_Airplane_management_system.View.UserControls;
 using Guna.UI2.WinForms;
 using System;
@@ -28,14 +31,21 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public ICrewManagementView CrewManagementView => crewManagement1;
         public IPassengerManagementView PassengerManagementView => passengerMangement1;
         public IReportsView ReportsView => reports1;
+        public AdminDashboardPresenter adminpresenter;
+        private readonly INavigationService _navigation;
+        private readonly IAppSession _session;
 
         // Docked PlaneSchedule controls
         private PlaneScheduleControl _dockedScheduleOnPlanePage;
         private PlaneScheduleControl _dockedScheduleOnFlightPage;
 
-        public AdminDashboard()
+        public AdminDashboard(INavigationService navigation,IAppSession session)
         {
+
             InitializeComponent();
+            _session = session;
+            _navigation = navigation;
+            adminpresenter = new AdminDashboardPresenter(this, _navigation, _session);
             InitializeButtonEvents();
             HideAllPanels();
 

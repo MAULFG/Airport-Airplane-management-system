@@ -1,11 +1,14 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Presenter.AdminPages;
+using Airport_Airplane_management_system.Repositories;
 using Airport_Airplane_management_system.View.Interfaces;
 using System;
 using System.Linq;
+using Ticket_Booking_System_OOP.Model.Repositories;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
 {
@@ -29,23 +32,16 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
         private PlaneManagementPresenter _planePresenter;
         private ReportsPresenter _reportsPresenter;
 
-        public AdminDashboardPresenter(
-            IAdminDashboardView view,
-            INavigationService navigation,
-            IAppSession session,
-            IFlightRepository flightRepo,
-            IPlaneRepository planeRepo,
-            ICrewRepository crewRepo,
-            IPassengerRepository passRepo)
+        public AdminDashboardPresenter(IAdminDashboardView view,INavigationService navigation, IAppSession session)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
             _session = session ?? throw new ArgumentNullException(nameof(session));
 
-            _flightRepo = flightRepo ?? throw new ArgumentNullException(nameof(flightRepo));
-            _planeRepo = planeRepo ?? throw new ArgumentNullException(nameof(planeRepo));
-            _crewRepo = crewRepo ?? throw new ArgumentNullException(nameof(crewRepo));
-            _passRepo = passRepo ?? throw new ArgumentNullException(nameof(passRepo));
+            _flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _passRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
 
             _mainPresenter = new MainAPresenter(_view.MainAView, _flightRepo, _planeRepo, _crewRepo, _passRepo);
 

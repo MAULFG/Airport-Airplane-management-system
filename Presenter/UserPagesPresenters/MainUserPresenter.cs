@@ -1,7 +1,10 @@
-﻿using Airport_Airplane_management_system.Model.Interfaces.Views;
+﻿using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
+using Airport_Airplane_management_system.Model.Services;
 using System;
 using System.Linq;
-using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 
 namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 {
@@ -9,21 +12,27 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
     {
         private readonly IMainUserPageView _view;
         private readonly IAppSession _session;
+        private readonly IBookingRepository _bookRepo;
+        private readonly BookingService _bookingService;
 
-        public MainUserPagePresenter(IMainUserPageView view, IAppSession session)
+        public MainUserPagePresenter(
+            IMainUserPageView view,
+            IAppSession session)
         {
             _view = view;
             _session = session;
+            _bookRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            _bookingService = new BookingService(_bookRepo, _session);
         }
 
         public void RefreshData()
         {
             var user = _session.CurrentUser;
-            if (user == null) return;
+            if (user == null)
+                return;
 
-            // ===== Welcome =====
-            _view.SetWelcomeText($"Welcome, {user.FullName}!");
-            _view.ClearStatistics();
+            // ✅ FORCE load real bookings from DB
+            _bookingService.LoadBookingsForCurrentUser();
 
             var bookings = user.BookedFlights
                 .Where(b => b.Status == "Confirmed")
@@ -31,38 +40,69 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
             var now = DateTime.Now;
 
-            // ===== Main Stats =====
-            _view.AddStatCard("Upcoming Flights", bookings.Count(b => b.Flight.Departure > now).ToString());
-            _view.AddStatCard("Completed Flights", bookings.Count(b => b.Flight.Arrival < now).ToString());
-            _view.AddStatCard("Total Bookings", bookings.Count.ToString());
+            // ========================
+            // Welcome
+            // ========================
+            _view.SetWelcomeText($"Welcome, {user.FullName}!");
+            _view.ClearStatistics();
 
-            // ===== Favorite Route =====
-            var favorite = bookings
+            // ========================
+            // Main Statistics
+            // ========================
+            int upcoming = bookings.Count(b => b.Flight.Departure > now);
+            int completed = bookings.Count(b => b.Flight.Arrival < now);
+            int total = bookings.Count;
+
+            _view.AddStatCard("Upcoming Flights", upcoming.ToString());
+            _view.AddStatCard("Completed Flights", completed.ToString());
+            _view.AddStatCard("Total Bookings", total.ToString());
+
+            // ========================
+            // Favorite Route (real data)
+            // ========================
+            var favoriteRoute = bookings
                 .GroupBy(b => $"{b.Flight.From} → {b.Flight.To}")
                 .OrderByDescending(g => g.Count())
                 .Select(g => g.Key)
                 .FirstOrDefault();
 
-            if (favorite != null)
-                _view.AddStatCard("Favorite Route", favorite);
+            _view.AddStatCard(
+                "Favorite Route",
+                favoriteRoute ?? "No data"
+            );
 
-            // ===== Next Flight Panel =====
-            var next = bookings
+            // ========================
+            // Next Flight Panel
+            // ========================
+            var nextFlight = bookings
                 .Where(b => b.Flight.Departure > now)
                 .OrderBy(b => b.Flight.Departure)
                 .FirstOrDefault();
 
-            if (next != null)
+            if (nextFlight != null)
             {
                 _view.SetNextFlight(
-                    $"{next.Flight.From} → {next.Flight.To}",
-                    $"Departs {next.Flight.Departure:g} "
+                    $"{nextFlight.Flight.From} → {nextFlight.Flight.To}",
+                    $"Departs {nextFlight.Flight.Departure:g}"
                 );
 
-                // Optional: add "Next Check-in" card (24h before departure)
-                var checkInStatus = next.Flight.Departure.AddHours(-24) <= now ?
-                    "Available Now" :
-                    $"Opens {(next.Flight.Departure.AddHours(-24) - now).Hours}h {(next.Flight.Departure.AddHours(-24) - now).Minutes}m";
+                // Check-in logic (24h before)
+                var checkInTime = nextFlight.Flight.Departure.AddHours(-24);
+
+                var timeLeft = checkInTime - now;
+
+                string checkInStatus;
+
+                if (timeLeft <= TimeSpan.Zero)
+                {
+                    checkInStatus = "Available Now";
+                }
+                else
+                {
+                    checkInStatus =
+                        $"{timeLeft.Days}d {timeLeft.Hours}h {timeLeft.Minutes}m";
+                }
+
 
                 _view.AddStatCard("Next Check-in", checkInStatus);
             }
@@ -71,18 +111,6 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
                 _view.HideNextFlight();
                 _view.AddStatCard("Next Check-in", "No upcoming flights");
             }
-
-           
-            
-
-            // ===== Optional extra filler cards for balance =====
-            // Example: Loyalty Points, Frequent Route, or just dummy info
-            if (favorite != null)
-                _view.AddStatCard("Most Frequent Route", favorite);
-            else
-                _view.AddStatCard("Most Frequent Route", "Beirut → Dubai");
-
-            
         }
     }
 }
