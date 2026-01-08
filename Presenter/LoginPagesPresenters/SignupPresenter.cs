@@ -1,6 +1,9 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
 using Airport_Airplane_management_system.Model.Core.Enums;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.View.Interfaces;
 using Google.Protobuf.WellKnownTypes;
@@ -15,10 +18,13 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
         private readonly ISignupView _view;
         private readonly UserService _userService;
         private readonly INavigationService _navigationService;
-        public SignupPresenter(ISignupView view, UserService userService, INavigationService navigation)
+        private readonly IUserRepository userRepo;
+        public SignupPresenter(ISignupView view, IAppSession session, INavigationService navigation)
         {
             _view = view;
-            _userService = userService;
+           userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+           
+            _userService = new UserService(userRepo, session);
             _navigationService = navigation;
             _view.SignupClicked += OnSignupClicked;
             _view.ReturnToLoginClicked += OnReturnToLoginClicked;
@@ -89,7 +95,7 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
                 return;
             }
 
-            // stop if any field missing
+
             if (hasError)
             {
                 _view.ShowError("Please fill in all required fields.");

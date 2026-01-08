@@ -28,18 +28,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private int? _selectedBookingId;
         private int? _focusBookingId;
 
-        // Reusable ticket cards
         private readonly Dictionary<int, Guna2ShadowPanel> _ticketCards = new Dictionary<int, Guna2ShadowPanel>();
 
-        // ✅ Exposed event to dashboard (same idea as notifications1)
         public event Action BadgeRefreshRequested;
 
+        // Initializes the booking history user control
         public MyTicketsBookingHistory()
         {
             InitializeComponent();
             Dock = DockStyle.Fill;
 
-            // Enable double buffering on flowTickets for smooth rendering
             typeof(FlowLayoutPanel)
                 .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
                 .SetValue(flowTickets, true, null);
@@ -59,6 +57,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
         }
 
+        // Initializes repositories, services, and presenter
         public void Initialize(INavigationService navigation, IAppSession session)
         {
             if (_initialized) return;
@@ -70,7 +69,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _repo = new MySqlMyTicketsRepository(connStr);
             _service = new MyTicketsService(_repo);
 
-            // Notification writer service (kept as before)
             var notifRepo = new MySqlNotificationWriterRepository(connStr);
             var notifWriter = new NotificationWriterService(notifRepo);
 
@@ -79,6 +77,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _initialized = true;
         }
 
+        // Activates the view by raising the ViewLoaded event
         public void Activate()
         {
             if (!_initialized) return;
@@ -93,7 +92,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtSearch.Text = "";
         }
 
-        // ===================== IMyTicketsView =====================
         private IAppSession Session => _session ?? throw new InvalidOperationException("Session is not initialized");
         public int UserId => Session.CurrentUser?.UserID ?? 0;
         public string Filter => cmbFilter.SelectedItem?.ToString() ?? "All";
@@ -106,12 +104,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public event Action FilterChanged;
         public event Action SearchChanged;
 
+        // Binds ticket data to the flow layout panel
         public void BindTickets(List<MyTicketRow> rows)
         {
             rows ??= new List<MyTicketRow>();
             flowTickets.SuspendLayout();
 
-            // Hide all existing cards first
             foreach (var card in _ticketCards.Values)
                 card.Visible = false;
 
@@ -141,7 +139,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         private void UpdateCard(Guna2ShadowPanel card, MyTicketRow t)
         {
-            // Update text and status
             foreach (var lbl in card.Controls.OfType<Guna2HtmlLabel>())
             {
                 if (lbl.Text.Contains("→")) lbl.Text = $"{t.FromCity} → {t.ToCity}";
@@ -181,8 +178,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        // ===================== CARD UI =====================
-
+        // Creates a ticket card for a single ticket row
         private Guna2ShadowPanel CreateTicketCard(MyTicketRow t)
         {
             int cardWidth = Math.Max(flowTickets.ClientSize.Width - flowTickets.Padding.Horizontal - 35, 900);
@@ -201,9 +197,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Tag = false
             };
 
-            
-
-            // Top labels
             var lblRoute = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
@@ -264,7 +257,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             card.Name = "ticket_" + t.BookingId;
 
-            // CLICK selects + toggles
             void SelectCard()
             {
                 _selectedBookingId = t.BookingId;
@@ -391,7 +383,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         private void PositionRightAligned(Control parent, Control child, int rightPadding, int top)
         {
-            child.Location = new Point(parent.Width - child.Width - rightPadding, top);
+            void Reposition()
+            {
+                child.Location = new Point(parent.Width - child.Width - rightPadding, top);
+            }
+
+            Reposition();
+            parent.SizeChanged += (_, __) => Reposition();
         }
 
         private void ApplyStatusStyle(Guna2HtmlLabel lbl, string status)
@@ -415,7 +413,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 selectedSp.FillColor = Color.FromArgb(248, 249, 251);
         }
 
-
         private void FixCardsWidth()
         {
             int w = Math.Max(flowTickets.ClientSize.Width - flowTickets.Padding.Horizontal - 35, 900);
@@ -427,9 +424,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 var details = c.Controls.Find("detailsPanel", true).FirstOrDefault();
                 if (details != null)
                     details.Width = w - 28;
+
             }
         }
 
+        // Focuses a ticket by booking ID
         public void FocusBooking(int bookingId)
         {
             _focusBookingId = bookingId;
@@ -455,6 +454,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             _focusBookingId = null;
         }
 
+        // Requests badge refresh via event
         public void RequestBadgeRefresh()
         {
             BadgeRefreshRequested?.Invoke();

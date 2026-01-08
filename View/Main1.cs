@@ -22,11 +22,9 @@ public partial class Main1 : Form, INavigationService
 
     private readonly IAppSession session;
 
-
-
-
     private int _currentUserId;
 
+    // Initializes the main form and all child pages
     public Main1()
     {
         InitializeComponent();
@@ -34,17 +32,12 @@ public partial class Main1 : Form, INavigationService
         session = new AppSession();
         this.AutoScaleMode = AutoScaleMode.Dpi;
 
-
-        // Views
         loginPage = new LoginPage(this, session);
         userDashboard = new UserDashboard(session, this);
-        adminDashboard = new AdminDashboard(this,session);
-        signUpPage = new Signupusercontrol(this);
-        forgotPasswordPage = new ForgetUserControl(this);
+        adminDashboard = new AdminDashboard(this, session);
+        signUpPage = new Signupusercontrol(this,session);
+        forgotPasswordPage = new ForgetUserControl(this,session);
 
-    
-
-        // Dock pages
         loginPage.Dock = DockStyle.Fill;
         userDashboard.Dock = DockStyle.Fill;
         adminDashboard.Dock = DockStyle.Fill;
@@ -60,9 +53,13 @@ public partial class Main1 : Form, INavigationService
         NavigateToLogin();
     }
 
+    // Sets the current user ID
     public void SetCurrentUserId(int userId) => _currentUserId = userId;
+
+    // Gets the current user ID
     public int GetCurrentUserId() => _currentUserId;
 
+    // Navigates to the user dashboard
     public void NavigateToUser()
     {
         if (userDashboard != null)
@@ -71,30 +68,44 @@ public partial class Main1 : Form, INavigationService
         {
             Dock = DockStyle.Fill
         };
-         Controls.Add(userDashboard);
-         userDashboard.BringToFront();
+        Controls.Add(userDashboard);
+        userDashboard.BringToFront();
     }
 
-
+    // Brings the admin dashboard to the front
     public void NavigateToAdmin()
     {
         adminDashboard.BringToFront();
-        
     }
 
+    // Brings the login page to the front
     public void NavigateToLogin() => loginPage.BringToFront();
+
+    // Brings the sign-up page to the front
     public void NavigateToSignUp() => signUpPage.BringToFront();
+
+    // Brings the forgot password page to the front
     public void NavigateToForgotPassword() => forgotPasswordPage.BringToFront();
 
+    // Shows the admin dashboard
     public void ShowAdmin() => NavigateToAdmin();
+
+    // Shows the user dashboard
     public void ShowUser() => NavigateToUser();
+
+    // Shows the sign-up page
     public void ShowSignUp() => NavigateToSignUp();
+
+    // Shows the forgot password page
     public void ShowForget() => NavigateToForgotPassword();
+
+    // Returns to the login page
     public void ReturnLogin() => NavigateToLogin();
-    // This is referenced by Main1.Designer.cs
+
+    // Handles the form load event
     private void Main1_Load(object sender, EventArgs e)
     {
-        // keep empty
+       
     }
 
 }

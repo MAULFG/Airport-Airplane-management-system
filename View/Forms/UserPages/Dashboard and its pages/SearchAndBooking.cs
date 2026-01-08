@@ -11,6 +11,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
     public partial class SearchAndBooking : UserControl, ISearchAndBookingView
     {
+        // Initializes the search and booking user control
         public SearchAndBooking()
         {
             InitializeComponent();
@@ -18,24 +19,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             {
                 foreach (Control c in flowFlights.Controls)
                 {
-                    c.Width = flowFlights.ClientSize.Width - 50; // adjust width dynamically
+                    c.Width = flowFlights.ClientSize.Width - 50;
                 }
             };
-            
-            cbClass.Items.Insert(0, "Select Class");
 
-            
+            cbClass.Items.Insert(0, "Select Class");
             cbClass.SelectedIndex = 0;
 
-            // Optional: make placeholder gray
             cbFrom.ForeColor = Color.Gray;
             cbTo.ForeColor = Color.Gray;
             cbClass.ForeColor = Color.Gray;
-
-            // Handle the DrawItem event to show placeholder in gray and others in black
-            
-
-           
 
             cbClass.DrawItem += (s, e) =>
             {
@@ -48,8 +41,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 e.DrawFocusRectangle();
             };
 
-           
-
             cbClass.SelectedIndexChanged += (s, e) =>
             {
                 if (cbClass.SelectedIndex == 0)
@@ -58,27 +49,23 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     cbClass.ForeColor = Color.Black;
             };
 
-            // Bind button click to event
             btnSearch.Click += (s, e) => SearchClicked?.Invoke(this, EventArgs.Empty);
         }
 
         public bool IsDateSelected => dtDeparture.Checked;
-
         public DateTime? DepartureDate => dtDeparture.Checked ? dtDeparture.Value : (DateTime?)null;
-
-
         public string From => cbFrom.Text == "Search From" ? null : cbFrom.Text;
         public string To => cbTo.Text == "Search To" ? null : cbTo.Text;
-
         public int Passengers => (int)numPassengers.Value;
         public string Class => cbClass.SelectedIndex > 0 ? cbClass.SelectedItem.ToString() : null;
 
         public event EventHandler SearchClicked;
+        public event Action<int> BookFlightRequested;
 
+        // Displays the list of flights in the flow panel
         public void DisplayFlights(List<Flight> flights)
         {
             flowFlights.Controls.Clear();
-
             foreach (var flight in flights)
             {
                 flowFlights.Controls.Add(CreateFlightCard(flight));
@@ -92,7 +79,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             int iconSize = 50;
             int spacing = 10;
 
-            // ===== CARD =====
             var card = new Guna2Panel
             {
                 Width = flowFlights.ClientSize.Width - 50,
@@ -102,10 +88,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 BorderThickness = 1,
                 BorderColor = Color.Black,
                 Margin = new Padding(10),
-                Tag = false // collapsed
+                Tag = false
             };
 
-            // ===== ICON =====
             var planePic = new Guna2PictureBox
             {
                 Size = new Size(iconSize, iconSize),
@@ -115,7 +100,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(planePic);
 
-            // ===== ROUTE LABEL =====
             var lblRoute = new Guna2HtmlLabel
             {
                 Text = $"{f.From} → {f.To}",
@@ -125,7 +109,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(lblRoute);
 
-            // ===== FLIGHT ID LABEL =====
             var lblFlightID = new Guna2HtmlLabel
             {
                 Text = $"Flight #{f.FlightID}",
@@ -135,18 +118,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(lblFlightID);
 
-            // ===== DEPARTURE DATE LABEL (right aligned) =====
             var lblDate = new Guna2HtmlLabel
             {
                 Text = f.Departure.ToString("yyyy-MM-dd"),
                 Font = new Font("Arial", 10),
                 AutoSize = true,
-                Location= new Point(-500, padding)
-
+                Location = new Point(-500, padding)
             };
             card.Controls.Add(lblDate);
 
-            // ===== DETAILS PANEL (collapsed by default) =====
             var details = new Guna2Panel
             {
                 Width = card.Width - padding * 2,
@@ -157,7 +137,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(details);
 
-            // Plane info
             var lblPlaneID = new Guna2HtmlLabel
             {
                 Text = f.Plane != null ? $"Plane ID: {f.Plane.PlaneID}" : "Plane ID: N/A",
@@ -176,13 +155,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             details.Controls.Add(lblModel);
 
-            // Times
             details.Controls.Add(CreateRow("Departure:", f.Departure, 30, details.Width));
             details.Controls.Add(CreateRow("Arrival:", f.Arrival, 55, details.Width));
 
-            // Seats
-            int firstTotal = 0, businessTotal = 0, economyTotal = 0,vipTotal=0;
-            int firstAvailable = 0, businessAvailable = 0, economyAvailable = 0,vipAvailable=0;
+            int firstTotal = 0, businessTotal = 0, economyTotal = 0, vipTotal = 0;
+            int firstAvailable = 0, businessAvailable = 0, economyAvailable = 0, vipAvailable = 0;
 
             foreach (var s in f.FlightSeats ?? Enumerable.Empty<FlightSeats>())
             {
@@ -217,7 +194,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             if (businessTotal > 0) { details.Controls.Add(CreateSeatLabel($"Business Class: {businessAvailable}/{businessTotal}", x, y)); x += seatSpacing; }
             if (economyTotal > 0) { details.Controls.Add(CreateSeatLabel($"Economy Class: {economyAvailable}/{economyTotal}", x, y)); }
             if (vipTotal > 0) { details.Controls.Add(CreateSeatLabel($"VIP: {vipAvailable}/{vipTotal}", x, y)); }
-            // ===== BOOK BUTTON =====
+
             var btnBook = new Guna2Button
             {
                 Text = "Book",
@@ -229,17 +206,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Font = new Font("Arial", 12, FontStyle.Bold),
                 Anchor = AnchorStyles.Right | AnchorStyles.Bottom
             };
-            
-            
+
             details.Controls.Add(btnBook);
             btnBook.Top = details.Height - btnBook.Height - 10;
             btnBook.Left = details.Width - btnBook.Width - 10;
-            btnBook.Click += (s, e) => {
-                int flightId = f.FlightID;
-                BookFlightRequested?.Invoke(flightId);
-            };
+            btnBook.Click += (s, e) => BookFlightRequested?.Invoke(f.FlightID);
 
-            // ===== TOGGLE EXPAND/COLLAPSE =====
             void Toggle()
             {
                 bool expanded = (bool)card.Tag;
@@ -252,7 +224,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             foreach (Control c in card.Controls)
                 c.Click += (s, e) => Toggle();
 
-            // ===== UPDATE RIGHT-ALIGNED LABELS ON RESIZE =====
             card.Resize += (s, e) =>
             {
                 lblDate.Left = card.Width - lblDate.Width - padding;
@@ -260,12 +231,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 btnBook.Left = details.Width - btnBook.Width - 10;
             };
 
-            // Initial right-alignment
             lblDate.Left = card.Width - lblDate.Width - padding;
 
             return card;
         }
-
 
         private Guna2Panel CreateRow(string title, DateTime date, int y, int panelWidth)
         {
@@ -276,10 +245,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 BackColor = Color.LightBlue,
                 BorderRadius = 10,
                 Location = new Point(0, y),
-                Size = new Size(flowFlights.ClientSize.Width , 20)
+                Size = new Size(flowFlights.ClientSize.Width, 20)
             };
 
-            // Title Label (left aligned)
             var lblTitle = new Guna2HtmlLabel
             {
                 Text = title,
@@ -289,7 +257,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             panel.Controls.Add(lblTitle);
 
-            // Date Label (center)
             var lblDate = new Guna2HtmlLabel
             {
                 Text = date.ToString("yyyy-MM-dd"),
@@ -298,7 +265,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             panel.Controls.Add(lblDate);
 
-            // Time Label (right)
             var lblTime = new Guna2HtmlLabel
             {
                 Text = date.ToString("HH:mm"),
@@ -307,7 +273,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             panel.Controls.Add(lblTime);
 
-            // ===== POSITIONING =====
             void UpdatePositions()
             {
                 lblDate.Left = (panel.Width - lblDate.Width) / 2;
@@ -315,18 +280,20 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             }
 
             panel.Resize += (s, e) => UpdatePositions();
-            UpdatePositions(); // initial positioning
+            UpdatePositions();
 
             return panel;
         }
 
+        // Shows a simple message box
         public void ShowMessage(string message)
         {
             MessageBox.Show(message);
         }
+
         private Guna2HtmlLabel CreateSeatLabel(string text, int x, int y) =>
             new Guna2HtmlLabel { Text = text, Font = new Font("Arial", 9), Location = new Point(x, y), AutoSize = true };
-        public event Action<int> BookFlightRequested;
+
         private void flowFlights_Paint(object sender, PaintEventArgs e)
         {
 

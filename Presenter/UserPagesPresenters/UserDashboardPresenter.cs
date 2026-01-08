@@ -25,8 +25,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _session = session ?? throw new ArgumentNullException(nameof(session));
 
             INotificationsCounterRepository repo =
-                new MySqlNotificationsCounterRepository(
-                    "server=localhost;port=3306;database=user;user=root;password=2006");
+                new MySqlNotificationsCounterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
 
             _notifService = new NotificationsCounterService(repo);
 

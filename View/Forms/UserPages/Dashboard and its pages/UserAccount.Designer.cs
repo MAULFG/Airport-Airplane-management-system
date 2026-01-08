@@ -85,13 +85,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblLastLoginCaption = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblLastLoginValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
             grpSecurity = new Guna.UI2.WinForms.Guna2GroupBox();
-            lblCurrentPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
             txtCurrentPass = new Guna.UI2.WinForms.Guna2TextBox();
             lblNewPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
             txtNewPass = new Guna.UI2.WinForms.Guna2TextBox();
             lblConfirmPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
             txtConfirmPass = new Guna.UI2.WinForms.Guna2TextBox();
             btnChangePassword = new Guna.UI2.WinForms.Guna2Button();
+            lblCurrentPass = new Guna.UI2.WinForms.Guna2HtmlLabel();
             headerPanel = new Guna.UI2.WinForms.Guna2Panel();
             lblSub = new Label();
             lblWelcome = new Label();
@@ -113,13 +113,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             pnlRoot.CustomizableEdges = customizableEdges41;
             pnlRoot.Dock = DockStyle.Fill;
             pnlRoot.Location = new Point(0, 0);
-            pnlRoot.Margin = new Padding(4, 4, 4, 4);
+            pnlRoot.Margin = new Padding(4);
             pnlRoot.Name = "pnlRoot";
-            pnlRoot.Padding = new Padding(12, 12, 12, 12);
+            pnlRoot.Padding = new Padding(12);
             pnlRoot.ShadowDecoration.CustomizableEdges = customizableEdges42;
             pnlRoot.Size = new Size(1288, 900);
             pnlRoot.TabIndex = 0;
-            pnlRoot.Paint += pnlRoot_Paint;
             // 
             // tableLayoutPanel1
             // 
@@ -130,9 +129,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             tableLayoutPanel1.Controls.Add(grpSecurity, 1, 0);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(12, 136);
-            tableLayoutPanel1.Margin = new Padding(4, 4, 4, 4);
+            tableLayoutPanel1.Margin = new Padding(4);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.Padding = new Padding(12, 12, 12, 12);
+            tableLayoutPanel1.Padding = new Padding(12);
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
@@ -150,7 +149,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             grpAccount.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             grpAccount.ForeColor = Color.FromArgb(25, 33, 45);
             grpAccount.Location = new Point(16, 16);
-            grpAccount.Margin = new Padding(4, 4, 4, 4);
+            grpAccount.Margin = new Padding(4);
             grpAccount.Name = "grpAccount";
             grpAccount.Padding = new Padding(12, 0, 12, 12);
             grpAccount.ShadowDecoration.CustomizableEdges = customizableEdges28;
@@ -176,12 +175,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             pnlAccountContent.CustomizableEdges = customizableEdges23;
             pnlAccountContent.Dock = DockStyle.Fill;
             pnlAccountContent.Location = new Point(12, 40);
-            pnlAccountContent.Margin = new Padding(4, 4, 4, 4);
+            pnlAccountContent.Margin = new Padding(5);
             pnlAccountContent.Name = "pnlAccountContent";
-            pnlAccountContent.Padding = new Padding(8, 6, 8, 6);
+            pnlAccountContent.Padding = new Padding(15);
             pnlAccountContent.ShadowDecoration.CustomizableEdges = customizableEdges24;
             pnlAccountContent.Size = new Size(588, 668);
             pnlAccountContent.TabIndex = 201;
+            pnlAccountContent.Paint += pnlAccountContent_Paint;
             // 
             // pnlChangeUsername
             // 
@@ -195,12 +195,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             pnlChangeUsername.CustomizableEdges = customizableEdges9;
             pnlChangeUsername.Dock = DockStyle.Bottom;
             pnlChangeUsername.FillColor = Color.FromArgb(248, 249, 251);
-            pnlChangeUsername.Location = new Point(8, 512);
+            pnlChangeUsername.Location = new Point(15, 503);
             pnlChangeUsername.Margin = new Padding(10, 12, 10, 0);
             pnlChangeUsername.Name = "pnlChangeUsername";
-            pnlChangeUsername.Padding = new Padding(15, 15, 15, 15);
+            pnlChangeUsername.Padding = new Padding(15);
             pnlChangeUsername.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            pnlChangeUsername.Size = new Size(572, 150);
+            pnlChangeUsername.Size = new Size(558, 150);
             pnlChangeUsername.TabIndex = 12;
             pnlChangeUsername.Visible = false;
             // 
@@ -247,10 +247,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnConfirmUsernameChange.Font = new Font("Segoe UI", 9F);
             btnConfirmUsernameChange.ForeColor = Color.White;
             btnConfirmUsernameChange.Location = new Point(331, 15);
-            btnConfirmUsernameChange.Margin = new Padding(4, 4, 4, 4);
+            btnConfirmUsernameChange.Margin = new Padding(4);
             btnConfirmUsernameChange.Name = "btnConfirmUsernameChange";
             btnConfirmUsernameChange.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            btnConfirmUsernameChange.Size = new Size(229, 50);
+            btnConfirmUsernameChange.Size = new Size(204, 50);
             btnConfirmUsernameChange.TabIndex = 2;
             btnConfirmUsernameChange.Text = "Confirm";
             // 
@@ -262,10 +262,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnCancelUsernameChange.Font = new Font("Segoe UI", 9F);
             btnCancelUsernameChange.ForeColor = Color.FromArgb(25, 33, 45);
             btnCancelUsernameChange.Location = new Point(331, 75);
-            btnCancelUsernameChange.Margin = new Padding(4, 4, 4, 4);
+            btnCancelUsernameChange.Margin = new Padding(4);
             btnCancelUsernameChange.Name = "btnCancelUsernameChange";
             btnCancelUsernameChange.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            btnCancelUsernameChange.Size = new Size(229, 50);
+            btnCancelUsernameChange.Size = new Size(204, 50);
             btnCancelUsernameChange.TabIndex = 3;
             btnCancelUsernameChange.Text = "Cancel";
             // 
@@ -276,14 +276,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnShowChangeUsername.FillColor = Color.FromArgb(200, 205, 210);
             btnShowChangeUsername.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnShowChangeUsername.ForeColor = Color.Black;
-            btnShowChangeUsername.Location = new Point(8, 395);
+            btnShowChangeUsername.Location = new Point(9, 421);
             btnShowChangeUsername.Margin = new Padding(10, 12, 10, 0);
             btnShowChangeUsername.Name = "btnShowChangeUsername";
             btnShowChangeUsername.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            btnShowChangeUsername.Size = new Size(564, 50);
+            btnShowChangeUsername.Size = new Size(572, 50);
             btnShowChangeUsername.TabIndex = 11;
             btnShowChangeUsername.Text = "Change Username...";
-            btnShowChangeUsername.Click += btnShowChangeUsername_Click;
             // 
             // btnUpdateEmail
             // 
@@ -292,11 +291,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnUpdateEmail.FillColor = Color.DarkCyan;
             btnUpdateEmail.Font = new Font("Segoe UI", 10F);
             btnUpdateEmail.ForeColor = Color.White;
-            btnUpdateEmail.Location = new Point(8, 332);
+            btnUpdateEmail.Location = new Point(9, 360);
             btnUpdateEmail.Margin = new Padding(10, 12, 10, 0);
             btnUpdateEmail.Name = "btnUpdateEmail";
             btnUpdateEmail.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnUpdateEmail.Size = new Size(564, 50);
+            btnUpdateEmail.Size = new Size(572, 50);
             btnUpdateEmail.TabIndex = 9;
             btnUpdateEmail.Text = "Update Email";
             // 
@@ -309,13 +308,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtConfirmPasswordForEmail.DefaultText = "";
             txtConfirmPasswordForEmail.Dock = DockStyle.Top;
             txtConfirmPasswordForEmail.Font = new Font("Segoe UI", 10F);
-            txtConfirmPasswordForEmail.Location = new Point(8, 278);
-            txtConfirmPasswordForEmail.Margin = new Padding(10, 5, 10, 0);
+            txtConfirmPasswordForEmail.Location = new Point(15, 287);
+            txtConfirmPasswordForEmail.Margin = new Padding(10);
             txtConfirmPasswordForEmail.Name = "txtConfirmPasswordForEmail";
             txtConfirmPasswordForEmail.PlaceholderText = "Enter your password";
             txtConfirmPasswordForEmail.SelectedText = "";
             txtConfirmPasswordForEmail.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            txtConfirmPasswordForEmail.Size = new Size(572, 48);
+            txtConfirmPasswordForEmail.Size = new Size(558, 48);
             txtConfirmPasswordForEmail.TabIndex = 8;
             txtConfirmPasswordForEmail.UseSystemPasswordChar = true;
             // 
@@ -326,10 +325,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblConfirmEmailPassCaption.Dock = DockStyle.Top;
             lblConfirmEmailPassCaption.Font = new Font("Segoe UI", 11F);
             lblConfirmEmailPassCaption.ForeColor = Color.FromArgb(60, 70, 85);
-            lblConfirmEmailPassCaption.Location = new Point(8, 246);
+            lblConfirmEmailPassCaption.Location = new Point(15, 255);
             lblConfirmEmailPassCaption.Margin = new Padding(10, 12, 10, 0);
             lblConfirmEmailPassCaption.Name = "lblConfirmEmailPassCaption";
-            lblConfirmEmailPassCaption.Size = new Size(572, 32);
+            lblConfirmEmailPassCaption.Size = new Size(558, 32);
             lblConfirmEmailPassCaption.TabIndex = 7;
             lblConfirmEmailPassCaption.Text = "Confirm Password";
             // 
@@ -342,13 +341,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtNewEmail.DefaultText = "";
             txtNewEmail.Dock = DockStyle.Top;
             txtNewEmail.Font = new Font("Segoe UI", 10F);
-            txtNewEmail.Location = new Point(8, 198);
-            txtNewEmail.Margin = new Padding(10, 5, 10, 0);
+            txtNewEmail.Location = new Point(15, 207);
+            txtNewEmail.Margin = new Padding(10, 5, 10, 5);
             txtNewEmail.Name = "txtNewEmail";
             txtNewEmail.PlaceholderText = "Enter new email";
             txtNewEmail.SelectedText = "";
             txtNewEmail.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            txtNewEmail.Size = new Size(572, 48);
+            txtNewEmail.Size = new Size(558, 48);
             txtNewEmail.TabIndex = 6;
             // 
             // lblNewEmailCaption
@@ -358,10 +357,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblNewEmailCaption.Dock = DockStyle.Top;
             lblNewEmailCaption.Font = new Font("Segoe UI", 11F);
             lblNewEmailCaption.ForeColor = Color.FromArgb(60, 70, 85);
-            lblNewEmailCaption.Location = new Point(8, 166);
+            lblNewEmailCaption.Location = new Point(15, 175);
             lblNewEmailCaption.Margin = new Padding(10, 8, 10, 0);
             lblNewEmailCaption.Name = "lblNewEmailCaption";
-            lblNewEmailCaption.Size = new Size(572, 32);
+            lblNewEmailCaption.Size = new Size(558, 32);
             lblNewEmailCaption.TabIndex = 5;
             lblNewEmailCaption.Text = "New Email";
             // 
@@ -375,14 +374,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtEmail.Dock = DockStyle.Top;
             txtEmail.FillColor = Color.FromArgb(248, 249, 251);
             txtEmail.Font = new Font("Segoe UI", 10F);
-            txtEmail.Location = new Point(8, 118);
-            txtEmail.Margin = new Padding(10, 5, 10, 0);
+            txtEmail.Location = new Point(15, 127);
+            txtEmail.Margin = new Padding(10, 5, 10, 5);
             txtEmail.Name = "txtEmail";
             txtEmail.PlaceholderText = "";
             txtEmail.ReadOnly = true;
             txtEmail.SelectedText = "";
             txtEmail.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            txtEmail.Size = new Size(572, 48);
+            txtEmail.Size = new Size(558, 48);
             txtEmail.TabIndex = 3;
             // 
             // lblEmailCaption
@@ -392,10 +391,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblEmailCaption.Dock = DockStyle.Top;
             lblEmailCaption.Font = new Font("Segoe UI", 11F);
             lblEmailCaption.ForeColor = Color.FromArgb(60, 70, 85);
-            lblEmailCaption.Location = new Point(8, 86);
+            lblEmailCaption.Location = new Point(15, 95);
             lblEmailCaption.Margin = new Padding(10, 12, 10, 0);
             lblEmailCaption.Name = "lblEmailCaption";
-            lblEmailCaption.Size = new Size(572, 32);
+            lblEmailCaption.Size = new Size(558, 32);
             lblEmailCaption.TabIndex = 2;
             lblEmailCaption.Text = "Current Email";
             // 
@@ -409,16 +408,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtUsername.Dock = DockStyle.Top;
             txtUsername.FillColor = Color.FromArgb(248, 249, 251);
             txtUsername.Font = new Font("Segoe UI", 10F);
-            txtUsername.Location = new Point(8, 38);
-            txtUsername.Margin = new Padding(10, 5, 10, 0);
+            txtUsername.Location = new Point(15, 47);
+            txtUsername.Margin = new Padding(10);
             txtUsername.Name = "txtUsername";
             txtUsername.PlaceholderText = "";
             txtUsername.ReadOnly = true;
             txtUsername.SelectedText = "";
             txtUsername.ShadowDecoration.CustomizableEdges = customizableEdges22;
-            txtUsername.Size = new Size(572, 48);
+            txtUsername.Size = new Size(558, 48);
             txtUsername.TabIndex = 1;
-            txtUsername.TextChanged += txtUsername_TextChanged;
             // 
             // lblUsernameCaption
             // 
@@ -427,10 +425,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblUsernameCaption.Dock = DockStyle.Top;
             lblUsernameCaption.Font = new Font("Segoe UI", 11F);
             lblUsernameCaption.ForeColor = Color.FromArgb(60, 70, 85);
-            lblUsernameCaption.Location = new Point(8, 6);
+            lblUsernameCaption.Location = new Point(15, 15);
             lblUsernameCaption.Margin = new Padding(10, 8, 10, 0);
             lblUsernameCaption.Name = "lblUsernameCaption";
-            lblUsernameCaption.Size = new Size(572, 32);
+            lblUsernameCaption.Size = new Size(558, 32);
             lblUsernameCaption.TabIndex = 0;
             lblUsernameCaption.Text = "Username";
             // 
@@ -443,9 +441,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             pnlAccountFooter.Controls.Add(lblLastLoginValue);
             pnlAccountFooter.CustomizableEdges = customizableEdges25;
             pnlAccountFooter.Location = new Point(14, 741);
-            pnlAccountFooter.Margin = new Padding(4, 4, 4, 4);
+            pnlAccountFooter.Margin = new Padding(4);
             pnlAccountFooter.Name = "pnlAccountFooter";
-            pnlAccountFooter.Padding = new Padding(12, 12, 12, 12);
+            pnlAccountFooter.Padding = new Padding(12);
             pnlAccountFooter.ShadowDecoration.CustomizableEdges = customizableEdges26;
             pnlAccountFooter.Size = new Size(784, 68);
             pnlAccountFooter.TabIndex = 200;
@@ -456,7 +454,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblCreatedAtCaption.Font = new Font("Segoe UI", 10.2F);
             lblCreatedAtCaption.ForeColor = Color.FromArgb(90, 105, 120);
             lblCreatedAtCaption.Location = new Point(12, 18);
-            lblCreatedAtCaption.Margin = new Padding(4, 4, 4, 4);
+            lblCreatedAtCaption.Margin = new Padding(4);
             lblCreatedAtCaption.Name = "lblCreatedAtCaption";
             lblCreatedAtCaption.Size = new Size(87, 25);
             lblCreatedAtCaption.TabIndex = 100;
@@ -468,7 +466,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblCreatedAtValue.Font = new Font("Segoe UI", 10.2F);
             lblCreatedAtValue.ForeColor = Color.FromArgb(90, 105, 120);
             lblCreatedAtValue.Location = new Point(122, 18);
-            lblCreatedAtValue.Margin = new Padding(4, 4, 4, 4);
+            lblCreatedAtValue.Margin = new Padding(4);
             lblCreatedAtValue.Name = "lblCreatedAtValue";
             lblCreatedAtValue.Size = new Size(10, 25);
             lblCreatedAtValue.TabIndex = 101;
@@ -480,7 +478,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblLastLoginCaption.Font = new Font("Segoe UI", 10.2F);
             lblLastLoginCaption.ForeColor = Color.FromArgb(90, 105, 120);
             lblLastLoginCaption.Location = new Point(375, 18);
-            lblLastLoginCaption.Margin = new Padding(4, 4, 4, 4);
+            lblLastLoginCaption.Margin = new Padding(4);
             lblLastLoginCaption.Name = "lblLastLoginCaption";
             lblLastLoginCaption.Size = new Size(80, 25);
             lblLastLoginCaption.TabIndex = 102;
@@ -492,7 +490,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblLastLoginValue.Font = new Font("Segoe UI", 10.2F);
             lblLastLoginValue.ForeColor = Color.FromArgb(90, 105, 120);
             lblLastLoginValue.Location = new Point(472, 18);
-            lblLastLoginValue.Margin = new Padding(4, 4, 4, 4);
+            lblLastLoginValue.Margin = new Padding(4);
             lblLastLoginValue.Name = "lblLastLoginValue";
             lblLastLoginValue.Size = new Size(10, 25);
             lblLastLoginValue.TabIndex = 103;
@@ -501,39 +499,26 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // grpSecurity
             // 
             grpSecurity.BorderRadius = 14;
-            grpSecurity.Controls.Add(lblCurrentPass);
             grpSecurity.Controls.Add(txtCurrentPass);
             grpSecurity.Controls.Add(lblNewPass);
             grpSecurity.Controls.Add(txtNewPass);
             grpSecurity.Controls.Add(lblConfirmPass);
             grpSecurity.Controls.Add(txtConfirmPass);
             grpSecurity.Controls.Add(btnChangePassword);
+            grpSecurity.Controls.Add(lblCurrentPass);
             grpSecurity.CustomBorderColor = Color.FromArgb(230, 235, 240);
             grpSecurity.CustomizableEdges = customizableEdges37;
             grpSecurity.Dock = DockStyle.Fill;
             grpSecurity.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             grpSecurity.ForeColor = Color.FromArgb(25, 33, 45);
             grpSecurity.Location = new Point(636, 16);
-            grpSecurity.Margin = new Padding(4, 4, 4, 4);
+            grpSecurity.Margin = new Padding(4);
             grpSecurity.Name = "grpSecurity";
             grpSecurity.Padding = new Padding(18, 55, 18, 18);
             grpSecurity.ShadowDecoration.CustomizableEdges = customizableEdges38;
             grpSecurity.Size = new Size(612, 720);
             grpSecurity.TabIndex = 3;
             grpSecurity.Text = "Security";
-            // 
-            // lblCurrentPass
-            // 
-            lblCurrentPass.AutoSize = false;
-            lblCurrentPass.BackColor = Color.Transparent;
-            lblCurrentPass.Font = new Font("Segoe UI", 11F);
-            lblCurrentPass.ForeColor = Color.FromArgb(60, 70, 85);
-            lblCurrentPass.Location = new Point(28, 84);
-            lblCurrentPass.Margin = new Padding(4, 4, 4, 4);
-            lblCurrentPass.Name = "lblCurrentPass";
-            lblCurrentPass.Size = new Size(475, 38);
-            lblCurrentPass.TabIndex = 0;
-            lblCurrentPass.Text = "Current Password";
             // 
             // txtCurrentPass
             // 
@@ -542,14 +527,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtCurrentPass.Cursor = Cursors.IBeam;
             txtCurrentPass.CustomizableEdges = customizableEdges29;
             txtCurrentPass.DefaultText = "";
+            txtCurrentPass.Dock = DockStyle.Top;
             txtCurrentPass.Font = new Font("Segoe UI", 10F);
-            txtCurrentPass.Location = new Point(28, 122);
+            txtCurrentPass.Location = new Point(18, 281);
             txtCurrentPass.Margin = new Padding(4, 6, 4, 6);
             txtCurrentPass.Name = "txtCurrentPass";
             txtCurrentPass.PlaceholderText = "Enter current password";
             txtCurrentPass.SelectedText = "";
             txtCurrentPass.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            txtCurrentPass.Size = new Size(562, 55);
+            txtCurrentPass.Size = new Size(576, 55);
             txtCurrentPass.TabIndex = 1;
             txtCurrentPass.UseSystemPasswordChar = true;
             // 
@@ -557,12 +543,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             lblNewPass.AutoSize = false;
             lblNewPass.BackColor = Color.Transparent;
+            lblNewPass.Dock = DockStyle.Top;
             lblNewPass.Font = new Font("Segoe UI", 11F);
             lblNewPass.ForeColor = Color.FromArgb(60, 70, 85);
-            lblNewPass.Location = new Point(28, 209);
-            lblNewPass.Margin = new Padding(4, 4, 4, 4);
+            lblNewPass.Location = new Point(18, 243);
+            lblNewPass.Margin = new Padding(4);
             lblNewPass.Name = "lblNewPass";
-            lblNewPass.Size = new Size(446, 38);
+            lblNewPass.Size = new Size(576, 38);
             lblNewPass.TabIndex = 2;
             lblNewPass.Text = "New Password";
             // 
@@ -573,14 +560,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtNewPass.Cursor = Cursors.IBeam;
             txtNewPass.CustomizableEdges = customizableEdges31;
             txtNewPass.DefaultText = "";
+            txtNewPass.Dock = DockStyle.Top;
             txtNewPass.Font = new Font("Segoe UI", 10F);
-            txtNewPass.Location = new Point(28, 248);
+            txtNewPass.Location = new Point(18, 188);
             txtNewPass.Margin = new Padding(4, 6, 4, 6);
             txtNewPass.Name = "txtNewPass";
             txtNewPass.PlaceholderText = "Enter new password";
             txtNewPass.SelectedText = "";
             txtNewPass.ShadowDecoration.CustomizableEdges = customizableEdges32;
-            txtNewPass.Size = new Size(562, 55);
+            txtNewPass.Size = new Size(576, 55);
             txtNewPass.TabIndex = 3;
             txtNewPass.UseSystemPasswordChar = true;
             // 
@@ -588,12 +576,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             // 
             lblConfirmPass.AutoSize = false;
             lblConfirmPass.BackColor = Color.Transparent;
+            lblConfirmPass.Dock = DockStyle.Top;
             lblConfirmPass.Font = new Font("Segoe UI", 11F);
             lblConfirmPass.ForeColor = Color.FromArgb(60, 70, 85);
-            lblConfirmPass.Location = new Point(28, 334);
-            lblConfirmPass.Margin = new Padding(4, 4, 4, 4);
+            lblConfirmPass.Location = new Point(18, 150);
+            lblConfirmPass.Margin = new Padding(4);
             lblConfirmPass.Name = "lblConfirmPass";
-            lblConfirmPass.Size = new Size(482, 38);
+            lblConfirmPass.Size = new Size(576, 38);
             lblConfirmPass.TabIndex = 4;
             lblConfirmPass.Text = "Confirm Password";
             // 
@@ -604,14 +593,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             txtConfirmPass.Cursor = Cursors.IBeam;
             txtConfirmPass.CustomizableEdges = customizableEdges33;
             txtConfirmPass.DefaultText = "";
+            txtConfirmPass.Dock = DockStyle.Top;
             txtConfirmPass.Font = new Font("Segoe UI", 10F);
-            txtConfirmPass.Location = new Point(28, 372);
+            txtConfirmPass.Location = new Point(18, 95);
             txtConfirmPass.Margin = new Padding(4, 6, 4, 6);
             txtConfirmPass.Name = "txtConfirmPass";
             txtConfirmPass.PlaceholderText = "Confirm new password";
             txtConfirmPass.SelectedText = "";
             txtConfirmPass.ShadowDecoration.CustomizableEdges = customizableEdges34;
-            txtConfirmPass.Size = new Size(562, 55);
+            txtConfirmPass.Size = new Size(576, 55);
             txtConfirmPass.TabIndex = 5;
             txtConfirmPass.UseSystemPasswordChar = true;
             // 
@@ -623,12 +613,25 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             btnChangePassword.Font = new Font("Segoe UI", 10F);
             btnChangePassword.ForeColor = Color.White;
             btnChangePassword.Location = new Point(28, 469);
-            btnChangePassword.Margin = new Padding(4, 4, 4, 4);
+            btnChangePassword.Margin = new Padding(4);
             btnChangePassword.Name = "btnChangePassword";
             btnChangePassword.ShadowDecoration.CustomizableEdges = customizableEdges36;
             btnChangePassword.Size = new Size(562, 55);
             btnChangePassword.TabIndex = 6;
             btnChangePassword.Text = "Change Password";
+            // 
+            // lblCurrentPass
+            // 
+            lblCurrentPass.AutoSize = false;
+            lblCurrentPass.BackColor = Color.Transparent;
+            lblCurrentPass.Font = new Font("Segoe UI", 11F);
+            lblCurrentPass.ForeColor = Color.FromArgb(60, 70, 85);
+            lblCurrentPass.Location = new Point(24, 56);
+            lblCurrentPass.Margin = new Padding(4);
+            lblCurrentPass.Name = "lblCurrentPass";
+            lblCurrentPass.Size = new Size(475, 38);
+            lblCurrentPass.TabIndex = 0;
+            lblCurrentPass.Text = "Current Password";
             // 
             // headerPanel
             // 
@@ -639,9 +642,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             headerPanel.Dock = DockStyle.Top;
             headerPanel.FillColor = Color.DarkCyan;
             headerPanel.Location = new Point(12, 12);
-            headerPanel.Margin = new Padding(4, 4, 4, 4);
+            headerPanel.Margin = new Padding(4);
             headerPanel.Name = "headerPanel";
-            headerPanel.Padding = new Padding(12, 12, 12, 12);
+            headerPanel.Padding = new Padding(12);
             headerPanel.ShadowDecoration.BorderRadius = 20;
             headerPanel.ShadowDecoration.CustomizableEdges = customizableEdges40;
             headerPanel.Size = new Size(1264, 124);
@@ -672,6 +675,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             lblWelcome.Size = new Size(1240, 62);
             lblWelcome.TabIndex = 1;
             lblWelcome.Text = "Settings";
+            lblWelcome.Click += lblWelcome_Click;
             // 
             // UserAccount
             // 
@@ -679,7 +683,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.WhiteSmoke;
             Controls.Add(pnlRoot);
-            Margin = new Padding(4, 4, 4, 4);
+            Margin = new Padding(4);
             Name = "UserAccount";
             Size = new Size(1288, 900);
             Load += UserAccount_Load;

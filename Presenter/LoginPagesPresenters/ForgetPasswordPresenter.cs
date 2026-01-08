@@ -1,6 +1,10 @@
-﻿using Airport_Airplane_management_system.Model.Interfaces.Views;
+﻿using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Interfaces.Views;
+using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.View.Interfaces;
+using MySqlX.XDevAPI;
 using System;
 using System;
 using System.Collections.Generic;
@@ -11,10 +15,15 @@ public class ForgetPasswordPresenter
     private readonly IForgetPasswordView _view;
     private readonly UserService _userService;
     private readonly INavigationService _navigationService;
-    public ForgetPasswordPresenter(IForgetPasswordView view, UserService userService, INavigationService navigation)
+    private readonly IUserRepository userRepo;
+    private readonly IAppSession _session;
+    public ForgetPasswordPresenter(IForgetPasswordView view,IAppSession session, INavigationService navigation)
     {
         _view = view;
-        _userService = userService;
+        _session= session;
+        userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+      
+        _userService = new UserService(userRepo, session);
         _navigationService = navigation;
 
         _view.ResetClicked += OnResetClicked;

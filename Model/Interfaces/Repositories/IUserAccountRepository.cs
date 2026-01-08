@@ -1,4 +1,5 @@
 ﻿using System;
+using Airport_Airplane_management_system.Model.Core.Classes;
 
 namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
 {
@@ -7,7 +8,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Repositories
         (string Username, string Email)? GetUserHeader(int userId);
 
         string GetPassword(int userId);
-
+        User GetUserById(int userId);
         string GetUsername(int userId);
 
         bool UpdatePassword(int userId, string newPassword);

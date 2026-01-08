@@ -13,13 +13,13 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
 {
     public partial class ForgetUserControl : UserControl, IForgetPasswordView
     {
-        private readonly IAppSession session;
+        private readonly IAppSession _session;
         private readonly ForgetPasswordPresenter _presenter;
         private readonly INavigationService _navigation;
-        public ForgetUserControl(INavigationService navigation)
+        public ForgetUserControl(INavigationService navigation, IAppSession session)
         {
             InitializeComponent();
-
+            _session = session;
             // Input reset visuals
             usernameTB.TextChanged += InputChanged;
             emailTB.TextChanged += InputChanged;
@@ -34,12 +34,9 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             guna2HtmlLabel2.Click += (s, e) => ReturnToLoginClicked?.Invoke(this, EventArgs.Empty);
 
             // Setup MVP
-            IUserRepository userRepo = new MySqlUserRepository(
-                "server=localhost;port=3306;database=user;user=root;password=2006"
-            );
-            UserService userService = new UserService(userRepo,session);
+            
 
-            _presenter = new ForgetPasswordPresenter(this, userService,navigation);
+            _presenter = new ForgetPasswordPresenter(this,_session, navigation);
             
         }
 

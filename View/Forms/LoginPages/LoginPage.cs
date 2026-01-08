@@ -16,8 +16,7 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
     {
         private readonly LoginPresenter _presenter;
 
-        public LoginPage(
-        INavigationService navigationService,IAppSession session) // optional if needed by presenter
+        public LoginPage(INavigationService navigationService,IAppSession session) 
         {
             InitializeComponent();
 
@@ -43,8 +42,6 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
         {
             if (guna2CustomGradientPanel1 != null && panel2 != null)
             {
-                // Keep horizontal (Left) as-is
-                // Center vertically
                 guna2CustomGradientPanel1.Top = (panel2.ClientSize.Height - guna2CustomGradientPanel1.Height) / 2;
             }
         }

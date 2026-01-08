@@ -56,8 +56,6 @@ namespace Airport_Airplane_management_system.Presenter.LoginPagesPresenters
 
             _session.SetUser(user);
 
-
-            // 🧭 ROLE-BASED NAVIGATION
             if (user.UserID == 313)
             {
                 _navigation.NavigateToAdmin();

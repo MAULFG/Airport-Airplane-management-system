@@ -19,10 +19,10 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
 {
     public partial class Signupusercontrol : UserControl, ISignupView
     {
-        private readonly IAppSession session;
+        private readonly IAppSession _session;
         private readonly SignupPresenter _presenter;
         private readonly INavigationService _navigation;
-        public Signupusercontrol(INavigationService navigation)
+        public Signupusercontrol(INavigationService navigation,IAppSession Session)
         {
             InitializeComponent();
             fnameTB.TextChanged += InputChanged;
@@ -31,17 +31,14 @@ namespace Airport_Airplane_management_system.View.Forms.LoginPages
             EmailTB.TextChanged += InputChanged;
             PasswordTB.TextChanged += InputChanged;
             PasswordTB2.TextChanged += InputChanged;
-            
+            _session = Session;
             CenterPanelVertically();
             this.Resize += ForgetUserControl_Resize;
             signupbtn.Click += (s, e) => SignupClicked?.Invoke(this, EventArgs.Empty);
             guna2HtmlLabel2.Click += (s, e) => ReturnToLoginClicked?.Invoke(this, EventArgs.Empty);
-            IUserRepository userRepo = new MySqlUserRepository(
-                "server=localhost;port=3306;database=user;user=root;password=2006"
-            );
-            UserService userService = new UserService(userRepo,session);
+            
 
-            _presenter = new SignupPresenter(this, userService,navigation);
+            _presenter = new SignupPresenter(this, _session,navigation);
         }
         private void InputChanged(object sender, EventArgs e)
         {

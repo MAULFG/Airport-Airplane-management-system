@@ -1,4 +1,5 @@
 ﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+using Airport_Airplane_management_system.Model.Core.Classes;
 using MySql.Data.MySqlClient;
 using System;
 
@@ -11,6 +12,32 @@ namespace Airport_Airplane_management_system.Model.Repositories
         public MySqlUserAccountRepository(string connStr)
         {
             _connStr = connStr;
+        }
+        public User GetUserById(int userId)
+        {
+            using var conn = new MySqlConnection(_connStr);
+            conn.Open();
+
+            const string q = @"
+SELECT id, firstname, lastname, username, email, password
+FROM `user`
+WHERE id=@id
+LIMIT 1;";
+
+            using var cmd = new MySqlCommand(q, conn);
+            cmd.Parameters.AddWithValue("@id", userId);
+
+            using var r = cmd.ExecuteReader();
+            if (!r.Read()) return null;
+
+            return new User(
+                r.GetInt32("id"),
+                r.GetString("firstname"),
+                r.GetString("lastname"),
+                r.GetString("email"),
+                r.GetString("username"),
+                r.GetString("password")
+            );
         }
 
         public (string Username, string Email)? GetUserHeader(int userId)

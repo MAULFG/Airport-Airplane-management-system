@@ -1,133 +1,157 @@
-﻿using Airport_Airplane_management_system.Model.Interfaces.Repositories;
+﻿using Airport_Airplane_management_system.Model.Core.Classes.Exceptions;
+using Airport_Airplane_management_system.Model.Interfaces.Repositories;
 using Airport_Airplane_management_system.Model.Interfaces.Views;
 using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Airport_Airplane_management_system.Presenter
+public class UserAccountPresenter
 {
-    public class UserAccountPresenter
+    private readonly IUserAccountView _view;
+    private readonly IUserAccountRepository _repo;
+    private readonly UserAccountService _service;
+    private readonly IAppSession _session;
+    
+
+    private bool _usernamePanelVisible;
+
+    public UserAccountPresenter(IUserAccountView view, IAppSession session)
     {
-        private readonly IUserAccountView _view;
-        private readonly IUserAccountRepository useraRepo;
-        private readonly UserAccountService _service;
+        _view = view;
+        _session = session;
 
-        private bool _usernamePanelVisible;
+        _repo = new MySqlUserAccountRepository("server=localhost;port=3306;database=user;user=root;password=2006"
+        );
+        _service = new UserAccountService(_repo);
 
-        public UserAccountPresenter(IUserAccountView view)
+        _view.ViewLoaded += RefreshData;
+        _view.ChangePasswordClicked += OnChangePassword;
+        _view.UpdateEmailClicked += OnUpdateEmail;
+        _view.ShowChangeUsernameClicked += OnToggleUsernamePanel;
+        _view.ConfirmUsernameChangeClicked += OnConfirmUsernameChange;
+        _view.CancelUsernameChangeClicked += OnCancelUsernameChange;
+    }
+
+    private int UserId => _session.CurrentUser?.UserID ?? 0;
+
+    public void RefreshData()
+    {
+        if (!_session.IsLoggedIn)
         {
-            _view = view;
-            useraRepo =new MySqlUserAccountRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            _service = new UserAccountService(useraRepo);
-
-            _view.ViewLoaded += RefreshData;
-            _view.ChangePasswordClicked += OnChangePassword;
-            _view.UpdateEmailClicked += OnUpdateEmail;
-
-            _view.ShowChangeUsernameClicked += OnToggleUsernamePanel;
-            _view.ConfirmUsernameChangeClicked += OnConfirmUsernameChange;
-            _view.CancelUsernameChangeClicked += OnCancelUsernameChange;
+            _view.ShowError("No active session.");
+            return;
         }
 
-        public void RefreshData()
-        {
-            try
-            {
-                var header = _service.GetHeader(_view.UserId);
-                if (!header.HasValue)
-                {
-                    _view.ShowError("User not found.");
-                    return;
-                }
+        _view.SetHeader(
+            _session.CurrentUser.UserName,
+            _session.CurrentUser.Email
+        );
 
-                _view.SetHeader(header.Value.Username, header.Value.Email);
-                _usernamePanelVisible = false;
-                _view.ToggleUsernamePanel(false);
-            }
-            catch (Exception ex)
+        _usernamePanelVisible = false;
+        _view.ToggleUsernamePanel(false);
+    }
+
+    private void OnChangePassword()
+    {
+        try
+        {
+            _service.ChangePassword(
+                UserId,
+                _view.CurrentPassword,
+                _view.NewPassword,
+                _view.ConfirmPassword
+            );
+
+            _view.ShowInfo("Password changed successfully.");
+            _view.ClearPasswordFields();
+            var updatedUser = _repo.GetUserById(UserId);
+
+            if (updatedUser != null)
             {
-                _view.ShowError(ex.Message);
+                _session.SetUser(updatedUser);
+
             }
+
+            RefreshData();
         }
-
-        private void OnChangePassword()
+        catch (Exception ex)
         {
-            try
-            {
-                _service.ChangePassword(
-                    _view.UserId,
-                    _view.CurrentPassword,
-                    _view.NewPassword,
-                    _view.ConfirmPassword);
-
-                _view.ShowInfo("Password changed successfully.");
-                _view.ClearPasswordFields();
-            }
-            catch (Exception ex)
-            {
-                _view.ShowError(ex.Message);
-            }
+            _view.ShowError(ex.Message);
         }
+    }
 
-        private void OnUpdateEmail()
+    private void OnUpdateEmail()
+    {
+        try
         {
-            try
+            _service.ChangeEmail(
+                UserId,
+                _view.NewEmail,
+                _view.ConfirmPasswordForEmail
+            );
+
+            var updatedUser = _repo.GetUserById(UserId);
+
+            if (updatedUser != null)
             {
-                _service.ChangeEmail(
-                    _view.UserId,
-                    _view.NewEmail,
-                    _view.ConfirmPasswordForEmail);
-
-                var header = _service.GetHeader(_view.UserId);
-                if (header.HasValue)
-                    _view.SetEmail(header.Value.Email);
-
-                _view.ShowInfo("Email updated successfully.");
-                _view.ClearEmailFields();
+                _session.SetUser(updatedUser);
+               
             }
-            catch (Exception ex)
+
+            RefreshData();
+
+            _view.ShowInfo("Email updated successfully.");
+            _view.ClearEmailFields();
+        }
+        catch (Exception ex)
+        {
+            _view.ShowError(ex.Message);
+        }
+    }
+
+    private void OnToggleUsernamePanel()
+    {
+        _usernamePanelVisible = !_usernamePanelVisible;
+        _view.ToggleUsernamePanel(_usernamePanelVisible);
+    }
+
+    private void OnCancelUsernameChange()
+    {
+        _usernamePanelVisible = false;
+        _view.ToggleUsernamePanel(false);
+        _view.ClearUsernameFields();
+    }
+
+    private void OnConfirmUsernameChange()
+    {
+        try
+        {
+            _service.ChangeUsername(
+                UserId,
+                _view.NewUsername,
+                _view.ConfirmPasswordForUsername
+            );
+
+
+
+            var updatedUser = _repo.GetUserById(UserId);
+
+
+            if (updatedUser != null)
             {
-                _view.ShowError(ex.Message);
+                _session.SetUser(updatedUser);
+
             }
-        }
 
-        private void OnToggleUsernamePanel()
-        {
-            _usernamePanelVisible = !_usernamePanelVisible;
-            _view.ToggleUsernamePanel(_usernamePanelVisible);
-        }
 
-        private void OnCancelUsernameChange()
-        {
-            _usernamePanelVisible = false;
-            _view.ToggleUsernamePanel(false);
+            RefreshData();
+
+            _view.ShowInfo("Username updated successfully.");
             _view.ClearUsernameFields();
         }
-
-        private void OnConfirmUsernameChange()
+        catch (Exception ex)
         {
-            try
-            {
-                _service.ChangeUsername(
-                    _view.UserId,
-                    _view.NewUsername,
-                    _view.ConfirmPasswordForUsername);
-
-                var header = _service.GetHeader(_view.UserId);
-                if (header.HasValue)
-                    _view.SetUsername(header.Value.Username);
-
-                _view.ShowInfo("Username updated successfully.");
-                _usernamePanelVisible = false;
-                _view.ToggleUsernamePanel(false);
-                _view.ClearUsernameFields();
-            }
-            catch (Exception ex)
-            {
-                _view.ShowError(ex.Message);
-            }
+            _view.ShowError(ex.Message);
         }
     }
 }

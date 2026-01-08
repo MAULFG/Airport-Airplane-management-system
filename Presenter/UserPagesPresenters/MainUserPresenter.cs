@@ -31,7 +31,6 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             if (user == null)
                 return;
 
-            // ✅ FORCE load real bookings from DB
             _bookingService.LoadBookingsForCurrentUser();
 
             var bookings = user.BookedFlights
@@ -39,16 +38,9 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
                 .ToList();
 
             var now = DateTime.Now;
-
-            // ========================
-            // Welcome
-            // ========================
             _view.SetWelcomeText($"Welcome, {user.FullName}!");
             _view.ClearStatistics();
 
-            // ========================
-            // Main Statistics
-            // ========================
             int upcoming = bookings.Count(b => b.Flight.Departure > now);
             int completed = bookings.Count(b => b.Flight.Arrival < now);
             int total = bookings.Count;
@@ -57,9 +49,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _view.AddStatCard("Completed Flights", completed.ToString());
             _view.AddStatCard("Total Bookings", total.ToString());
 
-            // ========================
-            // Favorite Route (real data)
-            // ========================
+
             var favoriteRoute = bookings
                 .GroupBy(b => $"{b.Flight.From} → {b.Flight.To}")
                 .OrderByDescending(g => g.Count())
@@ -71,9 +61,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
                 favoriteRoute ?? "No data"
             );
 
-            // ========================
-            // Next Flight Panel
-            // ========================
+
             var nextFlight = bookings
                 .Where(b => b.Flight.Departure > now)
                 .OrderBy(b => b.Flight.Departure)

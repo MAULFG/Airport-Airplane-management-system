@@ -26,9 +26,7 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _session = session ?? throw new ArgumentNullException(nameof(session));
 
-            _usernRepo = new MySqlUserNotificationsRepository(
-                "server=localhost;port=3306;database=user;user=root;password=2006"
-            );
+            _usernRepo = new MySqlUserNotificationsRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             _service = new UserNotificationsService(_usernRepo);
 
             // Event subscriptions
@@ -52,14 +50,8 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
 
             _view.SelectAllClicked += OnSelectAll;
 
-            // Subscribe to UserLoggedIn event (just +=, no null check)
             _session.UserLoggedIn += RefreshData;
         }
-
-
-        /// <summary>
-        /// Refresh notifications list and badge.
-        /// </summary>
         public void RefreshData()
         {
             if (userid == null)

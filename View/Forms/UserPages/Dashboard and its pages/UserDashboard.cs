@@ -11,7 +11,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
     public partial class UserDashboard : UserControl, IUserDashboardView
     {
-        // EVENTS
+        // ================= EVENTS =================
         public event EventHandler UpcomingFlightsClicked;
         public event EventHandler SearchBookClicked;
         public event EventHandler MyTicketsClicked;
@@ -21,11 +21,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public event EventHandler LogoutClicked;
         public event EventHandler UserMainClicked;
 
-        // UI
+        // ================= UI =================
         private Panel panelMain;
         private Guna2CircleButton _notifBadge;
 
-        // Presenters
+        // ================= PRESENTERS =================
         private UserDashboardPresenter _dashboardPresenter;
         private MainUserPagePresenter _mainPresenter;
         private UpcomingFlightsPresenter _upcomingPresenter;
@@ -37,6 +37,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private readonly INavigationService _navigation;
         private readonly IAppSession _session;
 
+        // ================= CONSTRUCTOR =================
         public UserDashboard(IAppSession session, INavigationService navigation)
         {
             InitializeComponent();
@@ -54,26 +55,22 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             _dashboardPresenter = new UserDashboardPresenter(this, _navigation, _session);
 
+            // Add all user controls to the main panel
             panelMain.Controls.Add(mainUserPage1);
             panelMain.Controls.Add(upcomingFlights1);
             panelMain.Controls.Add(searchAndBooking1);
             panelMain.Controls.Add(myTicketsBookingHistory1);
             panelMain.Controls.Add(notifications1);
             panelMain.Controls.Add(userAccount1);
-            notifications1.BadgeRefreshRequested += () =>
-            {
-                _dashboardPresenter.RefreshNotifications();
-            };
 
-            myTicketsBookingHistory1.BadgeRefreshRequested += () =>
-            {
-                _dashboardPresenter.RefreshNotifications();
-            };
+            // Badge refresh triggers
+            notifications1.BadgeRefreshRequested += () => _dashboardPresenter.RefreshNotifications();
+            myTicketsBookingHistory1.BadgeRefreshRequested += () => _dashboardPresenter.RefreshNotifications();
 
             ShowMainUser();
         }
 
-        // BUTTON EVENTS
+        // ================= BUTTON EVENTS =================
         private void InitializeButtonEvents()
         {
             guna2Button1.Click += (_, _) => UserMainClicked?.Invoke(this, EventArgs.Empty);
@@ -85,7 +82,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             logoutuser.Click += (_, _) => LogoutClicked?.Invoke(this, EventArgs.Empty);
         }
 
-        // PANEL MANAGEMENT
+        // ================= PANEL MANAGEMENT =================
         private void HideAll()
         {
             foreach (Control c in panelMain.Controls)
@@ -112,7 +109,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             active.FillColor = Color.DarkCyan;
         }
 
-        // VIEW METHODS
+        // ================= VIEW METHODS =================
         public void ShowMainUser()
         {
             _mainPresenter ??= new MainUserPagePresenter(mainUserPage1, _session);
@@ -143,31 +140,23 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
         public void Notifications()
         {
-            // Initialize notifications control with session first
             notifications1.Initialize(_navigation, _session);
 
             _notificationsPresenter ??= new UserNotificationsPresenter(notifications1, _session);
             _notificationsPresenter.RefreshData();
 
             Show(notifications1, btnNotifications);
-
-            // Refresh badge after showing notifications
             _dashboardPresenter.RefreshNotifications();
         }
 
-
-
         public void UserAccount()
         {
-            _accountPresenter ??= new UserAccountPresenter(userAccount1);
+            _accountPresenter ??= new UserAccountPresenter(userAccount1, _session);
             _accountPresenter.RefreshData();
             Show(userAccount1, Account);
         }
 
-        public void Logout()
-        {
-            HideAll();
-        }
+        public void Logout() => HideAll();
 
         public void OpenBooking(int flightId)
         {
@@ -176,14 +165,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             form.ShowDialog();
         }
 
-        // 🔴 NOTIFICATION BADGE (UNCHANGED FUNCTIONALITY)
+        // ================= NOTIFICATION BADGE =================
         private void CreateNotificationsBadge()
         {
             _notifBadge = new Guna2CircleButton
             {
                 Size = new Size(14, 14),
                 FillColor = Color.Red,
-                BackColor =Color.Transparent,
+                BackColor = Color.Transparent,
                 Visible = false
             };
 
@@ -207,15 +196,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             if (_notifBadge.Visible)
             {
-                _notifBadge.BringToFront(); // make sure it's above the panel
-                PositionBadge(); // reposition in case the button moved
+                _notifBadge.BringToFront();
+                PositionBadge();
             }
         }
 
-
-        private void UserDashboard_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void UserDashboard_Load(object sender, EventArgs e) { }
     }
 }

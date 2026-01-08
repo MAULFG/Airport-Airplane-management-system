@@ -18,19 +18,21 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 {
     public partial class UserNotifications : UserControl, IUserNotificationsView
     {
-
+        // Initialization state
         private bool _initialized;
         private INavigationService _navigation;
 
+        // Data access / service
         private IUserNotificationsRepository _repo;
         private UserNotificationsService _service;
         private UserNotificationsPresenter _presenter;
         private IAppSession _session;
-        // UI state
+
+        // UI state for multi-selection
         private readonly HashSet<int> _selectedIds = new();
         private int? _focusedId;
 
-        // Exposed event to dashboard
+        // Events exposed to dashboard or presenter
         public event Action BadgeRefreshRequested;
         public event Action<int> SeeTicketRequested;
         public event Action MarkSelectedReadClicked;
@@ -47,28 +49,31 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             Dock = DockStyle.Fill;
 
-
-            // events
+            // Hook up button events
             btnRefresh.Click += (_, __) => RefreshClicked?.Invoke();
             btnClearAll.Click += (_, __) => ClearAllClicked?.Invoke();
             btnDeleteSelected.Click += (_, __) => DeleteSelectedClicked?.Invoke();
             btnSelectAll.Click += (_, __) => SelectAllClicked?.Invoke();
 
+            // Filter and search events
             cmbFilter.SelectedIndexChanged += (_, __) => FilterChanged?.Invoke();
             txtSearch.TextChanged += (_, __) => SearchChanged?.Invoke();
 
+            // Refresh view when becoming visible
             VisibleChanged += (_, __) =>
             {
                 if (Visible && _initialized)
                     Activate();
             };
+
             btnMarkReadSelected.Click += (_, __) => MarkSelectedReadClicked?.Invoke();
             btnMarkUnreadSelected.Click += (_, __) => MarkSelectedUnreadClicked?.Invoke();
-            flow.SizeChanged += (_, __) => FixCardsWidth();
 
+            // Adjust card widths on flow panel resize
+            flow.SizeChanged += (_, __) => FixCardsWidth();
         }
 
-        // CALL THIS like MyTickets / UserSettings
+ 
         public void Initialize(INavigationService navigation, IAppSession session)
         {
             if (_initialized) return;
@@ -80,12 +85,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             _repo = new MySqlUserNotificationsRepository(connStr);
             _service = new UserNotificationsService(_repo);
-            _presenter = new UserNotificationsPresenter(this, _session); // now _session is not null
+            _presenter = new UserNotificationsPresenter(this, _session); // Presenter initialized with session
 
             _initialized = true;
         }
-
-
 
         public void Activate()
         {
@@ -94,6 +97,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         // ================== IUserNotificationsView ==================
+
         public int UserId => _navigation?.GetCurrentUserId() ?? 0;
 
         public string Filter => cmbFilter.SelectedItem?.ToString() ?? "All";
@@ -117,58 +121,55 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public event Action MenuDeleteClicked;
         public event Action MenuSeeTicketClicked;
 
+     
         public void BindNotifications(List<UserNotificationRow> rows)
-{
-    flow.SuspendLayout();
-    try
-    {
-        // ❶ Preserve selection before clearing
-        var oldSelected = new HashSet<int>(_selectedIds);
-
-        flow.Controls.Clear();
-
-        _selectedIds.Clear();
-        _focusedId = null;
-
-        lblCount.Text = $"Notifications ({rows.Count})";
-
-        pnlEmpty.Visible = rows.Count == 0;
-        if (rows.Count == 0)
         {
-            flow.Controls.Add(pnlEmpty);
-            return;
-        }
-
-        foreach (var n in rows)
-        {
-            var card = CreateCard(n);
-            flow.Controls.Add(card);
-
-            // ❷ Restore selection if previously selected
-            if (oldSelected.Contains(n.NotificationId))
+            flow.SuspendLayout();
+            try
             {
-                _selectedIds.Add(n.NotificationId);
-                ApplySelectedVisual(card, true);
+                // Preserve previously selected notification IDs
+                var oldSelected = new HashSet<int>(_selectedIds);
+
+                flow.Controls.Clear();
+                _selectedIds.Clear();
+                _focusedId = null;
+
+                lblCount.Text = $"Notifications ({rows.Count})";
+
+                pnlEmpty.Visible = rows.Count == 0;
+                if (rows.Count == 0)
+                {
+                    flow.Controls.Add(pnlEmpty);
+                    return;
+                }
+
+                foreach (var n in rows)
+                {
+                    var card = CreateCard(n);
+                    flow.Controls.Add(card);
+
+                    // Restore selection if previously selected
+                    if (oldSelected.Contains(n.NotificationId))
+                    {
+                        _selectedIds.Add(n.NotificationId);
+                        ApplySelectedVisual(card, true);
+                    }
+                }
+
+                // Set padding for flow panel
+                flow.Padding = new Padding(6, 6, 26, 6);
             }
+            finally
+            {
+                flow.ResumeLayout(true);
+            }
+
+            // Adjust width of cards to fit panel
+            FixCardsWidth();
+
+            // Update selection bar
+            UpdateSelectionBar();
         }
-
-        // ✅ set padding once
-        flow.Padding = new Padding(6, 6, 26, 6); 
-    }
-    finally
-    {
-        flow.ResumeLayout(true);
-    }
-
-    // force proper width now
-    FixCardsWidth();
-
-    // update selection bar
-    UpdateSelectionBar();
-}
-
-
-
 
         public void SetUnreadCount(int count)
         {
@@ -190,6 +191,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
 
         // ================== UI HELPERS ==================
+
+        /// <summary>
+        /// Creates a notification card with title, message, meta info, and menu button.
+        /// Handles selection, multi-select, and card click events.
+        /// </summary>
         private Control CreateCard(UserNotificationRow n)
         {
             int cardWidth = Math.Max(520, flow.DisplayRectangle.Width - flow.Padding.Horizontal - 16);
@@ -209,6 +215,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Tag = n
             };
 
+            // Title label
             var lblTitle = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
@@ -219,17 +226,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 AutoSize = true
             };
 
+            // Message label
             var lblMsg = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
                 Font = new Font("Segoe UI", 9.5F),
                 ForeColor = Color.FromArgb(60, 70, 85),
-                //   Text = Shorten(n.Message, 100),
                 Text = n.Message,
                 Location = new Point(16, 38),
                 AutoSize = true
             };
 
+            // Meta info label (type + date)
             var lblMeta = new Guna2HtmlLabel
             {
                 BackColor = Color.Transparent,
@@ -240,6 +248,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 AutoSize = true
             };
 
+            // Menu button for context actions
             var btnMenu = new Guna2Button
             {
                 Text = "⋮",
@@ -250,6 +259,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 BorderRadius = 8
             };
 
+            // Position menu button on the top-right corner of card
             void PositionMenu()
             {
                 int x = card.Width - btnMenu.Width - 10;
@@ -260,12 +270,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             PositionMenu();
             card.SizeChanged += (_, __) => PositionMenu();
 
+            // Show context menu when menu button clicked
             btnMenu.Click += (_, __) =>
             {
                 _focusedId = n.NotificationId;
                 ShowCardMenu(btnMenu, n);
             };
 
+            // Handle card click for selection / opening
             void CardClick(object s, EventArgs e)
             {
                 _focusedId = n.NotificationId;
@@ -274,43 +286,42 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
                 if (ctrl)
                 {
-                    ToggleSelect(n.NotificationId, card);   // ✅ multi-select
+                    // Toggle multi-selection
+                    ToggleSelect(n.NotificationId, card);
                     return;
                 }
 
-                // normal click: clear selection + open notification
+                // Normal click: clear selection and open notification
                 ClearSelectionUI();
                 NotificationClicked?.Invoke();
             }
 
-            // click handlers
+            // Assign click events
             card.Click += CardClick;
             lblTitle.Click += CardClick;
             lblMsg.Click += CardClick;
             lblMeta.Click += CardClick;
 
+            // Add labels and menu to card
             card.Controls.Add(lblTitle);
             card.Controls.Add(lblMsg);
             card.Controls.Add(lblMeta);
             card.Controls.Add(btnMenu);
 
-            // ✅ show selection highlight if already selected
+            // Show selection highlight if already selected
             ApplySelectedVisual(card, _selectedIds.Contains(n.NotificationId));
 
             return card;
         }
 
-
-
-
-
-
-
+        /// <summary>
+        /// Shows the context menu for a card (Mark Read/Unread, Delete, See Ticket).
+        /// </summary>
         private void ShowCardMenu(Control anchor, UserNotificationRow n)
         {
             var menu = new ContextMenuStrip();
 
-            // Click = read, so menu only shows Mark as Read when unread
+            // Only show Mark as Read when notification is unread
             if (!n.IsRead)
                 menu.Items.Add("Mark as read").Click += (_, __) => MenuMarkReadClicked?.Invoke();
             else
@@ -318,12 +329,11 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             menu.Items.Add("Delete").Click += (_, __) => MenuDeleteClicked?.Invoke();
 
-            // "See ticket" only if BookingId exists
+            // Only show "See ticket" if BookingId exists
             if (n.BookingId.HasValue)
             {
                 menu.Items.Add("See ticket").Click += (_, __) =>
                 {
-
                     _focusedId = n.NotificationId;
                     SeeTicketRequested?.Invoke(n.BookingId.Value);
                 };
@@ -332,7 +342,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             menu.Show(anchor, new Point(0, anchor.Height));
         }
 
-        // selection bar
+        // Toggle selection state for a card
         private void ToggleSelect(int notificationId, Control card)
         {
             if (_selectedIds.Contains(notificationId))
@@ -344,6 +354,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             UpdateSelectionBar();
         }
 
+        // Clears all selections and updates UI
         private void ClearSelectionUI()
         {
             _selectedIds.Clear();
@@ -353,6 +364,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 ApplySelectedVisual(c, false);
         }
 
+        // Updates visual highlight for selected/unselected cards
         private void ApplySelectedVisual(Control card, bool selected)
         {
             if (card is Guna2ShadowPanel sp && sp.Tag is UserNotificationRow row)
@@ -364,19 +376,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             }
         }
 
-
-
+        // Updates the selection bar based on number of selected notifications
         private void UpdateSelectionBar()
         {
             pnlSelection.Visible = _selectedIds.Count > 0;
             lblSelected.Text = _selectedIds.Count > 0 ? $"Selected: {_selectedIds.Count}" : "";
         }
 
-
-
+        // Fixes width of all cards based on flow panel size
         private void FixCardsWidth()
         {
-            // DisplayRectangle.Width is better when AutoScroll is ON
             int w = flow.DisplayRectangle.Width - flow.Padding.Horizontal - 16;
             if (w < 520) w = 520;
 
@@ -386,6 +395,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     sp.Width = w;
             }
         }
+
+        // Select all notifications in the UI
         public void SelectAllUI()
         {
             _selectedIds.Clear();
@@ -402,44 +413,19 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             UpdateSelectionBar();
         }
 
+        // Clears all selections
         public void ClearSelectionPublic()
         {
             ClearSelectionUI();
         }
 
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblCount_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblWelcome_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panelSearch_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void guna2Panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void flow_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
+    
+        private void lblTitle_Click(object sender, EventArgs e) { }
+        private void lblCount_Click(object sender, EventArgs e) { }
+        private void lblWelcome_Click(object sender, EventArgs e) { }
+        private void panelSearch_Paint(object sender, PaintEventArgs e) { }
+        private void guna2Panel1_Paint(object sender, PaintEventArgs e) { }
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
+        private void flow_Paint(object sender, PaintEventArgs e) { }
     }
 }

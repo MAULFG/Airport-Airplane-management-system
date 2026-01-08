@@ -24,7 +24,7 @@ namespace Airport_Airplane_management_system.Presenter
         private FlightSeats _seat;
         private decimal _price;
 
-        private bool _isClosed; // 🔒 prevents double execution
+        private bool _isClosed; 
 
         public PassengerDetailsPresenter(
             IPassengerDetailsView view,
@@ -36,10 +36,8 @@ namespace Airport_Airplane_management_system.Presenter
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _session = session;
 
-            bookingRepo = new MySqlBookingRepository(
-                "server=localhost;port=3306;database=user;user=root;password=2006");
-            passengerRepo = new MySqlPassengerRepository(
-                "server=localhost;port=3306;database=user;user=root;password=2006");
+            bookingRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            passengerRepo = new MySqlPassengerRepository("server=localhost;port=3306;database=user;user=root;password=2006");
 
             _passengerService = new PassengerService(passengerRepo, session);
             _bookingService = new BookingService(bookingRepo, session);
@@ -54,7 +52,6 @@ namespace Airport_Airplane_management_system.Presenter
             LoadSummary();
         }
 
-        // ================= SUMMARY =================
         private void LoadSummary()
         {
             _view.ShowSelectedSeat(_seat);
@@ -67,7 +64,6 @@ namespace Airport_Airplane_management_system.Presenter
             _view.ShowPrice(basePrice, window, tax, total);
         }
 
-        // ================= BOOKING =================
 
         private void OnCompleteBooking()
         {
@@ -108,7 +104,7 @@ namespace Airport_Airplane_management_system.Presenter
             BookingCompleted?.Invoke();
         }
 
-        // ================= CANCEL =================
+
 
         private void OnCancel()
         {
@@ -117,7 +113,6 @@ namespace Airport_Airplane_management_system.Presenter
             PassengerDetailsClosed?.Invoke();
         }
 
-        // ================= CLEANUP =================
 
         private void Close()
         {
@@ -128,8 +123,6 @@ namespace Airport_Airplane_management_system.Presenter
 
             _view.ClearInputs();
         }
-
-        // ================= VALIDATION =================
 
         private bool ValidatePassenger()
         {
@@ -166,7 +159,6 @@ namespace Airport_Airplane_management_system.Presenter
             return true;
         }
 
-        // ================= HELPERS =================
 
         private bool IsWindowSeat(FlightSeats seat, Flight flight)
         {

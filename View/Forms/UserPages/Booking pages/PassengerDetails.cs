@@ -19,7 +19,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages.Booking_pages
         {
             InitializeComponent();
 
-            // Wire UI → Events
+            
 
             btnConfirm.Click += (s, e) => CompleteBookingClicked?.Invoke();
             guna2Button1.Click += (s, e) => CancelClicked?.Invoke();

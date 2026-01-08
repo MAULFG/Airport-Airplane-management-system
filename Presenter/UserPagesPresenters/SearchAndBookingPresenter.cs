@@ -49,12 +49,11 @@ namespace Airport_Airplane_management_system.Presenter
         public void RefreshData()
         {
             
-                // 1️⃣ Load distinct "From" and "To" airports for combo boxes
                 var flights = _flightService.LoadFlightsWithSeats();
 
                 var fromList = flights.Select(f => f.From).Distinct().OrderBy(f => f).ToList();
                 var toList = flights.Select(f => f.To).Distinct().OrderBy(f => f).ToList();
-                var classList = new List<string> { "Economy", "Business", "First" }; // Adjust based on your model
+                var classList = new List<string> { "Economy", "Business", "First" }; 
 
 
 
@@ -64,26 +63,24 @@ namespace Airport_Airplane_management_system.Presenter
         }
         private void OnSearchClicked(object sender, EventArgs e)
         {
-            // Clear the view first
-            _view.DisplayFlights(new List<Flight>()); // clear existing cards
 
-            // Load flights WITH seats
+            _view.DisplayFlights(new List<Flight>()); 
+
+
             var flights = _flightService.LoadFlightsWithSeats().AsEnumerable();
 
-            // Filter by "From" and "To"
             if (!string.IsNullOrWhiteSpace(_view.From))
                 flights = flights.Where(f => f.From.Equals(_view.From, StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrWhiteSpace(_view.To))
                 flights = flights.Where(f => f.To.Equals(_view.To, StringComparison.OrdinalIgnoreCase));
 
-            // Filter by date if selected
+
             if (_view.IsDateSelected && _view.DepartureDate.HasValue)
             {
                 var date = _view.DepartureDate.Value.Date;
                 flights = flights.Where(f => f.Departure.Date == date);
             }
 
-            // Filter by class + passengers
             if (!string.IsNullOrWhiteSpace(_view.Class))
             {
                 flights = flights.Where(f => f.GetAvailableSeats(_view.Class).Count >= _view.Passengers);
@@ -97,7 +94,6 @@ namespace Airport_Airplane_management_system.Presenter
                 return;
             }
 
-            // Pass the Flight objects to the view
             _view.DisplayFlights(finalFlights);
         }
 

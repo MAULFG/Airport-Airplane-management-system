@@ -2,6 +2,7 @@
 {
     private System.ComponentModel.IContainer components = null;
 
+    // Cleans up any resources being used
     protected override void Dispose(bool disposing)
     {
         if (disposing && (components != null))
@@ -11,12 +12,11 @@
         base.Dispose(disposing);
     }
 
+    // Initializes all components of the form
     private void InitializeComponent()
     {
         SuspendLayout();
-        // 
-        // Main1
-        // 
+
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1264, 681);
@@ -24,6 +24,7 @@
         Name = "Main1";
         Text = "Airport Management System";
         Load += Main1_Load;
+
         ResumeLayout(false);
     }
 }

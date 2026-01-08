@@ -12,7 +12,7 @@ using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Airport_Airplane_management_system.View.Forms.UserPages
@@ -22,49 +22,40 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         public event Action<FlightSeats> SeatSelected;
         public event Action ConfirmBookingClicked;
         private PassengerDetailsPresenter _passengerPresenter;
- 
 
         private readonly IAppSession session;
-        public BookingPage(int flightId,IAppSession session)
-        {
-            InitializeComponent();
-         
-
-            this.session = session ?? throw new ArgumentNullException(nameof(session));
-            passengerDetails1.Hide();
-            btnConfirm.Click += (_, _) => ConfirmBookingClicked?.Invoke();
-        }
 
         private Flight _currentFlight;
         private FlightSeats _selectedSeat;
+
+        public BookingPage(int flightId, IAppSession session)
+        {
+            InitializeComponent();
+
+            this.session = session ?? throw new ArgumentNullException(nameof(session));
+            passengerDetails1.Hide(); // hide passenger details until seat selected
+            btnConfirm.Click += (_, _) => ConfirmBookingClicked?.Invoke();
+        }
+
         public void ShowPassengerDetails(Flight flight, FlightSeats seat, decimal price)
         {
-
             _passengerPresenter = null;
             passengerDetails1.Show();
             passengerDetails1.BringToFront();
 
-            _passengerPresenter = new PassengerDetailsPresenter( passengerDetails1, session,flight, seat,price);
-
+            _passengerPresenter = new PassengerDetailsPresenter(passengerDetails1, session, flight, seat, price);
 
             _passengerPresenter.BookingCompleted += () =>
             {
                 passengerDetails1.Hide();
-             
                 BookingCompleted?.Invoke();
             };
 
             _passengerPresenter.PassengerDetailsClosed += () =>
             {
                 passengerDetails1.Hide();
-                
             };
-
-
-
         }
-
-
 
         public event Action BookingCompleted;
 
@@ -80,6 +71,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             flowSeats.Controls.Clear();
             _currentFlight = flight;
+
             if (flight?.FlightSeats == null || flight.FlightSeats.Count == 0)
             {
                 ShowMessage("No seats available.");
@@ -88,6 +80,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             var seatDict = flight.FlightSeats.ToDictionary(s => s.SeatNumber);
 
+            // seat layout mappings
             Dictionary<int, string> firstMap = null;
             Dictionary<int, string> businessMap = null;
             Dictionary<int, string> economyMap = null;
@@ -98,7 +91,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             if (model.Contains("a320"))
             {
                 totalColumns = 9;
-                firstMap = null;
                 businessMap = new Dictionary<int, string> { { 2, "A" }, { 3, "B" }, { 5, "C" }, { 6, "D" } };
                 economyMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, { 3, "C" }, { 5, "D" }, { 6, "E" }, { 7, "F" } };
             }
@@ -111,21 +103,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             }
             else if (model.Contains("g650"))
             {
-                // G650 is a private jet, usually 1-1 or 2-2 seating
-                totalColumns = 3; // simple layout
+                totalColumns = 3; // private jet, simple layout
                 firstMap = new Dictionary<int, string> { { 0, "A" }, { 2, "B" } };
-                businessMap = null;
-                economyMap = null; // usually not used
-            }else
+            }
+            else
             {
                 totalColumns = 9;
                 firstMap = new Dictionary<int, string> { { 2, "A" }, { 3, "B" }, { 4, "C" }, { 5, "D" } };
-                businessMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, {3, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" } };
+                businessMap = new Dictionary<int, string> { { 1, "A" }, { 2, "B" }, { 3, "C" }, { 4, "D" }, { 5, "E" }, { 6, "F" } };
                 economyMap = new Dictionary<int, string> { { 0, "A" }, { 1, "B" }, { 2, "C" }, { 3, "D" }, { 4, "E" }, { 5, "F" }, { 6, "G" }, { 7, "H" }, { 8, "I" } };
-
             }
-            _currentFlight = flight;
-            // Create table
+
+            // create table
             var table = new TableLayoutPanel
             {
                 RowCount = model.Contains("g650") ? 6 : 43,
@@ -139,22 +128,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             for (int r = 0; r < 43; r++)
                 table.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
-            // Track which row is used in table
             int currentRow = 0;
 
             void FillClass(Dictionary<int, string> map, string classType)
             {
                 if (map == null || map.Count == 0) return;
 
-                // Only seats of this class
                 var seats = flight.FlightSeats
                                   .Where(s => s.ClassType.Equals(classType, StringComparison.OrdinalIgnoreCase))
                                   .OrderBy(s => s.SeatNumber)
                                   .ToList();
-
                 if (!seats.Any()) return;
 
-                // Group seats by row number (digits part of seatNumber)
                 var groupedRows = new Dictionary<int, List<FlightSeats>>();
                 foreach (var seat in seats)
                 {
@@ -164,7 +149,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     groupedRows[rowNum].Add(seat);
                 }
 
-                // Fill each row that has seats
                 foreach (var rowNum in groupedRows.Keys.OrderBy(x => x))
                 {
                     foreach (var kv in map)
@@ -176,7 +160,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 }
             }
 
-            // Fill only classes that exist
+            // fill each class type
             FillClass(firstMap, "VIP");
             FillClass(firstMap, "First");
             FillClass(businessMap, "Business");
@@ -184,31 +168,22 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             var wrapper = new Panel { AutoSize = true };
             wrapper.Controls.Add(table);
-            wrapper.Margin = new Padding((flowSeats.Width - table.PreferredSize.Width) / 2 - 200, 10, 10, 10);
+            wrapper.Margin = new Padding((flowSeats.Width - table.PreferredSize.Width) / 2 - 200, 10, 10, 10); // center table
             flowSeats.Controls.Add(wrapper);
         }
 
-
-
-
-
-        // Helper function
         private void AddSeatOrPlaceholder(TableLayoutPanel table, Dictionary<string, FlightSeats> seatDict, string seatNumber, int row, int col)
         {
             if (seatDict.TryGetValue(seatNumber, out var seat))
-            {
                 table.Controls.Add(CreateSeatButton(seatDict, seatNumber), col, row);
-            }
             else
-            {
-                table.Controls.Add(new Panel { Width = 65, Height = 45 }, col, row); // empty placeholder
-            }
+                table.Controls.Add(new Panel { Width = 65, Height = 45 }, col, row); // empty cell
         }
 
         private Control CreateSeatButton(Dictionary<string, FlightSeats> seatDict, string seatNumber)
         {
             if (!seatDict.TryGetValue(seatNumber, out FlightSeats seat))
-                return new Panel { Width = 65, Height = 45 }; // empty space if seat missing
+                return new Panel { Width = 65, Height = 45 };
 
             var btn = new Guna2Button
             {
@@ -223,50 +198,39 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             btn.Click += (_, _) =>
             {
-                if (seat.IsBooked) return; // ignore booked seats
-                _selectedSeat = seat;      // <-- UPDATE CURRENTLY SELECTED SEAT
+                if (seat.IsBooked) return; // ignore booked
+                _selectedSeat = seat;
                 SeatSelected?.Invoke(seat);
             };
 
             return btn;
         }
+
         public void ShowSelectedSeat(FlightSeats seat, decimal ignoredBasePrice = 0)
         {
             lblStatusValue.Text = seat.IsBooked ? "Booked" : "Available";
             lblSeatValue.Text = seat.SeatNumber;
             lblClassValue.Text = seat.ClassType;
+
             decimal price = seat.SeatPrice;
-            decimal Window = 0;
-            if (IsWindowSeat(seat, _currentFlight))
-                Window = price * 0.20m;
-
+            decimal Window = IsWindowSeat(seat, _currentFlight) ? price * 0.20m : 0; // 20% surcharge for window
             decimal tax = (price + Window) * 0.10m;
-            decimal total = price +Window + tax;
+            decimal total = price + Window + tax;
 
-           
             lblBasePriceValue.Text = $"Base: ${price:0.00} ";
             guna2HtmlLabel1.Text = $" WindowSeat: ${Window:0.00}";
             lblTaxValue.Text = $"Tax: ${tax:0.00}";
             lblTotalValue.Text = $"Total: ${total:0.00}";
         }
 
-
-
         private bool IsWindowSeat(FlightSeats seat, Flight flight)
         {
-            string seatLetter = new string(seat.SeatNumber
-                                            .SkipWhile(char.IsDigit)
-                                            .ToArray())
-                                            .ToUpper();
-
+            string seatLetter = new string(seat.SeatNumber.SkipWhile(char.IsDigit).ToArray()).ToUpper();
             string model = flight.Plane.Model.ToLower();
 
             if (model.Contains("a320"))
-            {
                 return seatLetter == "A" || seatLetter == "F";
-            }
-            else if (model.Contains("777"))
-            {
+            if (model.Contains("777"))
                 return seat.ClassType switch
                 {
                     "First" => seatLetter == "A" || seatLetter == "D",
@@ -274,28 +238,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     "Economy" => seatLetter == "A" || seatLetter == "I",
                     _ => false
                 };
-            }
-            else if (model.Contains("g650"))
-            {
+            if (model.Contains("g650"))
                 return seatLetter == "A" || seatLetter == "B";
-            }
-            else
+
+            return seat.ClassType switch
             {
-                return seat.ClassType switch
-                {
-                    "VIP" => seatLetter == "A" || seatLetter == "B",
-                    "First" => seatLetter == "A" || seatLetter == "D",
-                    "Business" => seatLetter == "A" || seatLetter == "F",
-                    "Economy" => seatLetter == "A" || seatLetter == "I",
-                    _ => false
-                };
-            }
-
-            
+                "VIP" => seatLetter == "A" || seatLetter == "B",
+                "First" => seatLetter == "A" || seatLetter == "D",
+                "Business" => seatLetter == "A" || seatLetter == "F",
+                "Economy" => seatLetter == "A" || seatLetter == "I",
+                _ => false
+            };
         }
-
-
-
 
         public void ShowMessage(string message)
         {
@@ -306,30 +260,16 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         {
             return classType switch
             {
+                "VIP" => Color.DarkGoldenrod,
                 "First" => Color.Goldenrod,
                 "Business" => Color.SteelBlue,
                 _ => Color.DarkCyan
             };
         }
 
-        private void panelSummary_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void flowSeats_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void BookingPage_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnConfirm_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void panelSummary_Paint(object sender, PaintEventArgs e) { }
+        private void flowSeats_Paint(object sender, PaintEventArgs e) { }
+        private void BookingPage_Load(object sender, EventArgs e) { }
+        private void btnConfirm_Click(object sender, EventArgs e) { }
     }
 }

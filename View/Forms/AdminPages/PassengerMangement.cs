@@ -164,7 +164,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     Location = new Point(18, 18),
                     SizeMode = PictureBoxSizeMode.Zoom,
                     BackColor = Color.FromArgb(245, 245, 245),
-                   // Image = Properties.Resources.passenger
+                    Image = Properties.Resources.Passenger1
                 };
                 Controls.Add(picAvatar);
 

@@ -38,11 +38,6 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
             _view.SearchChanged += ApplyFilter;
             _view.CancelClicked += OnCancel;
         }
-
-        /// <summary>
-        /// ✅ Public method to refresh all ticket data
-        /// Call this whenever the My Tickets page is opened
-        /// </summary>
         public void RefreshData()
         {
             try
@@ -139,7 +134,6 @@ namespace Airport_Airplane_management_system.Presenter.UserPagesPresenters
                 // Refresh the list
                 RefreshData();
 
-                // Optional: update notifications badge
                 _view.RequestBadgeRefresh();
             }
             catch (Exception ex)

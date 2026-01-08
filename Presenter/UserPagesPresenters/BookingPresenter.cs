@@ -47,17 +47,13 @@ namespace Airport_Airplane_management_system.Presenter
         private void OnBookingCompleted()
         {
             _selectedSeat = null;
-
-            // reload flight + seats
             LoadFlight(_flight.FlightID);
         }
 
         public void Refresh(int flightId)
         {
-            // Clear current seat selection
             _selectedSeat = null;
 
-            // Reload the flight info
             LoadFlight(flightId);
         }
 
@@ -76,8 +72,6 @@ namespace Airport_Airplane_management_system.Presenter
                 _view.ShowMessage("Flight plane is not assigned.");
                 return;
             }
-
-            // Now flight is fully loaded, with plane and seats
             _view.ShowFlightInfo(_flight);
             _view.ShowSeats(_flight);
         }
@@ -92,10 +86,7 @@ namespace Airport_Airplane_management_system.Presenter
 
             _selectedSeat = seat;
 
-            // Base price from flight by class
             decimal basePrice = _flight.GetSeatPrice(seat.ClassType);
-
-            // Optional: add window seat surcharge (+20%)
             decimal priceWithSurcharge = basePrice;
             if (IsWindowSeat(seat, _flight))
                 priceWithSurcharge += basePrice * 0.20m;
@@ -103,7 +94,6 @@ namespace Airport_Airplane_management_system.Presenter
             _view.ShowSelectedSeat(seat, priceWithSurcharge);
         }
 
-        // Helper: detect window seat
         private bool IsWindowSeat(FlightSeats seat, Flight flight)
         {
             string seatLetter = new string(seat.SeatNumber.SkipWhile(char.IsDigit).ToArray()).ToUpper();

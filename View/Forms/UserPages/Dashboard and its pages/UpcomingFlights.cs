@@ -12,7 +12,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
     {
         private FlowLayoutPanel flowFlights;
 
-        // MVP trigger
         public event EventHandler LoadFlightsRequested;
 
         public UpcomingFlights()
@@ -27,7 +26,7 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             {
                 foreach (Control c in flowFlights.Controls)
                 {
-                    c.Width = flowFlights.ClientSize.Width - 50; // adjust width dynamically
+                    c.Width = flowFlights.ClientSize.Width - 50;
                 }
             };
         }
@@ -37,16 +36,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowFlights = new FlowLayoutPanel();
             headerPanel = new Guna2Panel();
             SuspendLayout();
-            // ----------- HEADER PANEL -----------
             headerPanel.Height = 80;
             headerPanel.Dock = DockStyle.Top;
-            headerPanel.FillColor = Color.DarkCyan; // Dark theme
+            headerPanel.FillColor = Color.DarkCyan;
             headerPanel.Padding = new Padding(20);
             headerPanel.BorderRadius = 20;
 
             var lblHeader = new Label
             {
-                Text = "Upcoming Flights",
+                Text = "Upcoming Flights in Our Airline",
                 Font = new Font("Segoe UI", 18, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.Transparent,
@@ -55,27 +53,21 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             headerPanel.Controls.Add(lblHeader);
 
-
-            // 
-            // flowFlights
-            // 
             flowFlights.AutoScroll = true;
             flowFlights.WrapContents = false;
             flowFlights.Dock = DockStyle.Fill;
             flowFlights.FlowDirection = FlowDirection.TopDown;
-            flowFlights.Padding = new Padding(10,10,10,200);
+            flowFlights.Padding = new Padding(10, 10, 10, 200);
 
-            // ----------- ADD TO CONTROL -----------
-            Controls.Add(flowFlights);      // Add first (z-order bottom)
-            Controls.Add(headerPanel);      // Add second (z-order top)
+            Controls.Add(flowFlights);
+            Controls.Add(headerPanel);
 
-            BackColor = Color.White; // dark background
+            BackColor = Color.White;
             Size = new Size(1280, 720);
             Padding = new Padding(20);
             ResumeLayout(false);
         }
 
-        // ================= PRESENTER CALLS THIS =================
         public void LoadFlights(IEnumerable<Flight> flights)
         {
             flowFlights.Controls.Clear();
@@ -84,14 +76,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 flowFlights.Controls.Add(CreateCard(f));
         }
 
-        // ================= ORIGINAL CARD DESIGN =================
         private Guna2Panel CreateCard(Flight f)
         {
             int padding = 10;
             int iconSize = 50;
             int spacing = 10;
 
-            // ===== CARD =====
             var card = new Guna2Panel
             {
                 Width = flowFlights.ClientSize.Width - 50,
@@ -99,10 +89,9 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 FillColor = Color.White,
                 BorderRadius = 10,
                 Margin = new Padding(5),
-                Tag = false // collapsed
+                Tag = false
             };
 
-            // ===== PLANE ICON =====
             var planePic = new Guna2PictureBox
             {
                 Size = new Size(iconSize, iconSize),
@@ -113,7 +102,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(planePic);
 
-            // ===== ROUTE LABEL =====
             var lblRoute = new Guna2HtmlLabel
             {
                 Text = $"{f.From} → {f.To}",
@@ -123,7 +111,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(lblRoute);
 
-            // ===== FLIGHT ID LABEL =====
             var lblFlightID = new Guna2HtmlLabel
             {
                 Text = $"Flight #{f.FlightID}",
@@ -133,7 +120,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(lblFlightID);
 
-            // ===== DATE LABEL =====
             var lblDate = new Guna2HtmlLabel
             {
                 Text = f.Departure.ToString("yyyy-MM-dd"),
@@ -143,7 +129,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(lblDate);
 
-            // ===== DETAILS PANEL =====
             var details = new Guna2Panel
             {
                 Width = card.Width - padding * 2,
@@ -155,7 +140,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             card.Controls.Add(details);
 
-            // ===== BOOK BUTTON =====
             var btnBook = new Guna2Button
             {
                 Text = "Book",
@@ -174,7 +158,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 BookFlightRequested?.Invoke(flightId);
             };
 
-            // ===== PLANE INFO =====
             var lblPlaneID = new Guna2HtmlLabel
             {
                 Text = f.Plane != null ? $"Plane ID: {f.Plane.PlaneID}" : "Plane ID: N/A",
@@ -191,15 +174,13 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             };
             details.Controls.Add(lblPlaneModel);
 
-            // ===== ROWS =====
             var rowDeparture = CreateRow("Departure:", f.Departure, details.Width);
             var rowArrival = CreateRow("Arrival:", f.Arrival, details.Width);
             details.Controls.Add(rowDeparture);
             details.Controls.Add(rowArrival);
 
-            // ===== SEAT COUNTS =====
-            int firstTotal = 0, businessTotal = 0, economyTotal = 0,vipTotal=0;
-            int firstAvailable = 0, businessAvailable = 0, economyAvailable = 0,vipAvailable=0;
+            int firstTotal = 0, businessTotal = 0, economyTotal = 0, vipTotal = 0;
+            int firstAvailable = 0, businessAvailable = 0, economyAvailable = 0, vipAvailable = 0;
 
             if (f?.FlightSeats != null)
             {
@@ -226,15 +207,14 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                             economyTotal++;
                             if (!s.IsBooked) economyAvailable++;
                             break;
-                       
+
                     }
                 }
             }
 
-            // ===== TOTAL / AVAILABLE SEATS =====
             var lblTotalSeats = new Guna2HtmlLabel
             {
-                Text = $"Total Seats: {firstTotal + businessTotal + economyTotal+vipTotal}",
+                Text = $"Total Seats: {firstTotal + businessTotal + economyTotal + vipTotal}",
                 Font = new Font("Arial", 9, FontStyle.Bold),
                 AutoSize = true
             };
@@ -242,19 +222,17 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             var lblAvailableSeats = new Guna2HtmlLabel
             {
-                Text = $"Available Seats: {firstAvailable + businessAvailable + economyAvailable+vipAvailable}",
+                Text = $"Available Seats: {firstAvailable + businessAvailable + economyAvailable + vipAvailable}",
                 Font = new Font("Arial", 9, FontStyle.Bold),
                 AutoSize = true
             };
             details.Controls.Add(lblAvailableSeats);
 
-            // ===== CLASS LABELS =====
             if (vipTotal > 0) details.Controls.Add(CreateSeatLabel($"VIP Class: {vipAvailable}/{vipTotal}", 0, 0));
             if (firstTotal > 0) details.Controls.Add(CreateSeatLabel($"First Class: {firstAvailable}/{firstTotal}", 0, 0));
             if (businessTotal > 0) details.Controls.Add(CreateSeatLabel($"Business Class: {businessAvailable}/{businessTotal}", 0, 0));
             if (economyTotal > 0) details.Controls.Add(CreateSeatLabel($"Economy Class: {economyAvailable}/{economyTotal}", 0, 0));
-            
-            // ===== TOGGLE =====
+
             void Toggle()
             {
                 bool expanded = (bool)card.Tag;
@@ -267,16 +245,15 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             card.Click += (s, e) => Toggle();
             foreach (Control c in card.Controls)
             {
-                if (c != btnBook) // <-- exclude the button
+                if (c != btnBook)
                     c.Click += (s, e) => Toggle();
             }
 
-            // ===== POSITION ELEMENTS =====
             void PositionElements()
             {
                 lblRoute.Location = new Point(planePic.Right + spacing, padding);
                 lblFlightID.Location = new Point(planePic.Right + spacing, lblRoute.Bottom + 5);
-                lblDate.Left = card.Width - lblDate.Width - padding-35;
+                lblDate.Left = card.Width - lblDate.Width - padding - 35;
                 lblDate.Top = padding;
 
                 details.Width = card.Width - padding * 2;
@@ -289,12 +266,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 rowArrival.Top = rowDeparture.Bottom + 5;
                 rowArrival.Width = details.Width - 20;
 
-                // Total/Available seats
                 int ySeatsHeader = rowArrival.Bottom + 10;
                 lblTotalSeats.Location = new Point(0, ySeatsHeader);
                 lblAvailableSeats.Location = new Point(lblTotalSeats.Right + spacing, ySeatsHeader);
 
-                // Class labels
                 int ySeat = ySeatsHeader + lblTotalSeats.Height + 5;
                 int xSeat = 0;
                 foreach (Control seatLabel in details.Controls.OfType<Guna2HtmlLabel>().Where(l => l.Text.Contains("Class:")))
@@ -303,7 +278,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                     xSeat += 220;
                 }
 
-                // Book button
                 btnBook.Left = details.Width - btnBook.Width - 10;
                 btnBook.Top = details.Height - btnBook.Height - 45;
             }
@@ -315,7 +289,6 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         }
         public event Action<int> BookFlightRequested;
 
-        // ===== CREATE ROW =====
         private Guna2Panel CreateRow(string title, DateTime date, int panelWidth)
         {
             int padding = 10;
@@ -353,8 +326,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
 
             void UpdatePositions()
             {
-                lblDate.Left = (panel.Width - lblDate.Width) / 2-200;
-                lblTime.Left = panel.Width - lblTime.Width - padding-250;
+                lblDate.Left = (panel.Width - lblDate.Width) / 2 - 200;
+                lblTime.Left = panel.Width - lblTime.Width - padding - 250;
                 lblTitle.Left = padding;
             }
 
