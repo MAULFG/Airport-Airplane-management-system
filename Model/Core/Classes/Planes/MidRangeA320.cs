@@ -15,11 +15,11 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
         {
             Seats.Clear();
 
-            // Business → Rows 1–4 (1A–4D) => 16 (BUT your fixed config expects 32 business)
-            // You said fixed config is 8×4 Business = 32. That means rows 1–8, 4 seats each.
+            // Business → Rows 1–4 (1A–4D) => 16
+            // fixed config is 8×4 Business = 32. rows 1–8, 4 seats each.
             AddSeats("Business", 1, 8, 4);  // 32
 
-            // Economy → 23×6 = 138 means rows 9–31, 6 seats each
+            // Economy → 23×6 = 138 rows 9–31, 6 seats each
             AddSeats("Economy", 9, 31, 6);  // 138
         }
 

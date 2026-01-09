@@ -32,8 +32,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         public void RefreshData()
         {
-            // NOTE: You’re using reflection because repo interfaces aren’t consistent.
-            // For “perfect architecture”, standardize interface methods and delete InvokeList.
             var flights = InvokeList<Flight>(flightRepo, "GetAllFlights", "GetFlights", "GetAll") ?? new List<Flight>();
             var planes = InvokeList<Plane>(planeRepo, "GetAllPlanes", "GetPlanes", "GetAll") ?? new List<Plane>();
             var crew = InvokeList<Crew>(crewRepo, "GetAllCrew", "GetAllCrewMembers", "GetCrew", "GetAll") ?? new List<Crew>();

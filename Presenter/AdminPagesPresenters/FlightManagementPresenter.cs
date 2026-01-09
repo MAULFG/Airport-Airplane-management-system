@@ -28,25 +28,29 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
         private List<Plane> _planes = new List<Plane>();
 
-        private readonly Action<int>? _openCrewForFlight;
-        private readonly Action<int>? _openScheduleForPlane;
+        // ✅ make them REQUIRED (not nullable)
+        private readonly Action<int> _openCrewForFlight;
+        private readonly Action<int> _openScheduleForPlane;
 
         public FlightManagementPresenter(
             IFlightManagementView view,
-            Action<int>? openCrewForFlight = null,
-            Action<int>? openScheduleForPlane = null)
+            Action<int> openCrewForFlight,
+            Action<int> openScheduleForPlane)
         {
             flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             userRepo = new MySqlUserRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             bookRepo = new MySqlBookingRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             planeRepo = new MySqlPlaneRepository("server=localhost;port=3306;database=user;user=root;password=2006");
-            notiRepo =new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+            notiRepo = new MySqlNotificationWriterRepository("server=localhost;port=3306;database=user;user=root;password=2006");
+
             session = new AppSession();
             notificationWriterService = new NotificationWriterService(notiRepo);
+
             _view = view;
             _service = new FlightService(flightRepo, userRepo, bookRepo, planeRepo, session, notificationWriterService);
-            _openCrewForFlight = openCrewForFlight;
-            _openScheduleForPlane = openScheduleForPlane;
+
+            _openCrewForFlight = openCrewForFlight ?? throw new ArgumentNullException(nameof(openCrewForFlight));
+            _openScheduleForPlane = openScheduleForPlane ?? throw new ArgumentNullException(nameof(openScheduleForPlane));
 
             _view.ViewLoaded += (_, __) => OnLoad();
             _view.FilterChanged += (_, __) => RefreshFlights();
@@ -60,17 +64,11 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
 
             _view.PlaneChanged += planeId => OnPlaneChanged(planeId);
 
-            // ✅ NEW: open schedule whenever the view requests it
-            _view.PlaneScheduleRequested += planeId =>
-            {
-                _openScheduleForPlane?.Invoke(planeId);
-            };
+            // ✅ schedule nav
+            _view.PlaneScheduleRequested += planeId => _openScheduleForPlane(planeId);
 
-            // (Optional) if you want the crew icon to navigate using callback
-            _view.ViewCrewRequested += flightId =>
-            {
-                _openCrewForFlight?.Invoke(flightId);
-            };
+            // ✅ crew nav (this is what your 👥 button needs)
+            _view.ViewCrewRequested += flightId => _openCrewForFlight(flightId);
         }
         public void RefreshData()
         {

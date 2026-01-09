@@ -16,7 +16,6 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         event EventHandler NotrificationAClicked;
         event EventHandler LogoutAClicked;
 
-        // expose child views (so presenter can create child presenters)
         IMainAView MainAView { get; }
         IFlightManagementView FlightManagementView { get; }
         IPlaneManagementView PlaneManagementView { get; }

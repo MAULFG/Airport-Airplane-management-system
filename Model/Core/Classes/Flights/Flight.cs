@@ -49,7 +49,6 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
                 .ToList();
         }
 
-        // Optional: business logic
         public decimal GetSeatPrice(string category)
         {
             return CategoryPrices.ContainsKey(category) ? CategoryPrices[category] : 0;

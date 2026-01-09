@@ -12,7 +12,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private readonly IPlaneManagementView _view;
         private readonly IPlaneRepository _repo;
 
-        // Callback from AdminDashboard to open schedule UI
         private readonly Action<int>? _openSchedule;
 
         public PlaneManagementPresenter(
@@ -31,7 +30,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _view.PlaneSelected += OnPlaneSelected;
         }
 
-        // 🔥 Public method for AdminDashboard to refresh planes every time
+        //  Public method for AdminDashboard to refresh planes every time
         public void RefreshData()
         {
             LoadPlanes();

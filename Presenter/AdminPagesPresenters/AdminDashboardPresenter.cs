@@ -25,7 +25,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
 
         private readonly MainAPresenter _mainPresenter;
 
-        // lazy-loaded child presenters
         private CrewManagementPresenter _crewPresenter;
         private FlightManagementPresenter _flightPresenter;
         private PassengerManagementPresenter _passengerPresenter;
@@ -79,9 +78,10 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
             _view.CrewManagementClicked += (_, __) =>
             {
                 EnsureCrewPresenter();
-                _crewPresenter.RefreshData();
                 _view.CrewMangement();
+                _crewPresenter.ClearForcedFilter();
             };
+
 
             _view.PassengerManagementClicked += (_, __) =>
             {
@@ -145,12 +145,25 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
         private void EnsureFlightPresenter()
         {
             if (_flightPresenter != null) return;
+
             _flightPresenter = new FlightManagementPresenter(
                 _view.FlightManagementView,
-                openCrewForFlight: null,
+                openCrewForFlight: OpenCrewFromFlightPage,              
                 openScheduleForPlane: OpenPlaneScheduleFromFlightPage
             );
         }
+        private void OpenCrewFromFlightPage(int flightId)
+        {
+            EnsureCrewPresenter();
+
+            // navigate to crew page
+            _view.CrewMangement();
+
+            // ✅ apply filter "Assigned to this flight"
+            _crewPresenter.ShowAssignedForFlight(flightId);
+        }
+
+
 
         private void EnsurePlanePresenter()
         {

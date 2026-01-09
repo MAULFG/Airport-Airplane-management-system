@@ -17,7 +17,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         public event Action<int> DeleteRequested;
         public event Action<int>? PlaneSelected;
 
-        private Panel flowPlanes; // replace your FlowLayoutPanel
+        private Panel flowPlanes;
         private List<Control> planeCards = new();
         private AddPlaneForm addplane;
         private List<Plane> _planes = new();
@@ -36,9 +36,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             Load += (_, __) => ViewLoaded?.Invoke(this, EventArgs.Empty);
         }
-        // ========================
         // IPlaneManagementView Implementation
-        // ========================
         public void ShowInfo(string message) =>
             MessageBox.Show(message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -80,7 +78,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 return false;
             }
 
-            // ✅ INFO ONLY (not logic)
+            // INFO ONLY (not logic)
             GetCountsByType(type, out total, out eco, out biz, out first, out _);
 
             return true;
@@ -91,8 +89,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private void BuildFlow()
         {
 
-
-            // 2️⃣ Create a new panel in the same location/size as the designer panel
             flowPlanes = new Panel
             {
 
@@ -110,11 +106,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 flowPlanes,
                 new object[] { true });
 
-            // 3️⃣ Add to the parent container
+            //  Add to the parent container
             root.Controls.Add(flowPlanes);
             flowPlanes.BringToFront();
 
-            // 4️⃣ Optional: handle resize of the panel itself
             flowPlanes.Resize += (_, __) => RepositionCards();
         }
 
@@ -157,7 +152,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             }
 
             flowPlanes.ResumeLayout(false);
-            flowPlanes.PerformLayout(); // only call once
+            flowPlanes.PerformLayout();
         }
 
 
@@ -193,7 +188,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private Control CreatePlaneCard(Plane p)
         {
-            // ✅ Read counts from actual Seats list
+            //  Read counts from actual Seats list
             int total = p.Seats.Count;
             int eco = p.Seats.Count(s => s.ClassType == "Economy");
             int biz = p.Seats.Count(s => s.ClassType == "Business");

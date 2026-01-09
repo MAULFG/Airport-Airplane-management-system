@@ -16,7 +16,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private Panel _overlay;
 
         private Panel card;
-        private Panel header; // draggable area
+        private Panel header;
 
         private Button btnClose;
         private Label lblTitle;
@@ -46,17 +46,13 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             Width = 560;
             Height = 420;
 
-            // ✅ IMPORTANT: do NOT use black form background (this caused the "black card" look)
             BackColor = Color.White;
             Opacity = 1.0;
 
-            // ✅ overlay covers the entire form, but is now LIGHT + TRANSPARENT
             _overlay = new Panel
             {
                 Dock = DockStyle.Fill,
-                // soft dim (more “transparent” look)
                 BackColor = Color.FromArgb(120, 240, 240, 240)
-                // change 120 -> 80 for more transparent, 150 for darker
             };
             Controls.Add(_overlay);
 
@@ -86,9 +82,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             card.SizeChanged += (_, __) => MakeRounded(card, 16);
             MakeRounded(card, 16);
 
-            // --------------------
             // Header (for moving)
-            // --------------------
             header = new Panel
             {
                 Location = new Point(0, 0),
@@ -266,7 +260,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 btnCancel.Location = new Point(btnContinue.Left - btnCancel.Width - 10, 300);
             };
 
-            // click outside => close (optional)
+            // click outside => close
             _overlay.Click += (_, __) => { DialogResult = DialogResult.Cancel; Close(); };
             card.Click += (_, __) => { }; // stop bubbling
         }

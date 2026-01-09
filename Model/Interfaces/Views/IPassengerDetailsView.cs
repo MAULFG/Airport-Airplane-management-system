@@ -17,7 +17,6 @@ namespace Airport_Airplane_management_system.View.Interfaces
         string Email { get; }
         string Phone { get; }
 
-        // Display seat & price (from BookingPresenter)
         void ShowSelectedSeat(FlightSeats seat);
         void ShowPrice(decimal basePrice,decimal Window, decimal tax, decimal total);
         void ClearInputs();

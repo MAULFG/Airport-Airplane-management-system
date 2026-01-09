@@ -66,7 +66,7 @@ namespace Airport_Airplane_management_system.Model.Services
                 booking.SetDbId(bookingId);
                 booking.Confirm();
 
-                // ✅ Booking confirmed notification (passenger + route + dates)
+                //  Booking confirmed notification (passenger + route + dates)
                 if (_notifWriter != null)
                 {
                     if (_repo.TryGetBookingNotificationInfo(

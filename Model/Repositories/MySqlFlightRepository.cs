@@ -34,8 +34,6 @@ namespace Airport_Airplane_management_system.Model.Repositories
                 string toCity = reader.GetString("to_city");
                 DateTime departure = reader.GetDateTime("departure");
                 DateTime arrival = reader.GetDateTime("arrival");
-
-                // Plane object should be loaded separately in service
                 flights.Add(new Flight(flightId, null, fromCity, toCity, departure, arrival, new Dictionary<string, decimal>())
                 {
                     PlaneIDFromDb = planeId
@@ -153,7 +151,7 @@ WHERE plane_id = @pid;";
                     classType,
                     isBooked,
                     passengerId,
-                    seatPrice  // ✅ now properly read
+                    seatPrice
                 ));
 
             }
@@ -336,9 +334,6 @@ SELECT LAST_INSERT_ID();";
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.Transaction = tx;
-
-                    // NOTE:
-                    // - Handles class_type like: "Economy", "Business", "First", "First Class", "VIP"
                     cmd.CommandText = @"
 INSERT INTO flight_seats
 (flight_id, plane_seat_index, seat_number, class_type, is_booked, passenger_id, seat_price)

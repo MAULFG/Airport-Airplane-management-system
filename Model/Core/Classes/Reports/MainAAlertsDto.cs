@@ -5,7 +5,6 @@
         public int UnassignedCrew { get; set; }
         public int InactivePlanes { get; set; }
 
-        // ✅ NEW
         public int CrewAssignedToPastFlights { get; set; }
         public int PlanesNotAssignedToAnyFlight { get; set; }
 

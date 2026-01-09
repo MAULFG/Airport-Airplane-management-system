@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Airport_Airplane_management_system.Model.Core.Classes; // <-- Add this
+using Airport_Airplane_management_system.Model.Core.Classes;
 
 namespace Airport_Airplane_management_system.Model.Interfaces.Views
 {
@@ -12,7 +12,7 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
         event Action<int> DeleteRequested;
         event Action<int>? PlaneSelected;
 
-        void SetPlanes(List<Plane> planes);  // Now 'Plane' is recognized
+        void SetPlanes(List<Plane> planes);
         void ShowInfo(string message);
         void ShowError(string message);
         bool Confirm(string message);

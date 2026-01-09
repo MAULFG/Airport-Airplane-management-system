@@ -15,7 +15,6 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
 
         event EventHandler SearchClicked;
         event Action<int> BookFlightRequested;
-        // Updated: now takes Flight objects instead of string
         void DisplayFlights(List<Flight> flights);
 
         void ShowMessage(string message);

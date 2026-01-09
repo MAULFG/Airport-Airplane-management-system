@@ -74,9 +74,7 @@ namespace Airport_Airplane_management_system.View.UserControls
             SetSelectedDate(DateTime.Today);
         }
 
-        // -------------------------------------------------------
         // Public API
-        // -------------------------------------------------------
         public void SetAircraftTitle(string title)
         {
             lblTitle.Text = title;
@@ -85,12 +83,7 @@ namespace Airport_Airplane_management_system.View.UserControls
         public void SetMode(bool allowBooking)
         {
             AllowBooking = allowBooking;
-            // no rendering here; BindPlaneSchedule -> SetSelectedDate -> RenderTimelineForSelectedDay
         }
-
-        /// <summary>
-        /// Bind schedule to a plane and list of flights (REAL DB VALUES).
-        /// </summary>
         public void BindPlaneSchedule(int planeId, IEnumerable<Flight> planeFlights, DateTime startDate, int days = 360)
         {
             _planeId = planeId;
@@ -117,9 +110,7 @@ namespace Airport_Airplane_management_system.View.UserControls
             SetSelectedDate(startDate.Date);
         }
 
-        // -------------------------------------------------------
         // Dates row (cards)
-        // -------------------------------------------------------
         private void BuildDateCards(DateTime startDate, int days)
         {
             flowDates.SuspendLayout();
@@ -129,7 +120,6 @@ namespace Airport_Airplane_management_system.View.UserControls
             {
                 var date = startDate.Date.AddDays(i);
 
-                // count flights that overlap the day (NOT only departure date)
                 int count = _blocks.Count(b => b.PlaneId == _planeId && ShouldShowOnDay(b, date));
 
                 var card = new DateCard(date, count);
@@ -163,10 +153,7 @@ namespace Airport_Airplane_management_system.View.UserControls
                 }
             }
         }
-
-        // -------------------------------------------------------
         // Selected Date + Timeline Rendering
-        // -------------------------------------------------------
         public void SetSelectedDate(DateTime date)
         {
             _selectedDate = date.Date;
@@ -201,7 +188,7 @@ namespace Airport_Airplane_management_system.View.UserControls
                 slot.Controls.Add(CreateAvailableButton(hour, slot));
             }
 
-            // 2) Take flights for this plane that overlap this day
+            // Take flights for this plane that overlap this day
             var todays = _blocks
                 .Where(b => b.PlaneId == _planeId && ShouldShowOnDay(b, dayStart))
                 .Select(b =>
@@ -282,9 +269,7 @@ namespace Airport_Airplane_management_system.View.UserControls
             return (s, e);
         }
 
-        // -------------------------------------------------------
         // Timeline table build
-        // -------------------------------------------------------
         private void BuildDefaultTimeline()
         {
             tblTimeline.SuspendLayout();
@@ -392,9 +377,8 @@ namespace Airport_Airplane_management_system.View.UserControls
             tblTimeline.Height = HOURS * ROW_HEIGHT;
         }
 
-        // -------------------------------------------------------
         // Data DTO exposed publicly
-        // -------------------------------------------------------
+
         public class FlightBlock
         {
             public int PlaneId { get; set; }
@@ -407,10 +391,7 @@ namespace Airport_Airplane_management_system.View.UserControls
             public string Code => $"#{FlightId}";
             public string Route => $"{From} → {To}";
         }
-
-        // -------------------------------------------------------
         // UI Components
-        // -------------------------------------------------------
         private sealed class DateCard : UserControl
         {
             public event EventHandler? Clicked;
@@ -602,9 +583,7 @@ namespace Airport_Airplane_management_system.View.UserControls
             }
         }
 
-        // -------------------------------------------------------
         // Custom panels
-        // -------------------------------------------------------
         private class RoundedBorderPanel : Panel
         {
             [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

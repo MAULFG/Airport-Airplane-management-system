@@ -50,7 +50,6 @@ namespace Airport_Airplane_management_system.Model.Interfaces.Views
 
         void SetSeatClassAvailability(HashSet<string> classesLower);
 
-        // ✅ NEW: change the label next to txtFirstPrice ("First" -> "VIP")
         void SetFirstLabel(string text);
     }
 }

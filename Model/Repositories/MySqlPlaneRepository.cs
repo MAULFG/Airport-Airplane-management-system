@@ -85,7 +85,7 @@ namespace Airport_Airplane_management_system.Model.Repositories
             {
                 Plane p = BuildPlaneFromType(r.Id, r.Type, r.Status);
 
-                // ✅ Ensure the plane remembers its DB type + DB model label
+                //  Ensure the plane remembers its DB type + DB model label
                 p.Type = r.Type;
                 p.Model = r.Model;
 

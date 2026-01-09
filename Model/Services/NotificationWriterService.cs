@@ -81,7 +81,7 @@ namespace Airport_Airplane_management_system.Model.Services
                 type: "FlightCancelled",
                 title: "⚠️ Flight cancelled",
                 message: $"Flight #{flightId} has been cancelled by the admin for all passengers.",
-                bookingId: null // ✅ NO see ticket
+                bookingId: null // NO see ticket
             );
         }
 
@@ -134,7 +134,7 @@ namespace Airport_Airplane_management_system.Model.Services
             if (newDeparture.HasValue) parts.Add($"New departure: {newDeparture.Value:yyyy-MM-dd HH:mm}");
             if (newArrival.HasValue) parts.Add($"New arrival: {newArrival.Value:yyyy-MM-dd HH:mm}");
 
-            if (parts.Count == 0) return; // nothing changed
+            if (parts.Count == 0) return;
 
             _repo.AddUserNotification(
                 userId,

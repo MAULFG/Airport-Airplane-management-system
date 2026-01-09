@@ -107,7 +107,7 @@ namespace Airport_Airplane_management_system.Model.Services
         {
             error = "";
 
-            // ✅ notify all users with bookings on this flight (NO bookingId => no See Ticket)
+            //  notify all users with bookings on this flight (NO bookingId => no See Ticket)
             var userIds = _bookingRepo.GetUserIdsForFlight(flightID);
             foreach (var uid in userIds.Distinct())
                 _notifWriter.NotifyFlightCancelledByAdmin(uid, flightID);
@@ -128,7 +128,7 @@ namespace Airport_Airplane_management_system.Model.Services
 
 
 
-        // ✅ for "depends on plane chosen"
+        //  for "depends on plane chosen"
         public HashSet<string> GetSeatClassesForFlight(int planeId)
             => _flightRepo.GetSeatClassesForFlight(planeId);
         public bool AddFlight(
@@ -179,8 +179,6 @@ namespace Airport_Airplane_management_system.Model.Services
         }
         public bool PlaneHasTimeConflict(int planeId, DateTime dep, DateTime arr, int? excludeFlightId)
             => _flightRepo.PlaneHasTimeConflict(planeId, dep, arr, excludeFlightId);
-        //  public bool UpdateFlightDates(int flightId, DateTime dep, DateTime arr, out string error)
-        //    => _flightRepo.UpdateFlightDates(flightId, dep, arr, out error);
 
         public bool UpdateFlightDates(int flightId, DateTime dep, DateTime arr, out string error)
         {

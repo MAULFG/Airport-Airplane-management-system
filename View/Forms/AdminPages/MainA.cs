@@ -21,7 +21,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private bool _built;
 
-        // ✅ Navigation events (AdminDashboard subscribes to these)
+        // Navigation events (AdminDashboard subscribes)
         public event Action GoToFlightsRequested;
         public event Action GoToPlanesRequested;
         public event Action GoToCrewRequested;
@@ -32,7 +32,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             InitializeComponent();
 
-            // Ensure list layout behaves like Figma
             flightsList.WrapContents = false;
             flightsList.FlowDirection = FlowDirection.TopDown;
             flightsList.AutoScroll = true;
@@ -48,20 +47,15 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             flightsList.SizeChanged += (_, __) => ForceRowsFullWidth(flightsList);
             alertsList.SizeChanged += (_, __) => ForceRowsFullWidth(alertsList);
 
-            // Build UI once (View responsibility)
             if (!_built)
             {
                 BuildFigmaUI();
                 _built = true;
             }
-
-            // ✅ Make the TOP (yellow) "View all flights →" clickable
             WireTopViewAllFlightsLink();
         }
 
-        // =========================
         //  IMainAView methods (Presenter calls these)
-        // =========================
         public void ShowKpis(MainAKpiDto dto)
         {
             if (!_built)
@@ -97,8 +91,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             flightsList.SuspendLayout();
             flightsList.Controls.Clear();
-
-            // ✅ NO showViewAll here => removes the duplicate red-circle link
             AddSectionHeader(
                 flightsList,
                 $"In Air ({dto.InAir?.Count ?? 0})",
@@ -141,8 +133,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 ));
                 active++;
             }
-
-            // ✅ NEW
             if (dto.CrewAssignedToPastFlights > 0)
             {
                 alertsList.Controls.Add(MakeAlertRow(
@@ -169,7 +159,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 active++;
             }
 
-            // ✅ NEW
             if (dto.PlanesNotAssignedToAnyFlight > 0)
             {
                 alertsList.Controls.Add(MakeAlertRow(
@@ -192,11 +181,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             alertsList.HorizontalScroll.Visible = false;
             alertsList.AutoScrollMinSize = new Size(0, 0);
         }
-
-
-        // =========================
-        //  UI BUILD (FIGMA)
-        // =========================
         private void BuildFigmaUI()
         {
             kpiGrid.SuspendLayout();
@@ -379,8 +363,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 BackColor = Color.FromArgb(238, 238, 238),
                 Dock = DockStyle.Bottom
             };
-
-            // (Add divider first, then bottomPanel => divider sits ABOVE bottomPanel)
             card.Controls.Add(bottomPanel);
             card.Controls.Add(divider);
 
@@ -437,7 +419,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             card.Controls.Add(bigOut);
             card.Controls.Add(lblSub);
 
-            // -------- Breakdown (now ABOVE the divider) --------
             if (breakdown != null && breakdown.Length > 0)
             {
                 for (int line = 0; line < breakdown.Length; line++)
@@ -467,17 +448,14 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     };
                 }
 
-                // keep subtitle where it was for breakdown cards (usually empty anyway)
                 lblSub.Location = new Point(PAD + 48, 66);
             }
             else
             {
-                // -------- Cards without breakdown: subtitle should sit JUST ABOVE divider --------
                 lblSub.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
 
                 void PositionSub()
                 {
-                    // place directly above divider with a small gap
                     int y = divider.Top - lblSub.Height - 10;
                     if (y < 70) y = 70; // safety
                     lblSub.Location = new Point(PAD + 48, y);
@@ -502,9 +480,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 WireCardClick(c, click);
         }
 
-        // =========================
         //  LIST RENDER HELPERS
-        // =========================
         private void ForceRowsFullWidth(FlowLayoutPanel host)
         {
             int w = host.ClientSize.Width - host.Padding.Horizontal;
@@ -728,20 +704,15 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             path.CloseFigure();
             return new Region(path);
         }
-
-        // =========================
-        //  TOP "View all flights →" (yellow) click hook
-        // =========================
+        //  TOP "View all flights →"
         private void WireTopViewAllFlightsLink()
         {
-            // We don't assume the designer name.
-            // We find the first Label/LinkLabel that matches the header text.
             var target = FindByText(this, "View all flights →");
 
             if (target != null)
             {
                 target.Cursor = Cursors.Hand;
-                target.Click -= TopViewAll_Click; // avoid double hook if constructor runs again
+                target.Click -= TopViewAll_Click; 
                 target.Click += TopViewAll_Click;
             }
         }

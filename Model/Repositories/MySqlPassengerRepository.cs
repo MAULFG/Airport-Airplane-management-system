@@ -53,7 +53,6 @@ VALUES (@name, @email, @phone);";
 
         public List<PassengerSummaryRow> GetPassengersSummary()
         {
-            // Uses your real flights columns: departure / arrival
             const string sql = @"
 SELECT
   p.passenger_id,
@@ -175,8 +174,6 @@ ORDER BY p.full_name;";
                     seatId = Convert.ToInt32(r["flight_seat_id"]);
                     status = r["status"]?.ToString() ?? "Pending";
                 }
-
-                // If already cancelled, nothing to do
                 if (string.Equals(status, "Cancelled", StringComparison.OrdinalIgnoreCase))
                 {
                     tx.Commit();
@@ -191,7 +188,7 @@ ORDER BY p.full_name;";
                     cmd.ExecuteNonQuery();
                 }
 
-                // Free seat (IMPORTANT: passenger_id NULL + is_booked=0)
+                // Free seat (passenger_id NULL + is_booked=0)
                 const string freeSeatSql = @"UPDATE flight_seats SET is_booked=0, passenger_id=NULL WHERE id=@sid;";
                 using (var cmd = new MySqlCommand(freeSeatSql, con, tx))
                 {

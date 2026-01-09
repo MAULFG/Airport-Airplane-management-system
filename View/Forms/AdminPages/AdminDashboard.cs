@@ -63,9 +63,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             btnlogoutA.Click += (s, e) => LogoutAClicked?.Invoke(this, EventArgs.Empty);
         }
 
-        // =========================
         // Show / Hide Panels (UI only)
-        // =========================
         private void HideAllPanels()
         {
             maina1.Hide();
@@ -94,9 +92,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             activeBtn.FillColor = Color.DarkCyan;
         }
 
-        // =========================
         // IAdminDashboardView (UI only)
-        // =========================
         public void FlightMangement() => ShowOnly(flightManagement1, btnFlight);
         public void CrewMangement() => ShowOnly(crewManagement1, btncrew);
         public void PlaneMangement() => ShowOnly(planeManagements1, btnplane);
@@ -106,7 +102,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         public void Logout()
         {
-            // UI clearing only (presenter clears session + navigates)
             maina1.Clear();
             flightManagement1.ClearView();
             crewManagement1.Clear();
@@ -122,9 +117,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        // =========================
         // Docked schedule (UI only; presenter supplies data)
-        // =========================
         public void ShowPlaneScheduleOnPlanePage(string aircraftTitle, int planeId, IList<Flight> allFlights)
         {
             PlaneMangement();
@@ -203,7 +196,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         // This is referenced by AdminDashboard.Designer.cs
         private void maina1_Load(object sender, EventArgs e)
         {
-            // keep empty (or put UI-only init if needed)
         }
 
     }

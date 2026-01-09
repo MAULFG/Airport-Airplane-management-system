@@ -32,7 +32,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPagesPresenters
             _view.SearchChanged += OnSearch;
         }
 
-        // 🔥 Public method to refresh reports
+        //  Public method to refresh reports
         public void RefreshData()
         {
             Load();

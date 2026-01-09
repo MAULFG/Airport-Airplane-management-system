@@ -22,6 +22,6 @@
     // Booking
     void OpenBooking(int flightId);
 
-    // 🔹 Notification badge (Presenter controls this)
+    //🔹 Notification badge (Presenter controls this)
     void SetUnreadNotificationsCount(int count);
 }

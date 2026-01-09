@@ -5,7 +5,6 @@ using Airport_Airplane_management_system.Model.Repositories;
 using Airport_Airplane_management_system.Model.Services;
 using Airport_Airplane_management_system.Repositories;
 using System;
-using System.Linq;
 using Ticket_Booking_System_OOP.Model.Repositories;
 
 namespace Airport_Airplane_management_system.Presenter.AdminPages
@@ -20,15 +19,17 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         private bool _isEditMode;
         private string _editingEmployeeId;
 
+        // when opened from flight page
+        private int? _forcedFlightFilterId;
+
         public CrewManagementPresenter(ICrewManagementView view)
         {
-            
             _view = view;
+
             flightRepo = new MySqlFlightRepository("server=localhost;port=3306;database=user;user=root;password=2006");
             crewRepo = new MySqlCrewRepository("server=localhost;port=3306;database=user;user=root;password=2006");
 
-
-            _service = new CrewService(crewRepo,flightRepo);
+            _service = new CrewService(crewRepo, flightRepo);
 
             _view.LoadCrewRequested += OnLoad;
             _view.AddOrUpdateClicked += OnAddOrUpdate;
@@ -36,40 +37,56 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _view.EditRequested += EnterEditMode;
             _view.DeleteRequested += DeleteCrew;
             _view.FilterChanged += RefreshCrew;
-            
-
         }
+
         public void RefreshData()
         {
             LoadFlights();
+
+            //  keep forced filter visible after reload
+            if (_forcedFlightFilterId.HasValue)
+            {
+                _view.SetFlightFilter(_forcedFlightFilterId.Value); // triggers RefreshCrew via FilterChanged
+                return;
+            }
+
             RefreshCrew();
-             // reset edit mode whenever page opens
         }
+
+        public void ShowAssignedForFlight(int flightId)
+        {
+            _forcedFlightFilterId = flightId;
+
+            LoadFlights();
+            _view.SetFlightFilter(flightId); // triggers RefreshCrew
+        }
+
+        public void ClearForcedFilter()
+        {
+            _forcedFlightFilterId = null;
+
+            LoadFlights();
+            _view.SetFlightFilter(null); // triggers RefreshCrew
+        }
+
         private void LoadFlights()
         {
             var flights = _service.GetFlights();
             _view.RenderFlights(flights);
             _view.RenderFilterFlights(flights);
         }
+
         private void OnLoad(object sender, EventArgs e)
         {
-            _view.RenderFlights(_service.GetFlights());
-            _view.RenderFilterFlights(_service.GetFlights());
-  
             RefreshData();
         }
 
         private void RefreshCrew()
         {
+            // null => all, -1 => unassigned, >0 => flight
             var crew = _service.GetCrew();
-            var filterFlightId = _view.GetFlightFilter();
-
-            if (filterFlightId.HasValue)
-                crew = crew.Where(c => c.FlightId == filterFlightId).ToList();
-
             _view.RenderCrew(crew);
         }
-
 
         private void OnAddOrUpdate()
         {
@@ -102,6 +119,8 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
                 }
 
                 ExitEditMode();
+
+                //  keep same filter after adding
                 RefreshData();
             }
             catch (Exception ex)
@@ -133,7 +152,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             _isEditMode = false;
             _editingEmployeeId = null;
             _view.SetEditMode(false);
-     
         }
 
         private void DeleteCrew(Crew crew)

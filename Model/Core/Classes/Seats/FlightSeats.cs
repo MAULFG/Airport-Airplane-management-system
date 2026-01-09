@@ -65,7 +65,7 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
             IsBooked = false;
         }
 
-        // Optional: helper to check if seat belongs to a passenger
+        // helper to check if seat belongs to a passenger
         public bool IsPassenger(int userId)
         {
             return PassengerId.HasValue && PassengerId.Value == userId;

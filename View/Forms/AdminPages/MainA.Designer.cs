@@ -28,10 +28,6 @@
         private System.Windows.Forms.Label lblAlertsRight;
         private System.Windows.Forms.FlowLayoutPanel alertsList;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -42,11 +38,6 @@
         }
 
         #region Component Designer generated code
-
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -74,10 +65,8 @@
             alertsCard.SuspendLayout();
             alertsHeader.SuspendLayout();
             header.SuspendLayout();
-            SuspendLayout();
-            // 
+            SuspendLayout(); 
             // root
-            // 
             root.Controls.Add(bottomGrid);
             root.Controls.Add(kpiGrid);
             root.Controls.Add(header);
@@ -90,10 +79,8 @@
             root.Padding = new Padding(32, 29, 32, 29);
             root.ShadowDecoration.CustomizableEdges = customizableEdges2;
             root.Size = new Size(1177, 960);
-            root.TabIndex = 0;
-            // 
+            root.TabIndex = 0; 
             // bottomGrid
-            // 
             bottomGrid.BackColor = Color.Transparent;
             bottomGrid.ColumnCount = 2;
             bottomGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 53.4591179F));
@@ -108,10 +95,8 @@
             bottomGrid.RowCount = 1;
             bottomGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             bottomGrid.Size = new Size(1113, 441);
-            bottomGrid.TabIndex = 0;
-            // 
-            // flightsCard
-            // 
+            bottomGrid.TabIndex = 0; 
+            // flightsCard 
             flightsCard.BackColor = Color.Transparent;
             flightsCard.Controls.Add(flightsList);
             flightsCard.Controls.Add(flightsHeader);
@@ -127,9 +112,7 @@
             flightsCard.ShadowShift = 0;
             flightsCard.Size = new Size(577, 406);
             flightsCard.TabIndex = 0;
-            // 
-            // flightsList
-            // 
+            // flightsList 
             flightsList.AutoScroll = true;
             flightsList.BackColor = Color.Transparent;
             flightsList.Dock = DockStyle.Fill;
@@ -140,10 +123,8 @@
             flightsList.Padding = new Padding(0, 8, 0, 0);
             flightsList.Size = new Size(535, 323);
             flightsList.TabIndex = 0;
-            flightsList.WrapContents = false;
-            // 
-            // flightsHeader
-            // 
+            flightsList.WrapContents = false; 
+            // flightsHeader 
             flightsHeader.BackColor = Color.Transparent;
             flightsHeader.Controls.Add(lblFlightsTitle);
             flightsHeader.Controls.Add(lnkViewAllFlights);
@@ -156,10 +137,8 @@
             flightsHeader.ShadowDepth = 0;
             flightsHeader.ShadowShift = 0;
             flightsHeader.Size = new Size(535, 41);
-            flightsHeader.TabIndex = 1;
-            // 
-            // lblFlightsTitle
-            // 
+            flightsHeader.TabIndex = 1; 
+            // lblFlightsTitle 
             lblFlightsTitle.AutoSize = true;
             lblFlightsTitle.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
             lblFlightsTitle.ForeColor = Color.FromArgb(30, 30, 30);
@@ -168,9 +147,7 @@
             lblFlightsTitle.Size = new Size(236, 28);
             lblFlightsTitle.TabIndex = 0;
             lblFlightsTitle.Text = "Flights Status Overview";
-            // 
-            // lnkViewAllFlights
-            // 
+            // lnkViewAllFlights 
             lnkViewAllFlights.ActiveLinkColor = Color.FromArgb(0, 150, 140);
             lnkViewAllFlights.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lnkViewAllFlights.AutoSize = true;
@@ -182,10 +159,8 @@
             lnkViewAllFlights.TabIndex = 1;
             lnkViewAllFlights.TabStop = true;
             lnkViewAllFlights.Text = "View all flights →";
-            lnkViewAllFlights.VisitedLinkColor = Color.FromArgb(0, 150, 140);
-            // 
-            // alertsCard
-            // 
+            lnkViewAllFlights.VisitedLinkColor = Color.FromArgb(0, 150, 140); 
+            // alertsCard 
             alertsCard.BackColor = Color.Transparent;
             alertsCard.Controls.Add(alertsList);
             alertsCard.Controls.Add(alertsHeader);
@@ -200,10 +175,8 @@
             alertsCard.ShadowDepth = 0;
             alertsCard.ShadowShift = 0;
             alertsCard.Size = new Size(518, 406);
-            alertsCard.TabIndex = 1;
-            // 
-            // alertsList
-            // 
+            alertsCard.TabIndex = 1; 
+            // alertsList 
             alertsList.AutoScroll = true;
             alertsList.BackColor = Color.Transparent;
             alertsList.Dock = DockStyle.Fill;
@@ -215,9 +188,7 @@
             alertsList.Size = new Size(476, 323);
             alertsList.TabIndex = 0;
             alertsList.WrapContents = false;
-            // 
-            // alertsHeader
-            // 
+            // alertsHeader 
             alertsHeader.BackColor = Color.Transparent;
             alertsHeader.Controls.Add(lblAlertsTitle);
             alertsHeader.Controls.Add(lblAlertsRight);
@@ -231,9 +202,7 @@
             alertsHeader.ShadowShift = 0;
             alertsHeader.Size = new Size(476, 41);
             alertsHeader.TabIndex = 1;
-            // 
-            // lblAlertsTitle
-            // 
+            // lblAlertsTitle 
             lblAlertsTitle.AutoSize = true;
             lblAlertsTitle.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
             lblAlertsTitle.ForeColor = Color.FromArgb(30, 30, 30);
@@ -254,9 +223,7 @@
             lblAlertsRight.Size = new Size(75, 23);
             lblAlertsRight.TabIndex = 1;
             lblAlertsRight.Text = "0 Active";
-            // 
             // kpiGrid
-            // 
             kpiGrid.BackColor = Color.Transparent;
             kpiGrid.ColumnCount = 3;
             kpiGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333F));
@@ -273,9 +240,7 @@
             kpiGrid.Size = new Size(1113, 374);
             kpiGrid.TabIndex = 1;
             kpiGrid.Paint += kpiGrid_Paint;
-            // 
             // header
-            // 
             header.BackColor = Color.Transparent;
             header.Controls.Add(lblTitle);
             header.Controls.Add(lblSub);
@@ -290,9 +255,7 @@
             header.ShadowShift = 0;
             header.Size = new Size(1113, 87);
             header.TabIndex = 2;
-            // 
-            // lblTitle
-            // 
+            // lblTitle 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(20, 20, 20);
@@ -300,10 +263,8 @@
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(352, 46);
             lblTitle.TabIndex = 0;
-            lblTitle.Text = "Dashboard Overview";
-            // 
+            lblTitle.Text = "Dashboard Overview"; 
             // lblSub
-            // 
             lblSub.AutoSize = true;
             lblSub.Font = new Font("Segoe UI", 11F);
             lblSub.ForeColor = Color.FromArgb(110, 110, 110);
@@ -312,9 +273,7 @@
             lblSub.Size = new Size(406, 25);
             lblSub.TabIndex = 1;
             lblSub.Text = "Welcome back! Here's what's happening today.";
-            // 
-            // MainA
-            // 
+            // MainA 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(245, 246, 250);

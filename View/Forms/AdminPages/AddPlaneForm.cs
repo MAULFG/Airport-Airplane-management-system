@@ -30,14 +30,10 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 Close();
             };
 
-            // 3️⃣ Default selection **after labels exist**
             SelectCard(cardB777);
 
-            // 4️⃣ Resize events
             root.Resize += (_, __) => { Relayout(); ReflowCards(); };
-            scrollHost.Resize += (_, __) => ReflowCards();
-
-            // 5️⃣ Initial layout
+            scrollHost.Resize += (_, __) => ReflowCards();            
             Relayout();
             ReflowCards();
         }
@@ -94,7 +90,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 c.Top = y;
                 c.Left = 14;
 
-                // Only set width for non-AutoSize controls if needed
                 if (!c.AutoSize)
                     c.Width = summaryBox.ClientSize.Width - 28;
 
@@ -111,7 +106,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
         private void Relayout()
         {
-            // Form dimensions for reference
             int formWidth = 1016;
             int formHeight = 789;
             int paddingH = root.Padding.Left + root.Padding.Right;

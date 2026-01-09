@@ -27,7 +27,7 @@ namespace Airport_Airplane_management_system.Model.Services
             if (newPassword != confirmPassword) throw new Exception("New password and confirmation do not match.");
 
             var dbPass = _repo.GetPassword(userId);
-            if (dbPass == null) throw new Exception("User not found in database."); // line 30 problem
+            if (dbPass == null) throw new Exception("User not found in database.");
             if (dbPass != currentPassword) throw new Exception("Current password is incorrect.");
 
             if (!_repo.UpdatePassword(userId, newPassword))

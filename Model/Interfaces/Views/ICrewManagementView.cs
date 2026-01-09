@@ -1,4 +1,6 @@
 ﻿using Airport_Airplane_management_system.Model.Core.Classes;
+using System;
+using System.Collections.Generic;
 
 public interface ICrewManagementView
 {
@@ -10,12 +12,18 @@ public interface ICrewManagementView
     string Status { get; }
     int? SelectedFlightId { get; }
     void Clear();
+
     // Rendering
     void RenderCrew(IEnumerable<Crew> crew);
     void RenderFlights(List<Flight> flights);
     void RenderFilterFlights(List<Flight> flights);
     void SetEditMode(bool editing);
+
     int? GetFlightFilter();
+
+    //  allow presenter to preselect filter
+    void SetFlightFilter(int? flightId);
+
     void FillForm(string fullName, string role, string status, string email, string phone, int? flightId);
 
     // Feedback

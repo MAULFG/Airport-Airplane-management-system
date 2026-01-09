@@ -26,9 +26,8 @@ namespace Airport_Airplane_management_system.Model.Services
             var flights = _flightRepo.GetAllFlights() ?? new List<Flight>();
             var planes = _planeRepo.GetAllPlanes() ?? new List<Plane>();
 
-            // =======================
             // PLANES: per-plane card (unassigned to any flight)
-            // =======================
+
             var planeIdsWithFlights = new HashSet<int>(
                 flights.Select(f => GetPlaneId(f)).Where(id => id > 0)
             );
@@ -51,9 +50,9 @@ namespace Airport_Airplane_management_system.Model.Services
                 }
             }
 
-            // =======================
+  
             // CREW: per-crew card
-            // =======================
+
             var crewNotAssigned = _crewRepo.GetCrewNotAssignedToAnyFlight() ?? new List<Crew>();
             foreach (var c in crewNotAssigned)
             {

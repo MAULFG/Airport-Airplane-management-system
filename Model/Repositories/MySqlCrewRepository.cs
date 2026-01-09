@@ -249,7 +249,7 @@ WHERE employee_id LIKE 'EMP%';";
             return QueryCrew(sql);
         }
 
-        // (Optional) counts if your ReportsService still calls them
+        //  counts if your ReportsService still calls them
         public int CountCrewNotAssignedToAnyFlight()
         {
             const string sql = @"SELECT COUNT(*) FROM crew_members WHERE flight_id IS NULL OR flight_id = 0;";
@@ -285,7 +285,7 @@ WHERE employee_id LIKE 'EMP%';";
 
             while (rd.Read())
             {
-                // Crew model in your project requires constructor:
+               
                 // Crew(string fullName, string role, string status, string employeeId, string email, string phone)
                 var fullName = rd["full_name"].ToString();
                 var role = rd["role"].ToString();

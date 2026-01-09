@@ -116,7 +116,7 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
             if (!_view.Confirm("Cancel this flight booking?", "Confirm"))
                 return;
 
-            // ✅ Before cancel, get booking owner + flight
+            //  Before cancel, get booking owner + flight
             if (bookRepo.TryGetBookingNotificationInfo(
         bookingId,
         out int userId,
@@ -129,7 +129,6 @@ namespace Airport_Airplane_management_system.Presenter.AdminPages
         out DateTime arr,
         out string infoErr))
             {
-                // simplest: reuse your existing cancel notification method but change its message method (recommended below)
                 _notifWriter.NotifyBookingCancelledByAdmin(userId, flightId, passengerId, passengerName);
             }
 

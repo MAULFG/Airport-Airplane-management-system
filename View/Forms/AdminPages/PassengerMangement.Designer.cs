@@ -16,15 +16,6 @@
 
         private Guna.UI2.WinForms.Guna2TextBox txtSearch;
         private System.Windows.Forms.FlowLayoutPanel listPanel;
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        
-
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -35,11 +26,6 @@
         }
 
         #region Component Designer generated code
-
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -63,9 +49,7 @@
             header.SuspendLayout();
             statsPanel.SuspendLayout();
             SuspendLayout();
-            // 
             // root
-            // 
             root.Controls.Add(listPanel);
             root.Controls.Add(txtSearch);
             root.Controls.Add(header);
@@ -79,9 +63,7 @@
             root.Size = new Size(1030, 720);
             root.TabIndex = 0;
             root.Paint += root_Paint;
-            // 
-            // listPanel
-            // 
+            // listPanel 
             listPanel.AutoScroll = true;
             listPanel.BackColor = Color.Transparent;
             listPanel.Dock = DockStyle.Fill;
@@ -93,9 +75,7 @@
             listPanel.TabIndex = 0;
             listPanel.WrapContents = false;
             listPanel.Paint += listPanel_Paint;
-            // 
             // txtSearch
-            // 
             txtSearch.AutoRoundedCorners = true;
             txtSearch.BorderColor = Color.FromArgb(220, 220, 220);
             txtSearch.BorderRadius = 27;
@@ -113,9 +93,7 @@
             txtSearch.ShadowDecoration.CustomizableEdges = customizableEdges2;
             txtSearch.Size = new Size(974, 57);
             txtSearch.TabIndex = 1;
-            // 
             // header
-            // 
             header.Controls.Add(lblTitle);
             header.Controls.Add(lblSub);
             header.Controls.Add(statsPanel);
@@ -127,9 +105,7 @@
             header.ShadowDecoration.CustomizableEdges = customizableEdges6;
             header.Size = new Size(974, 90);
             header.TabIndex = 2;
-            // 
-            // lblTitle
-            // 
+            // lblTitle 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(20, 20, 20);
@@ -138,9 +114,7 @@
             lblTitle.Size = new Size(324, 37);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Passenger Management";
-            // 
             // lblSub
-            // 
             lblSub.AutoSize = true;
             lblSub.Font = new Font("Segoe UI", 11F);
             lblSub.ForeColor = Color.FromArgb(110, 110, 110);
@@ -149,9 +123,7 @@
             lblSub.Size = new Size(323, 20);
             lblSub.TabIndex = 1;
             lblSub.Text = "View and manage all passenger flight bookings";
-            // 
             // statsPanel
-            // 
             statsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             statsPanel.Controls.Add(lblTotalPassengersValue);
             statsPanel.Controls.Add(lblTotalPassengersText);
@@ -162,9 +134,7 @@
             statsPanel.ShadowDecoration.CustomizableEdges = customizableEdges4;
             statsPanel.Size = new Size(320, 70);
             statsPanel.TabIndex = 2;
-            // 
             // lblTotalPassengersValue
-            // 
             lblTotalPassengersValue.AutoSize = true;
             lblTotalPassengersValue.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblTotalPassengersValue.ForeColor = Color.FromArgb(20, 20, 20);
@@ -173,9 +143,7 @@
             lblTotalPassengersValue.Size = new Size(23, 25);
             lblTotalPassengersValue.TabIndex = 0;
             lblTotalPassengersValue.Text = "0";
-            // 
             // lblTotalPassengersText
-            // 
             lblTotalPassengersText.AutoSize = true;
             lblTotalPassengersText.Font = new Font("Segoe UI", 10F);
             lblTotalPassengersText.ForeColor = Color.FromArgb(110, 110, 110);
@@ -184,9 +152,7 @@
             lblTotalPassengersText.Size = new Size(110, 19);
             lblTotalPassengersText.TabIndex = 1;
             lblTotalPassengersText.Text = "Total Passengers";
-            // 
             // PassengerMangement
-            // 
             BackColor = Color.WhiteSmoke;
             Controls.Add(root);
             Name = "PassengerMangement";
