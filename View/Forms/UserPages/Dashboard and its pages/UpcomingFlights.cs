@@ -33,38 +33,63 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
         private Guna2Panel headerPanel;
         private void InitializeComponent()
         {
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             flowFlights = new FlowLayoutPanel();
             headerPanel = new Guna2Panel();
+            lblHeader = new Label();
+            headerPanel.SuspendLayout();
             SuspendLayout();
-            headerPanel.Height = 80;
-            headerPanel.Dock = DockStyle.Top;
-            headerPanel.FillColor = Color.DarkCyan;
-            headerPanel.Padding = new Padding(20);
-            headerPanel.BorderRadius = 20;
-
-            var lblHeader = new Label
-            {
-                Text = "Upcoming Flights in Our Airline",
-                Font = new Font("Segoe UI", 18, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.Transparent,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            headerPanel.Controls.Add(lblHeader);
-
+            // 
+            // flowFlights
+            // 
             flowFlights.AutoScroll = true;
-            flowFlights.WrapContents = false;
             flowFlights.Dock = DockStyle.Fill;
             flowFlights.FlowDirection = FlowDirection.TopDown;
+            flowFlights.Location = new Point(20, 100);
+            flowFlights.Name = "flowFlights";
             flowFlights.Padding = new Padding(10, 10, 10, 200);
-
+            flowFlights.Size = new Size(1240, 600);
+            flowFlights.TabIndex = 0;
+            flowFlights.WrapContents = false;
+            flowFlights.Paint += flowFlights_Paint_2;
+            // 
+            // headerPanel
+            // 
+            headerPanel.BorderRadius = 20;
+            headerPanel.Controls.Add(lblHeader);
+            headerPanel.CustomizableEdges = customizableEdges1;
+            headerPanel.Dock = DockStyle.Top;
+            headerPanel.FillColor = Color.DarkCyan;
+            headerPanel.Location = new Point(20, 20);
+            headerPanel.Name = "headerPanel";
+            headerPanel.Padding = new Padding(20);
+            headerPanel.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            headerPanel.Size = new Size(1240, 80);
+            headerPanel.TabIndex = 1;
+            // 
+            // lblHeader
+            // 
+            lblHeader.Text = "Upcoming Flights in Our Airline";
+            lblHeader.Font = new Font("Segoe UI", 18, FontStyle.Bold);
+            lblHeader.ForeColor = Color.White;
+            lblHeader.BackColor = Color.Transparent;
+            lblHeader.Dock = DockStyle.Fill;
+            lblHeader.TextAlign = ContentAlignment.MiddleLeft;
+            lblHeader.Location = new Point(0, 0);
+            lblHeader.Name = "lblHeader";
+            lblHeader.Size = new Size(100, 23);
+            lblHeader.TabIndex = 0;
+            // 
+            // UpcomingFlights
+            // 
+            BackColor = Color.White;
             Controls.Add(flowFlights);
             Controls.Add(headerPanel);
-
-            BackColor = Color.White;
-            Size = new Size(1280, 720);
+            Name = "UpcomingFlights";
             Padding = new Padding(20);
+            Size = new Size(1280, 720);
+            headerPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -73,7 +98,12 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowFlights.Controls.Clear();
 
             foreach (var f in flights)
-                flowFlights.Controls.Add(CreateCard(f));
+                if (f.Departure > DateTime.Now.AddDays(1))
+                {
+                    flowFlights.Controls.Add(CreateCard(f));
+
+                }
+
         }
 
         private Guna2Panel CreateCard(Flight f)
@@ -153,7 +183,8 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right
             };
             details.Controls.Add(btnBook);
-            btnBook.Click += (s, e) => {
+            btnBook.Click += (s, e) =>
+            {
                 int flightId = f.FlightID;
                 BookFlightRequested?.Invoke(flightId);
             };
@@ -341,6 +372,18 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
              new Guna2HtmlLabel { Text = text, Font = new Font("Arial", 9), Location = new Point(x, y), AutoSize = true };
 
         private void flowFlights_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private Label lblHeader;
+
+        private void flowFlights_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void flowFlights_Paint_2(object sender, PaintEventArgs e)
         {
 
         }

@@ -32,6 +32,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         private List<Plane> _planes = new();
         private List<Flight> _flights = new();
 
+        // PERF: defer heavy rendering until visible
+        private bool _firstShown = false;
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsEditMode { get; set; }
@@ -50,7 +53,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             if (string.IsNullOrWhiteSpace(s)) return 0m;
             return decimal.TryParse(s.Trim(), out var v) ? v : 0m;
         }
-
         private sealed class PlaneItem
         {
             public int PlaneId { get; }
@@ -63,10 +65,8 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             InitializeComponent();
 
-            // MVP load
             Load += (_, __) => ViewLoaded?.Invoke(this, EventArgs.Empty);
 
-            // Flicker-free panel for schedule
             panelScheduleHost = new Guna2Panel
             {
                 Dock = DockStyle.Fill,
@@ -75,7 +75,6 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             };
             Controls.Add(panelScheduleHost);
 
-            // Flicker-free FlowLayoutPanel
             typeof(FlowLayoutPanel).InvokeMember(
                 "DoubleBuffered",
                 BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.SetProperty,
@@ -83,36 +82,29 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 flow,
                 new object[] { true });
 
-            // Add/Update
             btnAddOrUpdate.Click += (_, __) =>
             {
                 if (!IsEditMode) AddClicked?.Invoke(this, EventArgs.Empty);
                 else UpdateClicked?.Invoke(this, EventArgs.Empty);
             };
-
-            // Cancel
+            
             btnCancelEdit.Click += (_, __) => CancelEditClicked?.Invoke(this, EventArgs.Empty);
-
-            // Filter
             cmbFilter.SelectedIndexChanged += (_, __) => FilterChanged?.Invoke(this, EventArgs.Empty);
 
             rightHeader.SizeChanged += (_, __) =>
-            {
                 cmbFilter.Location = new Point(rightHeader.Width - 18 - cmbFilter.Width, 10);
-            };
+
             cmbFilter.Location = new Point(rightHeader.Width - 18 - cmbFilter.Width, 10);
 
-            // Date logic
             dtDeparture.ValueChanged += (_, __) =>
             {
                 if (dtArrival.Value <= dtDeparture.Value)
                     dtArrival.Value = dtDeparture.Value.AddHours(2);
             };
 
-            // Resize cards
             flow.SizeChanged += (_, __) => RefreshCardsWidth();
 
-            // Plane selection (dropdown)
+
             cmbPlane.SelectionChangeCommitted += (_, __) =>
             {
                 if (cmbPlane.SelectedItem is PlaneItem pi)
@@ -121,9 +113,19 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                     PlaneChanged?.Invoke(pi.PlaneId);
                 }
             };
+
+            // PERF: render cards only after control becomes visible
+            VisibleChanged += (_, __) =>
+            {
+                if (Visible && !_firstShown)
+                {
+                    _firstShown = true;
+                    BeginInvoke(new Action(RenderCards));
+                }
+            };
         }
 
-        // ======== IFlightManagementView ========
+        // ===== IFlightManagementView =====
         public string FromCity => txtFrom.Text;
         public string ToCity => txtTo.Text;
         public DateTime Departure => dtDeparture.Value;
@@ -140,11 +142,7 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
 
             cmbPlane.Items.Clear();
             foreach (var p in _planes.OrderBy(x => x.PlaneID))
-            {
-                string model = p.Model;
-                string text = $"#{p.PlaneID}  |  {model}  |  {p.Status}";
-                cmbPlane.Items.Add(new PlaneItem(p.PlaneID, text));
-            }
+                cmbPlane.Items.Add(new PlaneItem(p.PlaneID, $"#{p.PlaneID}  |  {p.Model}  |  {p.Status}"));
 
             if (cmbPlane.Items.Count > 0)
                 cmbPlane.SelectedIndex = 0;
@@ -159,7 +157,9 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         {
             _flights = flights ?? new List<Flight>();
             lblCount.Text = $"Flights ({_flights.Count})";
-            RenderCards();
+
+            if (_firstShown)
+                RenderCards();
         }
 
         public void ShowInfo(string message) =>
@@ -257,33 +257,52 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
         }
 
         // ======== Cards ========
-        private void RenderCards()
+        private async void RenderCards()
         {
             if (flow == null) return;
 
             flow.SuspendLayout();
             flow.Controls.Clear();
+            flow.ResumeLayout();
 
-            foreach (var f in _flights)
+            const int batchSize = 5;
+
+            for (int i = 0; i < _flights.Count; i += batchSize)
             {
-                var card = CreateFlightCard(f);
-                card.Width = flow.ClientSize.Width - flow.Padding.Horizontal;
-                flow.Controls.Add(card);
+                var batch = _flights.Skip(i).Take(batchSize);
+
+                flow.SuspendLayout();
+                foreach (var f in batch)
+                {
+                    var card = CreateFlightCard(f);
+                    card.Width = GetCardWidth();
+                    flow.Controls.Add(card);
+                }
+                flow.ResumeLayout();
+
+                await Task.Delay(1); // PERF: yield UI thread
             }
 
-            // spacer bottom
-            flow.Controls.Add(new Panel { Height = 100, Width = 1, BackColor = Color.Transparent });
+            flow.Padding = new Padding(0, 0, 0, 100);
 
-            flow.ResumeLayout(true);
+
+            // PERF: enable shadows after initial paint
+            foreach (Guna2ShadowPanel c in flow.Controls.OfType<Guna2ShadowPanel>())
+                c.ShadowDepth = 100;
         }
 
         private void RefreshCardsWidth()
         {
-            if (flow == null) return;
-
-            int w = flow.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 10;
-            foreach (Control c in flow.Controls)
+            int w = GetCardWidth();
+            foreach (Control c in flow.Controls.OfType<Guna2ShadowPanel>())
                 c.Width = w;
+
+        }
+        private int GetCardWidth()
+        {
+            
+
+            return flow.ClientSize.Width - flow.Padding.Horizontal -4;
         }
 
         private Control CreateFlightCard(Flight f)

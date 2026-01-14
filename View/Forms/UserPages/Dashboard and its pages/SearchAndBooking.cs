@@ -68,7 +68,10 @@ namespace Airport_Airplane_management_system.View.Forms.UserPages
             flowFlights.Controls.Clear();
             foreach (var flight in flights)
             {
-                flowFlights.Controls.Add(CreateFlightCard(flight));
+                if (flight.Departure > DateTime.Now.AddDays(1))
+                {
+                    flowFlights.Controls.Add(CreateFlightCard(flight));
+                }
             }
         }
 

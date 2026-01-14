@@ -54,6 +54,12 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
                 null,
                 flowCrew,
                 new object[] { true });
+            typeof(FlowLayoutPanel).InvokeMember(
+               "DoubleBuffered",
+               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.SetProperty,
+               null,
+               _listHost,
+               new object[] { true });
 
             _listHost.Controls.Add(flowCrew);
 

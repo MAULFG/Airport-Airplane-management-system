@@ -5,7 +5,7 @@ namespace Airport_Airplane_management_system.Model.Core.Classes
 {
     public class Booking
     {
-        public int BookingID { get; private set; }       // Assigned by DB
+        public int BookingID { get; private set; }       
         public User User { get; private set; }
         public Flight Flight { get; private set; }
         public FlightSeats Seat { get; private set; }

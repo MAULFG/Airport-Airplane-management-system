@@ -124,36 +124,47 @@ namespace Airport_Airplane_management_system.View.Forms.AdminPages
             RenderCards(_planes);
         }
 
-        private void RenderCards(IEnumerable<Plane> planes)
+        private async void RenderCards(IEnumerable<Plane> planes)
         {
-            if (planes == null) return;
+            if (planes == null || flowPlanes == null) return;
 
             flowPlanes.SuspendLayout();
-
-            // Clear old cards
             flowPlanes.Controls.Clear();
             planeCards.Clear();
+            flowPlanes.ResumeLayout();
 
-            int y = 12; // top padding
-            int spacing = 12; // space between cards
-            int cardWidth = flowPlanes.ClientSize.Width - 24; // left/right padding
+            int y = 12;
+            int spacing = 12;
+            int cardWidth = flowPlanes.ClientSize.Width - 24;
 
-            foreach (var p in planes.OrderBy(p => p.PlaneID))
+            const int batchSize = 4;
+            var ordered = planes.OrderBy(p => p.PlaneID).ToList();
+
+            for (int i = 0; i < ordered.Count; i += batchSize)
             {
-                var card = CreatePlaneCard(p);
-                card.Width = cardWidth;
-                card.Top = y;
-                card.Left = 12;
+                var batch = ordered.Skip(i).Take(batchSize);
 
-                planeCards.Add(card);
-                flowPlanes.Controls.Add(card);
+                flowPlanes.SuspendLayout();
+                foreach (var p in batch)
+                {
+                    var card = CreatePlaneCard(p);
+                    card.Width = cardWidth;
+                    card.Top = y;
+                    card.Left = 12;
 
-                y += card.Height + spacing;
+                    planeCards.Add(card);
+                    flowPlanes.Controls.Add(card);
+
+                    y += card.Height + spacing;
+                }
+                flowPlanes.ResumeLayout(false);
+
+                await System.Threading.Tasks.Task.Delay(1); // let UI breathe
             }
 
-            flowPlanes.ResumeLayout(false);
             flowPlanes.PerformLayout();
         }
+
 
 
         // Reposition cards on flowPlanes resize
